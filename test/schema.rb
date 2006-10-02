@@ -30,10 +30,12 @@ ActiveRecord::Schema.define(:version => 1) do
     t.column "street", :string
     t.column "city", :string
     t.column "state", :string
+    t.column "zip", :string
   end
   
   create_table "cities", :force => true do |t|
     t.column "name", :string
+    t.column "zip", :string
   end
   
 end

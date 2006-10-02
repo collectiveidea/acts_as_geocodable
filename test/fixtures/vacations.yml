@@ -9,8 +9,8 @@ whitehouse:
   id: 2
   name: The White House
   street: 1600 Pennsylvania Ave NW 
-  city:
-  state: 
+  city: Washington
+  state: DC
   zip: 20502
 mystery_spot:
   id: 3

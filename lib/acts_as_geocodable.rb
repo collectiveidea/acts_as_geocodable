@@ -17,7 +17,7 @@ module CollectiveIdea
         def acts_as_geocodable(options = {})
           write_inheritable_attribute(:acts_as_geocodable_options, {
             :geocodable_type => ActiveRecord::Base.send(:class_name_of_active_record_descendant, self).to_s,
-            :normalize_address => options[:normalize_addres]
+            :normalize_address => options[:normalize_address]
           })
           
           class_inheritable_reader :acts_as_geocodable_options
@@ -41,7 +41,7 @@ module CollectiveIdea
           latitude, longitude = location.latitude.to_f, location.longitude.to_f, radius.to_f
           
           return find_by_sql(
-            "SELECT #{table_name}.*, geocodes.latitude, geocodes.longitude, (#{Geocode.earth_radius(:units)} * ACOS(
+            "SELECT #{table_name}.*, geocodes.latitude, geocodes.longitude, (#{Geocode.earth_radius(units)} * ACOS(
                                       COS(RADIANS(`latitude`))*COS(RADIANS(`longitude`))
                                       	* COS(RADIANS('#{latitude}'))*COS(RADIANS('#{longitude}'))
                                       + COS(RADIANS(`latitude`))*SIN(RADIANS(`longitude`))
@@ -113,13 +113,12 @@ module CollectiveIdea
             self.send :geocode
           end
           
-          if :normalize_address
+          if self.acts_as_geocodable_options[:normalize_address]
             self.update_address
           end
         end
         
         def update_address
-          puts 'here '+ self.geocodes.size.to_s
           unless self.geocodes.empty?
             methods = [:street, :city, :state, :zip, :country]
             methods.each do |method|
