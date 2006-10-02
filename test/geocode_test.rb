@@ -34,6 +34,13 @@ class GeocodeTest < Test::Unit::TestCase
     end
   end
   
+  def test_empty_query
+    assert_no_difference(Geocode, :count) do
+      empty = Geocode.create(:query => '')
+      assert empty.new_record?
+    end
+  end
+  
   #
   # Helpers
   #

@@ -45,6 +45,22 @@ class ActsAsGeocodableTest < Test::Unit::TestCase
     assert_nil mystery_spot.state
   end
   
+  def test_geocode_creation_with_invalid_full_address
+    nowhere = cities(:nowhere)
+    assert_equal '', nowhere.full_address
+    assert_equal 0, nowhere.geocodes.size
+    
+    assert_no_difference(Geocode, :count) do
+      assert_no_difference(Geocoding, :count) do
+        # Force Geocode
+        nowhere.save!
+        nowhere.reload
+      end
+    end
+    
+    assert_equal 0, nowhere.geocodes.size
+  end
+  
   def test_save_respects_existing_geocode
     saugatuck = vacations(:saugatuck)
     assert_equal 1, saugatuck.geocodes.count

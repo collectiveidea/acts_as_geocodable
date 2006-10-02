@@ -6,3 +6,7 @@ chicago:
   id: 2
   name: Chicago
   zip: 
+nowhere:
+  id: 3
+  name: Nowhere
+  zip: ""

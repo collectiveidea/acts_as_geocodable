@@ -2,7 +2,7 @@ class Geocode < ActiveRecord::Base
   has_many :geocodings
   
   validates_uniqueness_of :query
-  after_validation :geocode
+  before_save :geocode
   
   cattr_accessor :geocoder
   
@@ -19,6 +19,9 @@ class Geocode < ActiveRecord::Base
     result.city = result.city.titleize if result.city
 
     result
+  rescue
+    # Geocoder threw exception
+    return nil
   end
   
   def self.earth_radius(units=:miles)
@@ -42,6 +45,9 @@ class Geocode < ActiveRecord::Base
       self.state = geocoded_location.state if geocoded_location.state
       self.zip = geocoded_location.zip if geocoded_location.zip
       self.country = geocoded_location.country if geocoded_location.country
+    else
+      # Halt callback
+      false
     end
   end
  

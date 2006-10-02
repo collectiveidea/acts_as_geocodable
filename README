@@ -22,7 +22,7 @@ class Stores < ActiveRecord::Base
 	acts_as_geocodable :normalize_address => true
 end
 
-Each Model that acts_as_geocodable needs to have a some sort of address.  This is always referenced via the provided full_address method.  You can use any field names for you addresses, but if they are different than mine (street, city, state, zip), you will have to provide your own full_address method that concatenates them together.
+Each Model that acts_as_geocodable needs to have a some sort of address that is referenced via the provided full_address method.  You can use any field names for you addresses, but if they are different than mine (street, city, state, zip), you will have to provide your own full_address method that concatenates them together.
 
 def full_address
 	address = ''

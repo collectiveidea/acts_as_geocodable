@@ -103,7 +103,8 @@ module CollectiveIdea
         # Set the latitude and longitude. 
         def geocode(locations=[self.full_address])
           locations.each do |location|
-            self.geocodes << Geocode.find_or_create_by_query(location)
+            geocode = Geocode.find_or_create_by_query(location)
+            self.geocodes << geocode unless geocode.new_record?
           end
         end
         
