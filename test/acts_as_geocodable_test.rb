@@ -45,7 +45,7 @@ class ActsAsGeocodableTest < Test::Unit::TestCase
     assert_nil mystery_spot.state
   end
   
-  def test_geocode_creation_with_invalid_full_address
+  def test_geocode_creation_with_empty_full_address
     nowhere = cities(:nowhere)
     assert_equal '', nowhere.full_address
     assert_equal 0, nowhere.geocodes.size
@@ -61,7 +61,7 @@ class ActsAsGeocodableTest < Test::Unit::TestCase
     assert_equal 0, nowhere.geocodes.size
   end
   
-  def test_geocode_creation_with_invalid_full_address
+  def test_geocode_creation_with_nil_full_address
     nowhere = cities(:nowhere)
     nowhere.zip = nil
     assert_nil nowhere.full_address
