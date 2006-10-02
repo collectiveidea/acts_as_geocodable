@@ -1,0 +1,27 @@
+saugatuck_geocode:
+  id: 1
+  latitude: 38.898748
+  longitude: -77.037684
+  query: "1600 Pennsylvania Ave NW\n20502"
+  street: 1600 Pennsylvania Ave NW 
+  city: Washington
+  state: DC
+  zip: 20502
+white_house_geocode:
+  id: 2
+  latitude: 42.655
+  longitude: -86.20194
+  query: "Saugatuck, MI"
+  street: 
+  city: Saugatuck
+  state: MI
+  zip: 
+chicago_geocode:
+  id: 3
+  latitude: 41.85
+  longitude: -87.65
+  query: "Chicago, IL"
+  street: 
+  city: Chicago
+  state: IL
+  zip: 

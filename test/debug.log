@@ -1,0 +1,457 @@
+# Logfile created on Sun Oct 01 23:05:28 EDT 2006 by logger.rb/1.5.2.7
+  [4;36;1mSQL (0.000000)[0m   [0;1mSQLite3::SQLException: no such table: geocodes: DROP TABLE geocodes[0m
+  [4;35;1mSQL (0.333032)[0m   [0mCREATE TABLE geocodes ("id" INTEGER PRIMARY KEY NOT NULL, "latitude" float, "longitude" float, "query" varchar(255), "street" varchar(255), "city" varchar(255), "state" varchar(255), "zip" varchar(255), "country" varchar(255)) [0m
+  [4;36;1mSQL (0.275982)[0m   [0;1mCREATE UNIQUE INDEX "geocodes_query_index" ON geocodes ("query")[0m
+  [4;35;1mSQL (0.266048)[0m   [0mCREATE INDEX "geocodes_latitude_index" ON geocodes ("latitude")[0m
+  [4;36;1mSQL (0.300248)[0m   [0;1mCREATE INDEX "geocodes_longitude_index" ON geocodes ("longitude")[0m
+  [4;35;1mSQL (0.000000)[0m   [0mSQLite3::SQLException: no such table: geocodings: DROP TABLE geocodings[0m
+  [4;36;1mSQL (0.264071)[0m   [0;1mCREATE TABLE geocodings ("id" INTEGER PRIMARY KEY NOT NULL, "geocodable_id" integer, "geocode_id" integer, "geocodable_type" varchar(255)) [0m
+  [4;35;1mSQL (0.243801)[0m   [0mCREATE INDEX "geocodings_geocodable_id_index" ON geocodings ("geocodable_id")[0m
+  [4;36;1mSQL (0.289468)[0m   [0;1mCREATE INDEX "geocodings_geocode_id_index" ON geocodings ("geocode_id")[0m
+  [4;35;1mSQL (0.264948)[0m   [0mCREATE INDEX "geocodings_geocodable_type_index" ON geocodings ("geocodable_type")[0m
+  [4;36;1mSQL (0.000000)[0m   [0;1mSQLite3::SQLException: no such table: vacations: DROP TABLE vacations[0m
+  [4;35;1mSQL (0.276076)[0m   [0mCREATE TABLE vacations ("id" INTEGER PRIMARY KEY NOT NULL, "name" varchar(255), "street" varchar(255), "city" varchar(255), "state" varchar(255)) [0m
+  [4;36;1mSQL (0.000000)[0m   [0;1mSQLite3::SQLException: no such table: cities: DROP TABLE cities[0m
+  [4;35;1mSQL (0.266121)[0m   [0mCREATE TABLE cities ("id" INTEGER PRIMARY KEY NOT NULL, "name" varchar(255)) [0m
+  [4;36;1mSQL (0.287318)[0m   [0;1mCREATE TABLE schema_info (version integer)[0m
+  [4;35;1mSQL (0.266483)[0m   [0mINSERT INTO schema_info (version) VALUES(0)[0m
+  [4;36;1mSQL (0.051005)[0m   [0;1mPRAGMA table_info(schema_info)[0m
+  [4;35;1mSQL (0.259052)[0m   [0mUPDATE schema_info SET version = 1[0m
+  [4;36;1mSQL (0.360674)[0m   [0;1mDROP TABLE geocodes[0m
+  [4;35;1mSQL (0.266004)[0m   [0mCREATE TABLE geocodes ("id" INTEGER PRIMARY KEY NOT NULL, "latitude" float, "longitude" float, "query" varchar(255), "street" varchar(255), "city" varchar(255), "state" varchar(255), "zip" varchar(255), "country" varchar(255)) [0m
+  [4;36;1mSQL (0.266085)[0m   [0;1mCREATE UNIQUE INDEX "geocodes_query_index" ON geocodes ("query")[0m
+  [4;35;1mSQL (0.288134)[0m   [0mCREATE INDEX "geocodes_latitude_index" ON geocodes ("latitude")[0m
+  [4;36;1mSQL (0.255138)[0m   [0;1mCREATE INDEX "geocodes_longitude_index" ON geocodes ("longitude")[0m
+  [4;35;1mSQL (0.243515)[0m   [0mDROP TABLE geocodings[0m
+  [4;36;1mSQL (0.255036)[0m   [0;1mCREATE TABLE geocodings ("id" INTEGER PRIMARY KEY NOT NULL, "geocodable_id" integer, "geocode_id" integer, "geocodable_type" varchar(255)) [0m
+  [4;35;1mSQL (0.254983)[0m   [0mCREATE INDEX "geocodings_geocodable_id_index" ON geocodings ("geocodable_id")[0m
+  [4;36;1mSQL (0.266133)[0m   [0;1mCREATE INDEX "geocodings_geocode_id_index" ON geocodings ("geocode_id")[0m
+  [4;35;1mSQL (0.243045)[0m   [0mCREATE INDEX "geocodings_geocodable_type_index" ON geocodings ("geocodable_type")[0m
+  [4;36;1mSQL (0.299138)[0m   [0;1mDROP TABLE vacations[0m
+  [4;35;1mSQL (0.366074)[0m   [0mCREATE TABLE vacations ("id" INTEGER PRIMARY KEY NOT NULL, "name" varchar(255), "street" varchar(255), "city" varchar(255), "state" varchar(255)) [0m
+  [4;36;1mSQL (0.542936)[0m   [0;1mDROP TABLE cities[0m
+  [4;35;1mSQL (0.255216)[0m   [0mCREATE TABLE cities ("id" INTEGER PRIMARY KEY NOT NULL, "name" varchar(255)) [0m
+  [4;36;1mSQL (0.000000)[0m   [0;1mSQLite3::SQLException: table schema_info already exists: CREATE TABLE schema_info (version integer)[0m
+  [4;35;1mSQL (0.000359)[0m   [0mPRAGMA table_info(schema_info)[0m
+  [4;36;1mSQL (0.253530)[0m   [0;1mUPDATE schema_info SET version = 1[0m
+  [4;36;1mSQL (0.000000)[0m   [0;1mMysql::Error: Unknown table 'geocodes': DROP TABLE geocodes[0m
+  [4;35;1mSQL (1.310933)[0m   [0mCREATE TABLE geocodes (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `latitude` float, `longitude` float, `query` varchar(255), `street` varchar(255), `city` varchar(255), `state` varchar(255), `zip` varchar(255), `country` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.155672)[0m   [0;1mCREATE UNIQUE INDEX `geocodes_query_index` ON geocodes (`query`)[0m
+  [4;35;1mSQL (0.110519)[0m   [0mCREATE INDEX `geocodes_latitude_index` ON geocodes (`latitude`)[0m
+  [4;36;1mSQL (0.050772)[0m   [0;1mCREATE INDEX `geocodes_longitude_index` ON geocodes (`longitude`)[0m
+  [4;35;1mSQL (0.000000)[0m   [0mMysql::Error: Unknown table 'geocodings': DROP TABLE geocodings[0m
+  [4;36;1mSQL (0.002387)[0m   [0;1mCREATE TABLE geocodings (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `geocodable_id` int(11), `geocode_id` int(11), `geocodable_type` varchar(255)) ENGINE=InnoDB[0m
+  [4;35;1mSQL (0.006861)[0m   [0mCREATE INDEX `geocodings_geocodable_id_index` ON geocodings (`geocodable_id`)[0m
+  [4;36;1mSQL (0.006915)[0m   [0;1mCREATE INDEX `geocodings_geocode_id_index` ON geocodings (`geocode_id`)[0m
+  [4;35;1mSQL (0.029205)[0m   [0mCREATE INDEX `geocodings_geocodable_type_index` ON geocodings (`geocodable_type`)[0m
+  [4;36;1mSQL (0.000000)[0m   [0;1mMysql::Error: Unknown table 'vacations': DROP TABLE vacations[0m
+  [4;35;1mSQL (0.002318)[0m   [0mCREATE TABLE vacations (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `street` varchar(255), `city` varchar(255), `state` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.000000)[0m   [0;1mMysql::Error: Unknown table 'cities': DROP TABLE cities[0m
+  [4;35;1mSQL (0.059298)[0m   [0mCREATE TABLE cities (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.061557)[0m   [0;1mCREATE TABLE schema_info (version int(11))[0m
+  [4;35;1mSQL (0.042928)[0m   [0mINSERT INTO schema_info (version) VALUES(0)[0m
+  [4;36;1mSQL (0.002105)[0m   [0;1mSHOW FIELDS FROM schema_info[0m
+  [4;35;1mSQL (0.001499)[0m   [0mUPDATE schema_info SET version = 1[0m
+  [4;36;1mSQL (0.000065)[0m   [0;1mBEGIN[0m
+  [4;35;1mSQL (0.000074)[0m   [0mROLLBACK[0m
+  [4;36;1mSQL (0.002731)[0m   [0;1mDROP TABLE geocodes[0m
+  [4;35;1mSQL (0.003424)[0m   [0mCREATE TABLE geocodes (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `latitude` float, `longitude` float, `query` varchar(255), `street` varchar(255), `city` varchar(255), `state` varchar(255), `zip` varchar(255), `country` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.010828)[0m   [0;1mCREATE UNIQUE INDEX `geocodes_query_index` ON geocodes (`query`)[0m
+  [4;35;1mSQL (0.033864)[0m   [0mCREATE INDEX `geocodes_latitude_index` ON geocodes (`latitude`)[0m
+  [4;36;1mSQL (0.058068)[0m   [0;1mCREATE INDEX `geocodes_longitude_index` ON geocodes (`longitude`)[0m
+  [4;35;1mSQL (0.002447)[0m   [0mDROP TABLE geocodings[0m
+  [4;36;1mSQL (0.003426)[0m   [0;1mCREATE TABLE geocodings (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `geocodable_id` int(11), `geocode_id` int(11), `geocodable_type` varchar(255)) ENGINE=InnoDB[0m
+  [4;35;1mSQL (0.009182)[0m   [0mCREATE INDEX `geocodings_geocodable_id_index` ON geocodings (`geocodable_id`)[0m
+  [4;36;1mSQL (0.037828)[0m   [0;1mCREATE INDEX `geocodings_geocode_id_index` ON geocodings (`geocode_id`)[0m
+  [4;35;1mSQL (0.044058)[0m   [0mCREATE INDEX `geocodings_geocodable_type_index` ON geocodings (`geocodable_type`)[0m
+  [4;36;1mSQL (0.002087)[0m   [0;1mDROP TABLE vacations[0m
+  [4;35;1mSQL (0.046652)[0m   [0mCREATE TABLE vacations (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `street` varchar(255), `city` varchar(255), `state` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.002200)[0m   [0;1mDROP TABLE cities[0m
+  [4;35;1mSQL (0.003444)[0m   [0mCREATE TABLE cities (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.000000)[0m   [0;1mMysql::Error: Table 'schema_info' already exists: CREATE TABLE schema_info (version int(11))[0m
+  [4;35;1mSQL (0.002041)[0m   [0mSHOW FIELDS FROM schema_info[0m
+  [4;36;1mSQL (0.000720)[0m   [0;1mUPDATE schema_info SET version = 1[0m
+  [4;35;1mSQL (0.000064)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000073)[0m   [0;1mROLLBACK[0m
+  [4;36;1mSQL (0.295342)[0m   [0;1mDROP TABLE geocodes[0m
+  [4;35;1mSQL (0.236776)[0m   [0mCREATE TABLE geocodes ("id" INTEGER PRIMARY KEY NOT NULL, "latitude" float, "longitude" float, "query" varchar(255), "street" varchar(255), "city" varchar(255), "state" varchar(255), "zip" varchar(255), "country" varchar(255)) [0m
+  [4;36;1mSQL (0.232771)[0m   [0;1mCREATE UNIQUE INDEX "geocodes_query_index" ON geocodes ("query")[0m
+  [4;35;1mSQL (0.243836)[0m   [0mCREATE INDEX "geocodes_latitude_index" ON geocodes ("latitude")[0m
+  [4;36;1mSQL (0.232672)[0m   [0;1mCREATE INDEX "geocodes_longitude_index" ON geocodes ("longitude")[0m
+  [4;35;1mSQL (0.254805)[0m   [0mDROP TABLE geocodings[0m
+  [4;36;1mSQL (0.232674)[0m   [0;1mCREATE TABLE geocodings ("id" INTEGER PRIMARY KEY NOT NULL, "geocodable_id" integer, "geocode_id" integer, "geocodable_type" varchar(255)) [0m
+  [4;35;1mSQL (0.243771)[0m   [0mCREATE INDEX "geocodings_geocodable_id_index" ON geocodings ("geocodable_id")[0m
+  [4;36;1mSQL (0.232812)[0m   [0;1mCREATE INDEX "geocodings_geocode_id_index" ON geocodings ("geocode_id")[0m
+  [4;35;1mSQL (0.344046)[0m   [0mCREATE INDEX "geocodings_geocodable_type_index" ON geocodings ("geocodable_type")[0m
+  [4;36;1mSQL (0.264970)[0m   [0;1mDROP TABLE vacations[0m
+  [4;35;1mSQL (0.254995)[0m   [0mCREATE TABLE vacations ("id" INTEGER PRIMARY KEY NOT NULL, "name" varchar(255), "street" varchar(255), "city" varchar(255), "state" varchar(255)) [0m
+  [4;36;1mSQL (0.232567)[0m   [0;1mDROP TABLE cities[0m
+  [4;35;1mSQL (0.255101)[0m   [0mCREATE TABLE cities ("id" INTEGER PRIMARY KEY NOT NULL, "name" varchar(255)) [0m
+  [4;36;1mSQL (0.000000)[0m   [0;1mSQLite3::SQLException: table schema_info already exists: CREATE TABLE schema_info (version integer)[0m
+  [4;35;1mSQL (0.000354)[0m   [0mPRAGMA table_info(schema_info)[0m
+  [4;36;1mSQL (0.231440)[0m   [0;1mUPDATE schema_info SET version = 1[0m
+  [4;36;1mSQL (0.036926)[0m   [0;1mDROP TABLE geocodes[0m
+  [4;35;1mSQL (0.003543)[0m   [0mCREATE TABLE geocodes (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `latitude` float, `longitude` float, `query` varchar(255), `street` varchar(255), `city` varchar(255), `state` varchar(255), `zip` varchar(255), `country` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.161709)[0m   [0;1mCREATE UNIQUE INDEX `geocodes_query_index` ON geocodes (`query`)[0m
+  [4;35;1mSQL (0.092246)[0m   [0mCREATE INDEX `geocodes_latitude_index` ON geocodes (`latitude`)[0m
+  [4;36;1mSQL (0.058987)[0m   [0;1mCREATE INDEX `geocodes_longitude_index` ON geocodes (`longitude`)[0m
+  [4;35;1mSQL (0.003305)[0m   [0mDROP TABLE geocodings[0m
+  [4;36;1mSQL (0.032112)[0m   [0;1mCREATE TABLE geocodings (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `geocodable_id` int(11), `geocode_id` int(11), `geocodable_type` varchar(255)) ENGINE=InnoDB[0m
+  [4;35;1mSQL (0.096293)[0m   [0mCREATE INDEX `geocodings_geocodable_id_index` ON geocodings (`geocodable_id`)[0m
+  [4;36;1mSQL (0.010675)[0m   [0;1mCREATE INDEX `geocodings_geocode_id_index` ON geocodings (`geocode_id`)[0m
+  [4;35;1mSQL (0.041489)[0m   [0mCREATE INDEX `geocodings_geocodable_type_index` ON geocodings (`geocodable_type`)[0m
+  [4;36;1mSQL (0.002775)[0m   [0;1mDROP TABLE vacations[0m
+  [4;35;1mSQL (0.003925)[0m   [0mCREATE TABLE vacations (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `street` varchar(255), `city` varchar(255), `state` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.002566)[0m   [0;1mDROP TABLE cities[0m
+  [4;35;1mSQL (0.003616)[0m   [0mCREATE TABLE cities (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.000000)[0m   [0;1mMysql::Error: Table 'schema_info' already exists: CREATE TABLE schema_info (version int(11))[0m
+  [4;35;1mSQL (0.002104)[0m   [0mSHOW FIELDS FROM schema_info[0m
+  [4;36;1mSQL (0.055388)[0m   [0;1mUPDATE schema_info SET version = 1[0m
+  [4;35;1mSQL (0.000064)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000073)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000093)[0m   [0mROLLBACK[0m
+  [4;36;1mSQL (0.000081)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000076)[0m   [0mROLLBACK[0m
+  [4;36;1mSQL (0.043105)[0m   [0;1mDROP TABLE geocodes[0m
+  [4;35;1mSQL (0.002955)[0m   [0mCREATE TABLE geocodes (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `latitude` float, `longitude` float, `query` varchar(255), `street` varchar(255), `city` varchar(255), `state` varchar(255), `zip` varchar(255), `country` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.061039)[0m   [0;1mCREATE UNIQUE INDEX `geocodes_query_index` ON geocodes (`query`)[0m
+  [4;35;1mSQL (0.076740)[0m   [0mCREATE INDEX `geocodes_latitude_index` ON geocodes (`latitude`)[0m
+  [4;36;1mSQL (0.010375)[0m   [0;1mCREATE INDEX `geocodes_longitude_index` ON geocodes (`longitude`)[0m
+  [4;35;1mSQL (0.036282)[0m   [0mDROP TABLE geocodings[0m
+  [4;36;1mSQL (0.003292)[0m   [0;1mCREATE TABLE geocodings (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `geocodable_id` int(11), `geocode_id` int(11), `geocodable_type` varchar(255)) ENGINE=InnoDB[0m
+  [4;35;1mSQL (0.049848)[0m   [0mCREATE INDEX `geocodings_geocodable_id_index` ON geocodings (`geocodable_id`)[0m
+  [4;36;1mSQL (0.049119)[0m   [0;1mCREATE INDEX `geocodings_geocode_id_index` ON geocodings (`geocode_id`)[0m
+  [4;35;1mSQL (0.010055)[0m   [0mCREATE INDEX `geocodings_geocodable_type_index` ON geocodings (`geocodable_type`)[0m
+  [4;36;1mSQL (0.002210)[0m   [0;1mDROP TABLE vacations[0m
+  [4;35;1mSQL (0.005075)[0m   [0mCREATE TABLE vacations (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `street` varchar(255), `city` varchar(255), `state` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.032574)[0m   [0;1mDROP TABLE cities[0m
+  [4;35;1mSQL (0.002800)[0m   [0mCREATE TABLE cities (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.000000)[0m   [0;1mMysql::Error: Table 'schema_info' already exists: CREATE TABLE schema_info (version int(11))[0m
+  [4;35;1mSQL (0.002278)[0m   [0mSHOW FIELDS FROM schema_info[0m
+  [4;36;1mSQL (0.001470)[0m   [0;1mUPDATE schema_info SET version = 1[0m
+  [4;35;1mSQL (0.000066)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000076)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000086)[0m   [0mROLLBACK[0m
+  [4;36;1mSQL (0.000090)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000310)[0m   [0mROLLBACK[0m
+  [4;36;1mSQL (0.033639)[0m   [0;1mDROP TABLE geocodes[0m
+  [4;35;1mSQL (0.003433)[0m   [0mCREATE TABLE geocodes (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `latitude` float, `longitude` float, `query` varchar(255), `street` varchar(255), `city` varchar(255), `state` varchar(255), `zip` varchar(255), `country` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.053802)[0m   [0;1mCREATE UNIQUE INDEX `geocodes_query_index` ON geocodes (`query`)[0m
+  [4;35;1mSQL (0.035415)[0m   [0mCREATE INDEX `geocodes_latitude_index` ON geocodes (`latitude`)[0m
+  [4;36;1mSQL (0.009823)[0m   [0;1mCREATE INDEX `geocodes_longitude_index` ON geocodes (`longitude`)[0m
+  [4;35;1mSQL (0.003991)[0m   [0mDROP TABLE geocodings[0m
+  [4;36;1mSQL (0.056777)[0m   [0;1mCREATE TABLE geocodings (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `geocodable_id` int(11), `geocode_id` int(11), `geocodable_type` varchar(255)) ENGINE=InnoDB[0m
+  [4;35;1mSQL (0.008782)[0m   [0mCREATE INDEX `geocodings_geocodable_id_index` ON geocodings (`geocodable_id`)[0m
+  [4;36;1mSQL (0.009075)[0m   [0;1mCREATE INDEX `geocodings_geocode_id_index` ON geocodings (`geocode_id`)[0m
+  [4;35;1mSQL (0.041110)[0m   [0mCREATE INDEX `geocodings_geocodable_type_index` ON geocodings (`geocodable_type`)[0m
+  [4;36;1mSQL (0.002112)[0m   [0;1mDROP TABLE vacations[0m
+  [4;35;1mSQL (0.003669)[0m   [0mCREATE TABLE vacations (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `street` varchar(255), `city` varchar(255), `state` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.002454)[0m   [0;1mDROP TABLE cities[0m
+  [4;35;1mSQL (0.003086)[0m   [0mCREATE TABLE cities (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.000000)[0m   [0;1mMysql::Error: Table 'schema_info' already exists: CREATE TABLE schema_info (version int(11))[0m
+  [4;35;1mSQL (0.001926)[0m   [0mSHOW FIELDS FROM schema_info[0m
+  [4;36;1mSQL (0.001317)[0m   [0;1mUPDATE schema_info SET version = 1[0m
+  [4;35;1mSQL (0.000067)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000070)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000083)[0m   [0mROLLBACK[0m
+  [4;36;1mSQL (0.000100)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000078)[0m   [0mROLLBACK[0m
+  [4;36;1mSQL (0.002578)[0m   [0;1mDROP TABLE geocodes[0m
+  [4;35;1mSQL (0.002930)[0m   [0mCREATE TABLE geocodes (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `latitude` float, `longitude` float, `query` varchar(255), `street` varchar(255), `city` varchar(255), `state` varchar(255), `zip` varchar(255), `country` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.011515)[0m   [0;1mCREATE UNIQUE INDEX `geocodes_query_index` ON geocodes (`query`)[0m
+  [4;35;1mSQL (0.091642)[0m   [0mCREATE INDEX `geocodes_latitude_index` ON geocodes (`latitude`)[0m
+  [4;36;1mSQL (0.044368)[0m   [0;1mCREATE INDEX `geocodes_longitude_index` ON geocodes (`longitude`)[0m
+  [4;35;1mSQL (0.002902)[0m   [0mDROP TABLE geocodings[0m
+  [4;36;1mSQL (0.003281)[0m   [0;1mCREATE TABLE geocodings (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `geocodable_id` int(11), `geocode_id` int(11), `geocodable_type` varchar(255)) ENGINE=InnoDB[0m
+  [4;35;1mSQL (0.058729)[0m   [0mCREATE INDEX `geocodings_geocodable_id_index` ON geocodings (`geocodable_id`)[0m
+  [4;36;1mSQL (0.045245)[0m   [0;1mCREATE INDEX `geocodings_geocode_id_index` ON geocodings (`geocode_id`)[0m
+  [4;35;1mSQL (0.009015)[0m   [0mCREATE INDEX `geocodings_geocodable_type_index` ON geocodings (`geocodable_type`)[0m
+  [4;36;1mSQL (0.002174)[0m   [0;1mDROP TABLE vacations[0m
+  [4;35;1mSQL (0.003611)[0m   [0mCREATE TABLE vacations (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `street` varchar(255), `city` varchar(255), `state` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.055809)[0m   [0;1mDROP TABLE cities[0m
+  [4;35;1mSQL (0.002795)[0m   [0mCREATE TABLE cities (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.000000)[0m   [0;1mMysql::Error: Table 'schema_info' already exists: CREATE TABLE schema_info (version int(11))[0m
+  [4;35;1mSQL (0.002212)[0m   [0mSHOW FIELDS FROM schema_info[0m
+  [4;36;1mSQL (0.001606)[0m   [0;1mUPDATE schema_info SET version = 1[0m
+  [4;35;1mSQL (0.000083)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000068)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000098)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000158)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000085)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000135)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000081)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000084)[0m   [0;1mROLLBACK[0m
+  [4;36;1mSQL (0.003085)[0m   [0;1mDROP TABLE geocodes[0m
+  [4;35;1mSQL (0.038558)[0m   [0mCREATE TABLE geocodes (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `latitude` float, `longitude` float, `query` varchar(255), `street` varchar(255), `city` varchar(255), `state` varchar(255), `zip` varchar(255), `country` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.116684)[0m   [0;1mCREATE UNIQUE INDEX `geocodes_query_index` ON geocodes (`query`)[0m
+  [4;35;1mSQL (0.009426)[0m   [0mCREATE INDEX `geocodes_latitude_index` ON geocodes (`latitude`)[0m
+  [4;36;1mSQL (0.022632)[0m   [0;1mCREATE INDEX `geocodes_longitude_index` ON geocodes (`longitude`)[0m
+  [4;35;1mSQL (0.002603)[0m   [0mDROP TABLE geocodings[0m
+  [4;36;1mSQL (0.003515)[0m   [0;1mCREATE TABLE geocodings (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `geocodable_id` int(11), `geocode_id` int(11), `geocodable_type` varchar(255)) ENGINE=InnoDB[0m
+  [4;35;1mSQL (0.008412)[0m   [0mCREATE INDEX `geocodings_geocodable_id_index` ON geocodings (`geocodable_id`)[0m
+  [4;36;1mSQL (0.037063)[0m   [0;1mCREATE INDEX `geocodings_geocode_id_index` ON geocodings (`geocode_id`)[0m
+  [4;35;1mSQL (0.009246)[0m   [0mCREATE INDEX `geocodings_geocodable_type_index` ON geocodings (`geocodable_type`)[0m
+  [4;36;1mSQL (0.002160)[0m   [0;1mDROP TABLE vacations[0m
+  [4;35;1mSQL (0.003686)[0m   [0mCREATE TABLE vacations (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `street` varchar(255), `city` varchar(255), `state` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.001919)[0m   [0;1mDROP TABLE cities[0m
+  [4;35;1mSQL (0.064568)[0m   [0mCREATE TABLE cities (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.000000)[0m   [0;1mMysql::Error: Table 'schema_info' already exists: CREATE TABLE schema_info (version int(11))[0m
+  [4;35;1mSQL (0.001885)[0m   [0mSHOW FIELDS FROM schema_info[0m
+  [4;36;1mSQL (0.000768)[0m   [0;1mUPDATE schema_info SET version = 1[0m
+  [4;35;1mSQL (0.000084)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000073)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000148)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000163)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000086)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000110)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000083)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000072)[0m   [0;1mROLLBACK[0m
+  [4;36;1mSQL (0.014157)[0m   [0;1mDROP TABLE geocodes[0m
+  [4;35;1mSQL (0.002935)[0m   [0mCREATE TABLE geocodes (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `latitude` float, `longitude` float, `query` varchar(255), `street` varchar(255), `city` varchar(255), `state` varchar(255), `zip` varchar(255), `country` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.078952)[0m   [0;1mCREATE UNIQUE INDEX `geocodes_query_index` ON geocodes (`query`)[0m
+  [4;35;1mSQL (0.044272)[0m   [0mCREATE INDEX `geocodes_latitude_index` ON geocodes (`latitude`)[0m
+  [4;36;1mSQL (0.050366)[0m   [0;1mCREATE INDEX `geocodes_longitude_index` ON geocodes (`longitude`)[0m
+  [4;35;1mSQL (0.002141)[0m   [0mDROP TABLE geocodings[0m
+  [4;36;1mSQL (0.002665)[0m   [0;1mCREATE TABLE geocodings (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `geocodable_id` int(11), `geocode_id` int(11), `geocodable_type` varchar(255)) ENGINE=InnoDB[0m
+  [4;35;1mSQL (0.009427)[0m   [0mCREATE INDEX `geocodings_geocodable_id_index` ON geocodings (`geocodable_id`)[0m
+  [4;36;1mSQL (0.039499)[0m   [0;1mCREATE INDEX `geocodings_geocode_id_index` ON geocodings (`geocode_id`)[0m
+  [4;35;1mSQL (0.010159)[0m   [0mCREATE INDEX `geocodings_geocodable_type_index` ON geocodings (`geocodable_type`)[0m
+  [4;36;1mSQL (0.002144)[0m   [0;1mDROP TABLE vacations[0m
+  [4;35;1mSQL (0.003601)[0m   [0mCREATE TABLE vacations (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `street` varchar(255), `city` varchar(255), `state` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.001904)[0m   [0;1mDROP TABLE cities[0m
+  [4;35;1mSQL (0.003252)[0m   [0mCREATE TABLE cities (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.000000)[0m   [0;1mMysql::Error: Table 'schema_info' already exists: CREATE TABLE schema_info (version int(11))[0m
+  [4;35;1mSQL (0.002104)[0m   [0mSHOW FIELDS FROM schema_info[0m
+  [4;36;1mSQL (0.000781)[0m   [0;1mUPDATE schema_info SET version = 1[0m
+  [4;36;1mSQL (0.002605)[0m   [0;1mDROP TABLE geocodes[0m
+  [4;35;1mSQL (0.056031)[0m   [0mCREATE TABLE geocodes (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `latitude` float, `longitude` float, `query` varchar(255), `street` varchar(255), `city` varchar(255), `state` varchar(255), `zip` varchar(255), `country` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.027225)[0m   [0;1mCREATE UNIQUE INDEX `geocodes_query_index` ON geocodes (`query`)[0m
+  [4;35;1mSQL (0.050079)[0m   [0mCREATE INDEX `geocodes_latitude_index` ON geocodes (`latitude`)[0m
+  [4;36;1mSQL (0.009579)[0m   [0;1mCREATE INDEX `geocodes_longitude_index` ON geocodes (`longitude`)[0m
+  [4;35;1mSQL (0.002352)[0m   [0mDROP TABLE geocodings[0m
+  [4;36;1mSQL (0.003800)[0m   [0;1mCREATE TABLE geocodings (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `geocodable_id` int(11), `geocode_id` int(11), `geocodable_type` varchar(255)) ENGINE=InnoDB[0m
+  [4;35;1mSQL (0.052953)[0m   [0mCREATE INDEX `geocodings_geocodable_id_index` ON geocodings (`geocodable_id`)[0m
+  [4;36;1mSQL (0.008580)[0m   [0;1mCREATE INDEX `geocodings_geocode_id_index` ON geocodings (`geocode_id`)[0m
+  [4;35;1mSQL (0.046454)[0m   [0mCREATE INDEX `geocodings_geocodable_type_index` ON geocodings (`geocodable_type`)[0m
+  [4;36;1mSQL (0.002561)[0m   [0;1mDROP TABLE vacations[0m
+  [4;35;1mSQL (0.003796)[0m   [0mCREATE TABLE vacations (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `street` varchar(255), `city` varchar(255), `state` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.002058)[0m   [0;1mDROP TABLE cities[0m
+  [4;35;1mSQL (0.003222)[0m   [0mCREATE TABLE cities (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.000000)[0m   [0;1mMysql::Error: Table 'schema_info' already exists: CREATE TABLE schema_info (version int(11))[0m
+  [4;35;1mSQL (0.001864)[0m   [0mSHOW FIELDS FROM schema_info[0m
+  [4;36;1mSQL (0.000997)[0m   [0;1mUPDATE schema_info SET version = 1[0m
+  [4;35;1mSQL (0.000089)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000071)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000109)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000160)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000084)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000115)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000080)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000079)[0m   [0;1mROLLBACK[0m
+  [4;36;1mSQL (0.022911)[0m   [0;1mDROP TABLE geocodes[0m
+  [4;35;1mSQL (0.003371)[0m   [0mCREATE TABLE geocodes (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `latitude` float, `longitude` float, `query` varchar(255), `street` varchar(255), `city` varchar(255), `state` varchar(255), `zip` varchar(255), `country` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.009040)[0m   [0;1mCREATE UNIQUE INDEX `geocodes_query_index` ON geocodes (`query`)[0m
+  [4;35;1mSQL (0.044050)[0m   [0mCREATE INDEX `geocodes_latitude_index` ON geocodes (`latitude`)[0m
+  [4;36;1mSQL (0.008707)[0m   [0;1mCREATE INDEX `geocodes_longitude_index` ON geocodes (`longitude`)[0m
+  [4;35;1mSQL (0.002848)[0m   [0mDROP TABLE geocodings[0m
+  [4;36;1mSQL (0.002925)[0m   [0;1mCREATE TABLE geocodings (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `geocodable_id` int(11), `geocode_id` int(11), `geocodable_type` varchar(255)) ENGINE=InnoDB[0m
+  [4;35;1mSQL (0.084210)[0m   [0mCREATE INDEX `geocodings_geocodable_id_index` ON geocodings (`geocodable_id`)[0m
+  [4;36;1mSQL (0.009160)[0m   [0;1mCREATE INDEX `geocodings_geocode_id_index` ON geocodings (`geocode_id`)[0m
+  [4;35;1mSQL (0.056407)[0m   [0mCREATE INDEX `geocodings_geocodable_type_index` ON geocodings (`geocodable_type`)[0m
+  [4;36;1mSQL (0.002123)[0m   [0;1mDROP TABLE vacations[0m
+  [4;35;1mSQL (0.003545)[0m   [0mCREATE TABLE vacations (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `street` varchar(255), `city` varchar(255), `state` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.002409)[0m   [0;1mDROP TABLE cities[0m
+  [4;35;1mSQL (0.002769)[0m   [0mCREATE TABLE cities (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.000000)[0m   [0;1mMysql::Error: Table 'schema_info' already exists: CREATE TABLE schema_info (version int(11))[0m
+  [4;35;1mSQL (0.001962)[0m   [0mSHOW FIELDS FROM schema_info[0m
+  [4;36;1mSQL (0.000486)[0m   [0;1mUPDATE schema_info SET version = 1[0m
+  [4;35;1mSQL (0.000064)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000067)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000112)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000162)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000084)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000076)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000082)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000095)[0m   [0;1mROLLBACK[0m
+  [4;36;1mSQL (0.002662)[0m   [0;1mDROP TABLE geocodes[0m
+  [4;35;1mSQL (0.053035)[0m   [0mCREATE TABLE geocodes (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `latitude` float, `longitude` float, `query` varchar(255), `street` varchar(255), `city` varchar(255), `state` varchar(255), `zip` varchar(255), `country` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.011751)[0m   [0;1mCREATE UNIQUE INDEX `geocodes_query_index` ON geocodes (`query`)[0m
+  [4;35;1mSQL (0.087429)[0m   [0mCREATE INDEX `geocodes_latitude_index` ON geocodes (`latitude`)[0m
+  [4;36;1mSQL (0.067058)[0m   [0;1mCREATE INDEX `geocodes_longitude_index` ON geocodes (`longitude`)[0m
+  [4;35;1mSQL (0.002801)[0m   [0mDROP TABLE geocodings[0m
+  [4;36;1mSQL (0.003165)[0m   [0;1mCREATE TABLE geocodings (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `geocodable_id` int(11), `geocode_id` int(11), `geocodable_type` varchar(255)) ENGINE=InnoDB[0m
+  [4;35;1mSQL (0.062819)[0m   [0mCREATE INDEX `geocodings_geocodable_id_index` ON geocodings (`geocodable_id`)[0m
+  [4;36;1mSQL (0.009561)[0m   [0;1mCREATE INDEX `geocodings_geocode_id_index` ON geocodings (`geocode_id`)[0m
+  [4;35;1mSQL (0.056481)[0m   [0mCREATE INDEX `geocodings_geocodable_type_index` ON geocodings (`geocodable_type`)[0m
+  [4;36;1mSQL (0.003352)[0m   [0;1mDROP TABLE vacations[0m
+  [4;35;1mSQL (0.003410)[0m   [0mCREATE TABLE vacations (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `street` varchar(255), `city` varchar(255), `state` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.001998)[0m   [0;1mDROP TABLE cities[0m
+  [4;35;1mSQL (0.003463)[0m   [0mCREATE TABLE cities (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.000000)[0m   [0;1mMysql::Error: Table 'schema_info' already exists: CREATE TABLE schema_info (version int(11))[0m
+  [4;35;1mSQL (0.002535)[0m   [0mSHOW FIELDS FROM schema_info[0m
+  [4;36;1mSQL (0.000933)[0m   [0;1mUPDATE schema_info SET version = 1[0m
+  [4;35;1mSQL (0.000066)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000075)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000133)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000163)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000089)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000083)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000084)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000100)[0m   [0;1mROLLBACK[0m
+  [4;36;1mSQL (0.030238)[0m   [0;1mDROP TABLE geocodes[0m
+  [4;35;1mSQL (0.003279)[0m   [0mCREATE TABLE geocodes (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `latitude` float, `longitude` float, `query` varchar(255), `street` varchar(255), `city` varchar(255), `state` varchar(255), `zip` varchar(255), `country` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.009515)[0m   [0;1mCREATE UNIQUE INDEX `geocodes_query_index` ON geocodes (`query`)[0m
+  [4;35;1mSQL (0.056695)[0m   [0mCREATE INDEX `geocodes_latitude_index` ON geocodes (`latitude`)[0m
+  [4;36;1mSQL (0.010023)[0m   [0;1mCREATE INDEX `geocodes_longitude_index` ON geocodes (`longitude`)[0m
+  [4;35;1mSQL (0.002340)[0m   [0mDROP TABLE geocodings[0m
+  [4;36;1mSQL (0.058992)[0m   [0;1mCREATE TABLE geocodings (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `geocodable_id` int(11), `geocode_id` int(11), `geocodable_type` varchar(255)) ENGINE=InnoDB[0m
+  [4;35;1mSQL (0.008107)[0m   [0mCREATE INDEX `geocodings_geocodable_id_index` ON geocodings (`geocodable_id`)[0m
+  [4;36;1mSQL (0.009784)[0m   [0;1mCREATE INDEX `geocodings_geocode_id_index` ON geocodings (`geocode_id`)[0m
+  [4;35;1mSQL (0.053541)[0m   [0mCREATE INDEX `geocodings_geocodable_type_index` ON geocodings (`geocodable_type`)[0m
+  [4;36;1mSQL (0.002244)[0m   [0;1mDROP TABLE vacations[0m
+  [4;35;1mSQL (0.003437)[0m   [0mCREATE TABLE vacations (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `street` varchar(255), `city` varchar(255), `state` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.002284)[0m   [0;1mDROP TABLE cities[0m
+  [4;35;1mSQL (0.003440)[0m   [0mCREATE TABLE cities (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.000000)[0m   [0;1mMysql::Error: Table 'schema_info' already exists: CREATE TABLE schema_info (version int(11))[0m
+  [4;35;1mSQL (0.002266)[0m   [0mSHOW FIELDS FROM schema_info[0m
+  [4;36;1mSQL (0.000977)[0m   [0;1mUPDATE schema_info SET version = 1[0m
+  [4;35;1mSQL (0.000065)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000071)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000141)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000166)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000085)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000083)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000073)[0m   [0mBEGIN[0m
+  [4;36;1mGeocode Columns (0.019604)[0m   [0;1mSHOW FIELDS FROM geocodes[0m
+  [4;35;1mGeocode Load (0.089093)[0m   [0mSELECT * FROM geocodes WHERE (geocodes.query = 'Holland, MI') LIMIT 1[0m
+  [4;36;1mGeocode Load (0.000397)[0m   [0;1mSELECT * FROM geocodes WHERE (geocodes.query = 'Holland, MI') LIMIT 1[0m
+  [4;35;1mSQL (0.000347)[0m   [0mINSERT INTO geocodes (`city`, `latitude`, `zip`, `country`, `street`, `longitude`, `query`, `state`) VALUES('Holland', 42.787567, NULL, 'US', NULL, -86.109039, 'Holland, MI', 'MI')[0m
+  [4;36;1mSQL (0.054773)[0m   [0;1mROLLBACK[0m
+  [4;36;1mSQL (0.032661)[0m   [0;1mDROP TABLE geocodes[0m
+  [4;35;1mSQL (0.002909)[0m   [0mCREATE TABLE geocodes (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `latitude` float, `longitude` float, `query` varchar(255), `street` varchar(255), `city` varchar(255), `state` varchar(255), `zip` varchar(255), `country` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.045863)[0m   [0;1mCREATE UNIQUE INDEX `geocodes_query_index` ON geocodes (`query`)[0m
+  [4;35;1mSQL (0.052732)[0m   [0mCREATE INDEX `geocodes_latitude_index` ON geocodes (`latitude`)[0m
+  [4;36;1mSQL (0.009848)[0m   [0;1mCREATE INDEX `geocodes_longitude_index` ON geocodes (`longitude`)[0m
+  [4;35;1mSQL (0.030793)[0m   [0mDROP TABLE geocodings[0m
+  [4;36;1mSQL (0.002686)[0m   [0;1mCREATE TABLE geocodings (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `geocodable_id` int(11), `geocode_id` int(11), `geocodable_type` varchar(255)) ENGINE=InnoDB[0m
+  [4;35;1mSQL (0.009833)[0m   [0mCREATE INDEX `geocodings_geocodable_id_index` ON geocodings (`geocodable_id`)[0m
+  [4;36;1mSQL (0.030356)[0m   [0;1mCREATE INDEX `geocodings_geocode_id_index` ON geocodings (`geocode_id`)[0m
+  [4;35;1mSQL (0.010270)[0m   [0mCREATE INDEX `geocodings_geocodable_type_index` ON geocodings (`geocodable_type`)[0m
+  [4;36;1mSQL (0.002140)[0m   [0;1mDROP TABLE vacations[0m
+  [4;35;1mSQL (0.003547)[0m   [0mCREATE TABLE vacations (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `street` varchar(255), `city` varchar(255), `state` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.002328)[0m   [0;1mDROP TABLE cities[0m
+  [4;35;1mSQL (0.003020)[0m   [0mCREATE TABLE cities (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.000000)[0m   [0;1mMysql::Error: Table 'schema_info' already exists: CREATE TABLE schema_info (version int(11))[0m
+  [4;35;1mSQL (0.001928)[0m   [0mSHOW FIELDS FROM schema_info[0m
+  [4;36;1mSQL (0.001470)[0m   [0;1mUPDATE schema_info SET version = 1[0m
+  [4;35;1mSQL (0.000064)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000073)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000094)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000160)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000088)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000080)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000073)[0m   [0mBEGIN[0m
+  [4;36;1mGeocode Columns (0.002765)[0m   [0;1mSHOW FIELDS FROM geocodes[0m
+  [4;35;1mGeocode Load (0.000417)[0m   [0mSELECT * FROM geocodes WHERE (geocodes.query = 'Holland, MI') LIMIT 1[0m
+  [4;36;1mGeocode Load (0.000254)[0m   [0;1mSELECT * FROM geocodes WHERE (geocodes.query = 'Holland, MI') LIMIT 1[0m
+  [4;35;1mSQL (0.000345)[0m   [0mINSERT INTO geocodes (`city`, `latitude`, `zip`, `country`, `street`, `longitude`, `query`, `state`) VALUES('Holland', 42.787567, NULL, 'US', NULL, -86.109039, 'Holland, MI', 'MI')[0m
+  [4;36;1mSQL (0.001596)[0m   [0;1mROLLBACK[0m
+  [4;36;1mSQL (0.002460)[0m   [0;1mDROP TABLE geocodes[0m
+  [4;35;1mSQL (0.078706)[0m   [0mCREATE TABLE geocodes (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `latitude` float, `longitude` float, `query` varchar(255), `street` varchar(255), `city` varchar(255), `state` varchar(255), `zip` varchar(255), `country` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.009409)[0m   [0;1mCREATE UNIQUE INDEX `geocodes_query_index` ON geocodes (`query`)[0m
+  [4;35;1mSQL (0.089432)[0m   [0mCREATE INDEX `geocodes_latitude_index` ON geocodes (`latitude`)[0m
+  [4;36;1mSQL (0.009619)[0m   [0;1mCREATE INDEX `geocodes_longitude_index` ON geocodes (`longitude`)[0m
+  [4;35;1mSQL (0.002807)[0m   [0mDROP TABLE geocodings[0m
+  [4;36;1mSQL (0.003079)[0m   [0;1mCREATE TABLE geocodings (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `geocodable_id` int(11), `geocode_id` int(11), `geocodable_type` varchar(255)) ENGINE=InnoDB[0m
+  [4;35;1mSQL (0.042227)[0m   [0mCREATE INDEX `geocodings_geocodable_id_index` ON geocodings (`geocodable_id`)[0m
+  [4;36;1mSQL (0.057444)[0m   [0;1mCREATE INDEX `geocodings_geocode_id_index` ON geocodings (`geocode_id`)[0m
+  [4;35;1mSQL (0.009339)[0m   [0mCREATE INDEX `geocodings_geocodable_type_index` ON geocodings (`geocodable_type`)[0m
+  [4;36;1mSQL (0.029026)[0m   [0;1mDROP TABLE vacations[0m
+  [4;35;1mSQL (0.003059)[0m   [0mCREATE TABLE vacations (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `street` varchar(255), `city` varchar(255), `state` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.011684)[0m   [0;1mDROP TABLE cities[0m
+  [4;35;1mSQL (0.003023)[0m   [0mCREATE TABLE cities (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.000000)[0m   [0;1mMysql::Error: Table 'schema_info' already exists: CREATE TABLE schema_info (version int(11))[0m
+  [4;35;1mSQL (0.001713)[0m   [0mSHOW FIELDS FROM schema_info[0m
+  [4;36;1mSQL (0.003848)[0m   [0;1mUPDATE schema_info SET version = 1[0m
+  [4;35;1mSQL (0.000069)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000059)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000096)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000184)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000092)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000084)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000073)[0m   [0mBEGIN[0m
+  [4;36;1mGeocode Columns (0.002535)[0m   [0;1mSHOW FIELDS FROM geocodes[0m
+  [4;35;1mGeocode Load (0.000619)[0m   [0mSELECT * FROM geocodes WHERE (geocodes.query = 'Holland, MI') LIMIT 1[0m
+  [4;36;1mGeocode Load (0.000363)[0m   [0;1mSELECT * FROM geocodes WHERE (geocodes.query = 'Holland, MI') LIMIT 1[0m
+  [4;35;1mSQL (0.000385)[0m   [0mINSERT INTO geocodes (`city`, `latitude`, `zip`, `country`, `street`, `longitude`, `query`, `state`) VALUES('Holland', 42.787567, NULL, 'US', NULL, -86.109039, 'Holland, MI', 'MI')[0m
+  [4;36;1mSQL (0.121283)[0m   [0;1mSELECT count(*) AS count_all FROM geocodes [0m
+  [4;35;1mGeocode Load (0.000508)[0m   [0mSELECT * FROM geocodes WHERE (geocodes.`query` = 'Holland, MI' ) LIMIT 1[0m
+  [4;36;1mSQL (0.000208)[0m   [0;1mSELECT count(*) AS count_all FROM geocodes [0m
+  [4;35;1mSQL (0.001445)[0m   [0mROLLBACK[0m
+  [4;36;1mSQL (0.002086)[0m   [0;1mDROP TABLE geocodes[0m
+  [4;35;1mSQL (0.033115)[0m   [0mCREATE TABLE geocodes (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `latitude` float, `longitude` float, `query` varchar(255), `street` varchar(255), `city` varchar(255), `state` varchar(255), `zip` varchar(255), `country` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.009053)[0m   [0;1mCREATE UNIQUE INDEX `geocodes_query_index` ON geocodes (`query`)[0m
+  [4;35;1mSQL (0.009064)[0m   [0mCREATE INDEX `geocodes_latitude_index` ON geocodes (`latitude`)[0m
+  [4;36;1mSQL (0.053179)[0m   [0;1mCREATE INDEX `geocodes_longitude_index` ON geocodes (`longitude`)[0m
+  [4;35;1mSQL (0.003452)[0m   [0mDROP TABLE geocodings[0m
+  [4;36;1mSQL (0.003406)[0m   [0;1mCREATE TABLE geocodings (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `geocodable_id` int(11), `geocode_id` int(11), `geocodable_type` varchar(255)) ENGINE=InnoDB[0m
+  [4;35;1mSQL (0.034283)[0m   [0mCREATE INDEX `geocodings_geocodable_id_index` ON geocodings (`geocodable_id`)[0m
+  [4;36;1mSQL (0.067054)[0m   [0;1mCREATE INDEX `geocodings_geocode_id_index` ON geocodings (`geocode_id`)[0m
+  [4;35;1mSQL (0.009458)[0m   [0mCREATE INDEX `geocodings_geocodable_type_index` ON geocodings (`geocodable_type`)[0m
+  [4;36;1mSQL (0.002098)[0m   [0;1mDROP TABLE vacations[0m
+  [4;35;1mSQL (0.026971)[0m   [0mCREATE TABLE vacations (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `street` varchar(255), `city` varchar(255), `state` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.002170)[0m   [0;1mDROP TABLE cities[0m
+  [4;35;1mSQL (0.003307)[0m   [0mCREATE TABLE cities (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.000000)[0m   [0;1mMysql::Error: Table 'schema_info' already exists: CREATE TABLE schema_info (version int(11))[0m
+  [4;35;1mSQL (0.002094)[0m   [0mSHOW FIELDS FROM schema_info[0m
+  [4;36;1mSQL (0.000886)[0m   [0;1mUPDATE schema_info SET version = 1[0m
+  [4;35;1mSQL (0.000067)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000070)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000149)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000160)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000086)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000084)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000076)[0m   [0mBEGIN[0m
+  [4;36;1mGeocode Columns (0.002676)[0m   [0;1mSHOW FIELDS FROM geocodes[0m
+  [4;35;1mSQL (0.001529)[0m   [0mSELECT count(*) AS count_all FROM geocodes [0m
+  [4;36;1mGeocode Load (0.000410)[0m   [0;1mSELECT * FROM geocodes WHERE (geocodes.query = 'Holland, MI') LIMIT 1[0m
+  [4;35;1mGeocode Load (0.000275)[0m   [0mSELECT * FROM geocodes WHERE (geocodes.query = 'Holland, MI') LIMIT 1[0m
+  [4;36;1mSQL (0.000371)[0m   [0;1mINSERT INTO geocodes (`city`, `latitude`, `zip`, `country`, `street`, `longitude`, `query`, `state`) VALUES('Holland', 42.787567, NULL, 'US', NULL, -86.109039, 'Holland, MI', 'MI')[0m
+  [4;35;1mSQL (0.000243)[0m   [0mSELECT count(*) AS count_all FROM geocodes [0m
+  [4;36;1mSQL (0.000157)[0m   [0;1mSELECT count(*) AS count_all FROM geocodes [0m
+  [4;35;1mGeocode Load (0.000341)[0m   [0mSELECT * FROM geocodes WHERE (geocodes.`query` = 'Holland, MI' ) LIMIT 1[0m
+  [4;36;1mSQL (0.001643)[0m   [0;1mROLLBACK[0m
+  [4;36;1mSQL (0.032580)[0m   [0;1mDROP TABLE geocodes[0m
+  [4;35;1mSQL (0.003679)[0m   [0mCREATE TABLE geocodes (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `latitude` float, `longitude` float, `query` varchar(255), `street` varchar(255), `city` varchar(255), `state` varchar(255), `zip` varchar(255), `country` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.009061)[0m   [0;1mCREATE UNIQUE INDEX `geocodes_query_index` ON geocodes (`query`)[0m
+  [4;35;1mSQL (0.033744)[0m   [0mCREATE INDEX `geocodes_latitude_index` ON geocodes (`latitude`)[0m
+  [4;36;1mSQL (0.009511)[0m   [0;1mCREATE INDEX `geocodes_longitude_index` ON geocodes (`longitude`)[0m
+  [4;35;1mSQL (0.002847)[0m   [0mDROP TABLE geocodings[0m
+  [4;36;1mSQL (0.003472)[0m   [0;1mCREATE TABLE geocodings (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `geocodable_id` int(11), `geocode_id` int(11), `geocodable_type` varchar(255)) ENGINE=InnoDB[0m
+  [4;35;1mSQL (0.039455)[0m   [0mCREATE INDEX `geocodings_geocodable_id_index` ON geocodings (`geocodable_id`)[0m
+  [4;36;1mSQL (0.009746)[0m   [0;1mCREATE INDEX `geocodings_geocode_id_index` ON geocodings (`geocode_id`)[0m
+  [4;35;1mSQL (0.055923)[0m   [0mCREATE INDEX `geocodings_geocodable_type_index` ON geocodings (`geocodable_type`)[0m
+  [4;36;1mSQL (0.002043)[0m   [0;1mDROP TABLE vacations[0m
+  [4;35;1mSQL (0.003976)[0m   [0mCREATE TABLE vacations (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255), `street` varchar(255), `city` varchar(255), `state` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.002064)[0m   [0;1mDROP TABLE cities[0m
+  [4;35;1mSQL (0.002747)[0m   [0mCREATE TABLE cities (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `name` varchar(255)) ENGINE=InnoDB[0m
+  [4;36;1mSQL (0.000000)[0m   [0;1mMysql::Error: Table 'schema_info' already exists: CREATE TABLE schema_info (version int(11))[0m
+  [4;35;1mSQL (0.001858)[0m   [0mSHOW FIELDS FROM schema_info[0m
+  [4;36;1mSQL (0.001576)[0m   [0;1mUPDATE schema_info SET version = 1[0m
+  [4;35;1mSQL (0.000066)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000066)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000110)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000160)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000085)[0m   [0mBEGIN[0m
+  [4;36;1mSQL (0.000083)[0m   [0;1mROLLBACK[0m
+  [4;35;1mSQL (0.000073)[0m   [0mBEGIN[0m
+  [4;36;1mGeocode Columns (0.002406)[0m   [0;1mSHOW FIELDS FROM geocodes[0m
+  [4;35;1mSQL (0.001365)[0m   [0mSELECT count(*) AS count_all FROM geocodes [0m
+  [4;36;1mGeocode Load (0.000406)[0m   [0;1mSELECT * FROM geocodes WHERE (geocodes.query = 'Holland, MI') LIMIT 1[0m
+  [4;35;1mGeocode Load (0.000240)[0m   [0mSELECT * FROM geocodes WHERE (geocodes.query = 'Holland, MI') LIMIT 1[0m
+  [4;36;1mSQL (0.000391)[0m   [0;1mINSERT INTO geocodes (`city`, `latitude`, `zip`, `country`, `street`, `longitude`, `query`, `state`) VALUES('Holland', 42.787567, NULL, 'US', NULL, -86.109039, 'Holland, MI', 'MI')[0m
+  [4;35;1mSQL (0.000258)[0m   [0mSELECT count(*) AS count_all FROM geocodes [0m
+  [4;36;1mSQL (0.000171)[0m   [0;1mSELECT count(*) AS count_all FROM geocodes [0m
+  [4;35;1mGeocode Load (0.000334)[0m   [0mSELECT * FROM geocodes WHERE (geocodes.`query` = 'Holland, MI' ) LIMIT 1[0m
+  [4;36;1mSQL (0.000174)[0m   [0;1mSELECT count(*) AS count_all FROM geocodes [0m
+  [4;35;1mSQL (0.002130)[0m   [0mROLLBACK[0m

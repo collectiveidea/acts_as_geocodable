@@ -1,0 +1,21 @@
+saugatuck:
+  id: 1
+  name: Saugatuck, Michigan
+  street: 
+  city:
+  state:
+  zip:
+whitehouse: 
+  id: 2
+  name: The White House
+  street: 1600 Pennsylvania Ave NW 
+  city:
+  state: 
+  zip: 20502
+mystery_spot:
+  id: 3
+  name: The Mystery Spot
+  street: 150 Martin Lake Rd.
+  city: 
+  state: 
+  zip: 49781

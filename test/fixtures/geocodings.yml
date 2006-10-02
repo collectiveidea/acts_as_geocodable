@@ -1,0 +1,15 @@
+saugatuck_geocoding:
+  id: 1
+  geocodable_id: 1
+  geocode_id: 1
+  geocodable_type: Vacation
+white_house_geocoding:
+  id: 2
+  geocodable_id: 2
+  geocode_id: 2
+  geocodable_type: Vacation
+chicago_geocoding:
+  id: 3
+  geocodable_id: 1
+  geocode_id: 3
+  geocodable_type: City
