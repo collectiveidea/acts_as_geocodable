@@ -43,6 +43,7 @@ module CollectiveIdea
           # Ensure valid floats
           latitude, longitude = location.latitude.to_f, location.longitude.to_f, radius.to_f
           class_name = ActiveRecord::Base.send(:class_name_of_active_record_descendant, self).to_s
+          # TODO: refactor so SQL is database agnostic
           return find_by_sql(
             "SELECT #{table_name}.*, geocodes.latitude, geocodes.longitude, (#{Geocode.earth_radius(units)} * ACOS(
                                       COS(RADIANS(`latitude`))*COS(RADIANS(`longitude`))
@@ -72,21 +73,9 @@ module CollectiveIdea
           self.find_within_radius(location, radius)
         end
         
-        # Unimplemented. 
-        def distance_between_in_miles(first, second)
-          
-        end
-        
-        def distance_between_in_kilometers(first, second)
-          
-        end
-        
-        def distance_away_in_miles(other)
-          self.distance_between_in_miles self, other
-        end
-        
-        def distance_away_in_kilometers(other)
-          self.distance_between_in_kilometers self, other
+        # TODO Unimplemented. 
+        def distance_to(other, units=:miles)
+          raise "Implement me!"
         end
       end
 

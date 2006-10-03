@@ -119,6 +119,23 @@ class ActsAsGeocodableTest < Test::Unit::TestCase
     assert_in_delta 0.794248231790402, nearby.first.distance.to_f, 0.2
   end
   
+  def test_distance_to
+    saugatuck = vacations(:saugatuck)
+    douglas = Vacation.create(:name => 'Douglas', :zip => '49406')
+    
+    distance = douglas.distance_to(saugatuck)
+    assert_in_delta 0.794248231790402, distance, 0.2
+    
+    distance = saugatuck.distance_to(douglas)
+    assert_in_delta 0.794248231790402, distance, 0.2
+    
+    distance = douglas.distance_to(saugatuck, :miles)
+    assert_in_delta 0.794248231790402, distance, 0.2
+    
+    distance = douglas.distance_to(saugatuck, :kilometers)
+    assert_in_delta 1.27821863, distance, 0.2
+  end
+  
   #
   # Helpers
   #

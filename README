@@ -22,6 +22,13 @@ class Stores < ActiveRecord::Base
 	acts_as_geocodable :normalize_address => true
 end
 
+The geocoder process in a background thread by default.  This makes it nice and speedy, but can cause problems if you want the results immediately.  To change, simple pass false to the :background option
+
+class Stores < ActiveRecord::Base
+	acts_as_geocodable :background => false
+end
+
+
 Each Model that acts_as_geocodable needs to have a some sort of address that is referenced via the provided full_address method.  You can use any field names for you addresses, but if they are different than mine (street, city, state, zip), you will have to provide your own full_address method that concatenates them together.
 
 def full_address
@@ -32,3 +39,10 @@ def full_address
 	address += self.zip unless self.zip.blank?
 	address
 end
+
+
+Gotchas:
+
+* Geocoding process uses a background thread, so your geocode might not be immediately available.  
+* Geocode won't change if you change the location's address, geocode won't be updated.... should it?
+* 
