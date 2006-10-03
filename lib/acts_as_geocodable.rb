@@ -15,13 +15,16 @@ module CollectiveIdea
       module ClassMethods
         
         def acts_as_geocodable(options = {})
-          write_inheritable_attribute(:acts_as_geocodable_options, {
-            :geocodable_type => ActiveRecord::Base.send(:class_name_of_active_record_descendant, self).to_s,
-            :normalize_address => options[:normalize_address]
-          })
+          options = {
+            :address => {:street => :street, :city => :city, :state => :state, :zip => :zip},
+            :normalize_address => false,
+            :background => true
+          }.merge(options)
+          
+          write_inheritable_attribute(:acts_as_geocodable_options, options)
           
           class_inheritable_reader :acts_as_geocodable_options
-                    
+
           has_many :geocodings, :as => :geocodable, :dependent => true
           has_many :geocodes, :through => :geocodings
           
@@ -39,7 +42,7 @@ module CollectiveIdea
 
           # Ensure valid floats
           latitude, longitude = location.latitude.to_f, location.longitude.to_f, radius.to_f
-          
+          class_name = ActiveRecord::Base.send(:class_name_of_active_record_descendant, self).to_s
           return find_by_sql(
             "SELECT #{table_name}.*, geocodes.latitude, geocodes.longitude, (#{Geocode.earth_radius(units)} * ACOS(
                                       COS(RADIANS(`latitude`))*COS(RADIANS(`longitude`))
@@ -51,7 +54,7 @@ module CollectiveIdea
                                       ) ) as distance
                                       FROM #{table_name}, geocodes, geocodings " +
             "WHERE #{table_name}.#{primary_key} = geocodings.geocodable_id " +
-            "AND geocodings.geocodable_type = '#{acts_as_geocodable_options[:geocodable_type]}' " +
+            "AND geocodings.geocodable_type = '#{class_name}' " +
             "AND geocodings.geocode_id = geocodes.id "+
             "AND (#{Geocode.earth_radius(units)} * ACOS(
                                       COS(RADIANS(`latitude`))*COS(RADIANS(`longitude`))
@@ -92,41 +95,49 @@ module CollectiveIdea
         
         # Return the entire address in one string.
         def full_address
-          address = ''
-          address += self.street+"\n" unless self.street.blank?
-          address += self.city+', ' unless self.city.blank?
-          address += self.state+' ' unless self.state.blank?
-          address += self.zip unless self.zip.blank?
-          address
+          returning("") { |address|
+            address << "#{self.street}\n" unless self.street.blank?
+            address << "#{self.city}, " unless self.city.blank?
+            address << "#{self.state} " unless self.state.blank?
+            address << "#{self.zip}" unless self.zip.blank?
+          }.strip
         end        
         
         # Set the latitude and longitude. 
         def geocode(locations=[self.full_address])
           locations.each do |location|
             geocode = Geocode.find_or_create_by_query(location)
-            self.geocodes << geocode unless geocode.new_record?
+            geocode.on self unless geocode.new_record?
           end
         end
         
-        def attach_geocode
-          # Only geocode if we haven't before.
-          if self.geocodes.empty?
-            self.send :geocode
-          end
+        def attach_geocode(background = acts_as_geocodable_options[:background])
+          update_geocode = Proc.new do
+            # Only geocode if we haven't before.
+            if self.geocodes.empty?
+              self.send :geocode
+            end
           
-          if self.acts_as_geocodable_options[:normalize_address]
-            self.update_address
+            if self.acts_as_geocodable_options[:normalize_address]
+              self.update_address
+            end
+          end
+          # perform in background
+          if background
+            Thread.new { update_geocode.call }
+          else
+            update_geocode.call
           end
         end
         
-        def update_address
+        def update_address(force = false)
           unless self.geocodes.empty?
-            methods = [:street, :city, :state, :zip, :country]
-            methods.each do |method|
-              if self.respond_to?(method) && self.send(method).blank?
-                self.update_attribute(method, self.geocodes.first.send(method) )
+            self.acts_as_geocodable_options[:address].each do |attribute,method|
+              if self.respond_to?(method) && (self.send(method).blank? || force)
+                self.send "#{method}=", self.geocodes.first.send(attribute)
               end
             end
+            update_without_callbacks
           end
         end
          

@@ -1,8 +1,8 @@
 ActiveRecord::Schema.define(:version => 1) do
   
   create_table "geocodes", :force => true do |t|
-    t.column "latitude",  :float
-    t.column "longitude", :float
+    t.column "latitude",  :decimal, :precision => 15, :scale => 12
+    t.column "longitude", :decimal, :precision => 15, :scale => 12
     t.column "query",     :string
     t.column "street",    :string
     t.column "city",      :string

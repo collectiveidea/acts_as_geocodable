@@ -41,16 +41,25 @@ class GeocodeTest < Test::Unit::TestCase
     end
   end
   
+  def test_cooridnates
+    assert_equal "-86.200722,42.654781", geocodes(:saugatuck_geocode).coordinates
+  end
+
+  def test_to_s
+    assert_equal "-86.200722,42.654781", geocodes(:saugatuck_geocode).to_s
+  end
+
   #
   # Helpers
   #
   def assert_geocode_result(result)
     assert_not_nil result
-    assert_kind_of Float, result.latitude
-    assert_kind_of Float, result.longitude
+    assert result.latitude.is_a?(BigDecimal) || result.latitude.is_a?(Float)
+    assert result.longitude.is_a?(BigDecimal) || result.longitude.is_a?(Float)
     
     # Depending on the geocoder, we'll get slightly different results
     assert_in_delta 42.787567, result.latitude, 0.001
     assert_in_delta -86.109039, result.longitude, 0.001
   end
+  
 end

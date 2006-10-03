@@ -67,11 +67,11 @@ class Geocode < ActiveRecord::Base
     self.to_s <=> comparison_object.to_s
   end
   
-  def to_s
-    longitude+', '+latitude
+  def coordinates
+    "#{longitude},#{latitude}"
   end
-  
-  def to_param
-    longitude+','+latitude
+
+  def to_s
+    coordinates
   end
 end

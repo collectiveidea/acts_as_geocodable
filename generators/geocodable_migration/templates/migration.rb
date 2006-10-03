@@ -1,8 +1,8 @@
 class <%= class_name %> < ActiveRecord::Migration
   def self.up
     create_table "geocodes" do |t|
-      t.column "latitude", :float
-      t.column "longitude", :float
+      t.column "latitude", :decimal, :precision => 12, :scale => 15
+      t.column "longitude", :decimal, :precision => 12, :scale => 15
       t.column "query", :string
       t.column "street", :string
       t.column "city", :string

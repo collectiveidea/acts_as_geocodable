@@ -1,11 +1,11 @@
 require File.join(File.dirname(__FILE__), 'test_helper')
 
 class Vacation < ActiveRecord::Base
-  acts_as_geocodable :normalize_address => true
+  acts_as_geocodable :normalize_address => true, :background => false
 end
 
 class City < ActiveRecord::Base
-  acts_as_geocodable
+  acts_as_geocodable :background => false
   
   def full_address
     zip
@@ -44,7 +44,7 @@ class ActsAsGeocodableTest < Test::Unit::TestCase
     assert_nil mystery_spot.city
     assert_nil mystery_spot.state
   end
-  
+
   def test_geocode_creation_with_empty_full_address
     nowhere = cities(:nowhere)
     assert_equal '', nowhere.full_address
