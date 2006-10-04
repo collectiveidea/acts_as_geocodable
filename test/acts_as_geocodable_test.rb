@@ -26,9 +26,9 @@ class ActsAsGeocodableTest < Test::Unit::TestCase
   
   def test_geocode_creation_with_address_normalization
     assert Vacation.acts_as_geocodable_options[:normalize_address]
-    
+
     mystery_spot = save_vacation_to_create_geocode
-    
+
     assert_match /Ignace/, mystery_spot.city
     assert_equal 'MI', mystery_spot.state
   end
@@ -122,6 +122,7 @@ class ActsAsGeocodableTest < Test::Unit::TestCase
   def test_distance_to
     saugatuck = vacations(:saugatuck)
     douglas = Vacation.create(:name => 'Douglas', :zip => '49406')
+    douglas.reload # reload to get geocode
     
     distance = douglas.distance_to(saugatuck)
     assert_in_delta 0.794248231790402, distance, 0.2

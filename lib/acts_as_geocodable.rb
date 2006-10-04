@@ -72,11 +72,6 @@ module CollectiveIdea
           location = Geocode.find_or_create_by_query(zip)
           self.find_within_radius(location, radius)
         end
-        
-        # TODO Unimplemented. 
-        def distance_to(other, units=:miles)
-          raise "Implement me!"
-        end
       end
 
       # Adds instance methods.
@@ -90,7 +85,11 @@ module CollectiveIdea
             address << "#{self.state} " unless self.state.blank?
             address << "#{self.zip}" unless self.zip.blank?
           }.strip
-        end        
+        end   
+        
+        def distance_to(other, units=:miles)
+          Geocode.distance self.geocodes.first, other.geocodes.first, units
+        end     
         
         # Set the latitude and longitude. 
         def geocode(locations=[self.full_address])

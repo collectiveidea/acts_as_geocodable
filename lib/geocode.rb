@@ -32,6 +32,38 @@ class Geocode < ActiveRecord::Base
     end
   end
   
+  def self.distance(first, second, units=:miles)
+    return false unless first && first.geocoded? && second && second.geocoded?
+  
+    # TODO: Does anyone have an equation that is either faster or more accurate?
+    Math.acos(
+        Math.cos(self.deg2rad(first.longitude)) *
+        Math.cos(self.deg2rad(second.longitude)) * 
+        Math.cos(self.deg2rad(first.latitude)) * 
+        Math.cos(self.deg2rad(second.latitude)) +
+         
+        Math.cos(self.deg2rad(first.latitude)) *
+        Math.sin(self.deg2rad(first.longitude)) *
+        Math.cos(self.deg2rad(second.latitude)) *
+        Math.sin(self.deg2rad(second.longitude)) +
+        
+        Math.sin(self.deg2rad(first.latitude)) *
+        Math.sin(self.deg2rad(second.latitude))
+    ) * self.earth_radius(units)
+  end
+  
+  def geocoded?
+    !latitude.blank? && !longitude.blank?
+  end
+  
+  def self.deg2rad(deg)
+  	(deg * Math::PI / 180)
+  end
+
+  def self.rad2deg(rad)
+  	(rad * 180 / Math::PI)
+  end
+  
   # Set the latitude and longitude.
   def geocode    
     geocoded_location = Geocode.geocode query
