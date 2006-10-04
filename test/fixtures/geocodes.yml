@@ -5,8 +5,8 @@ saugatuck_geocode:
   query: "Saugatuck, MI"
   street: 
   city: Saugatuck
-  state: MI
-  zip:
+  region: MI
+  postal_code:
 white_house_geocode:
   id: 2
   latitude: 38.898748
@@ -14,8 +14,8 @@ white_house_geocode:
   query: "1600 Pennsylvania Ave NW\n20502"
   street: 1600 Pennsylvania Ave NW 
   city: Washington
-  state: DC
-  zip: 20502
+  region: DC
+  postal_code: 20502
 chicago_geocode:
   id: 3
   latitude: 41.85
@@ -23,5 +23,5 @@ chicago_geocode:
   query: "Chicago, IL"
   street: 
   city: Chicago
-  state: IL
-  zip: 
+  region: IL
+  postal_code: 

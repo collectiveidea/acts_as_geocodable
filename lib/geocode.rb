@@ -38,19 +38,24 @@ class Geocode < ActiveRecord::Base
     return false unless first && first.geocoded? && second && second.geocoded?
   
     # TODO: Does anyone have an equation that is either faster or more accurate?
+    first_longitude = self.deg2rad(first.longitude)
+    first_latitude = self.deg2rad(first.latitude)
+    second_longitude = self.deg2rad(second.longitude)
+    second_latitude = self.deg2rad(second.latitude)
+    
     Math.acos(
-        Math.cos(self.deg2rad(first.longitude)) *
-        Math.cos(self.deg2rad(second.longitude)) * 
-        Math.cos(self.deg2rad(first.latitude)) * 
-        Math.cos(self.deg2rad(second.latitude)) +
+        Math.cos(first_longitude) *
+        Math.cos(second_longitude) * 
+        Math.cos(first_latitude) * 
+        Math.cos(second_latitude) +
          
-        Math.cos(self.deg2rad(first.latitude)) *
-        Math.sin(self.deg2rad(first.longitude)) *
-        Math.cos(self.deg2rad(second.latitude)) *
-        Math.sin(self.deg2rad(second.longitude)) +
+        Math.cos(first_latitude) *
+        Math.sin(first_longitude) *
+        Math.cos(second_latitude) *
+        Math.sin(second_longitude) +
         
-        Math.sin(self.deg2rad(first.latitude)) *
-        Math.sin(self.deg2rad(second.latitude))
+        Math.sin(first_latitude) *
+        Math.sin(second_latitude)
     ) * self.earth_radius(units)
   end
   
@@ -76,8 +81,8 @@ class Geocode < ActiveRecord::Base
       
       self.street = geocoded_location.address if geocoded_location.address
       self.city = geocoded_location.city if geocoded_location.city
-      self.state = geocoded_location.state if geocoded_location.state
-      self.zip = geocoded_location.zip if geocoded_location.zip
+      self.region = geocoded_location.state if geocoded_location.state
+      self.postal_code = geocoded_location.zip if geocoded_location.zip
       self.country = geocoded_location.country if geocoded_location.country
     else
       # Halt callback

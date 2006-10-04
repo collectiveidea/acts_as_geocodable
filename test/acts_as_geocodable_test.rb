@@ -102,7 +102,7 @@ class ActsAsGeocodableTest < Test::Unit::TestCase
   def test_find_within_radius_of_zip
     nearby = []
     douglas_zip = '49406'
-    assert_nil Geocode.find_by_zip(douglas_zip)
+    assert_nil Geocode.find_by_postal_code(douglas_zip)
     
     assert_difference(Geocode, :count, 1) do
       assert_no_difference(Geocoding, :count) do

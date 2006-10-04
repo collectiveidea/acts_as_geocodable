@@ -6,8 +6,8 @@ ActiveRecord::Schema.define(:version => 1) do
     t.column "query",     :string
     t.column "street",    :string
     t.column "city",      :string
-    t.column "state",     :string
-    t.column "zip",       :string
+    t.column "region",     :string
+    t.column "postal_code", :string
     t.column "country",   :string
   end
 
