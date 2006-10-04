@@ -16,7 +16,7 @@ module CollectiveIdea
         
         def acts_as_geocodable(options = {})
           options = {
-            :address => {:street => :street, :city => :city, :state => :state, :zip => :zip},
+            :address => {:street => :street, :city => :city, :region => :state, :postal_code => :zip, :country => :country},
             :normalize_address => false,
             :background => true
           }.merge(options)
