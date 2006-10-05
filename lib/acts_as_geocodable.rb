@@ -45,13 +45,13 @@ module CollectiveIdea
           class_name = ActiveRecord::Base.send(:class_name_of_active_record_descendant, self).to_s
           # TODO: refactor so SQL is database agnostic
           return find_by_sql(
-            "SELECT #{table_name}.*, geocodes.latitude, geocodes.longitude, (#{Geocode.earth_radius(units)} * ACOS(
+            ["SELECT #{table_name}.*, geocodes.latitude, geocodes.longitude, (#{Geocode.earth_radius(units)} * ACOS(
                                       COS(RADIANS(`latitude`))*COS(RADIANS(`longitude`))
-                                      	* COS(RADIANS('#{latitude}'))*COS(RADIANS('#{longitude}'))
+                                      	* COS(RADIANS(:latitude))*COS(RADIANS(:longitude))
                                       + COS(RADIANS(`latitude`))*SIN(RADIANS(`longitude`))
-                                      	* COS(RADIANS('#{latitude}'))*SIN(RADIANS('#{longitude}'))
+                                      	* COS(RADIANS(:latitude))*SIN(RADIANS(:longitude))
                                       + SIN(RADIANS(`latitude`))
-                                      	* SIN(RADIANS('#{latitude}'))
+                                      	* SIN(RADIANS(:latitude))
                                       ) ) as distance
                                       FROM #{table_name}, geocodes, geocodings " +
             "WHERE #{table_name}.#{primary_key} = geocodings.geocodable_id " +
@@ -59,13 +59,14 @@ module CollectiveIdea
             "AND geocodings.geocode_id = geocodes.id "+
             "AND (#{Geocode.earth_radius(units)} * ACOS(
                                       COS(RADIANS(`latitude`))*COS(RADIANS(`longitude`))
-                                      	* COS(RADIANS('#{latitude}'))*COS(RADIANS('#{longitude}'))
+                                      	* COS(RADIANS(:latitude))*COS(RADIANS(:longitude))
                                       + COS(RADIANS(`latitude`))*SIN(RADIANS(`longitude`))
-                                      	* COS(RADIANS('#{latitude}'))*SIN(RADIANS('#{longitude}'))
+                                      	* COS(RADIANS(:latitude))*SIN(RADIANS(:longitude))
                                       + SIN(RADIANS(`latitude`))
-                                      	* SIN(RADIANS('#{latitude}'))
-                                      ) ) <= #{radius} " +
-            "ORDER BY distance")
+                                      	* SIN(RADIANS(:latitude))
+                                      ) ) <= :radius " +
+            "ORDER BY distance",
+            {:latitude => latitude, :longitude => longitude, :radius => radius}])
         end
         
         def find_within_radius_of_zip(zip, radius=50)
