@@ -1,5 +1,4 @@
 require 'active_record'
-require 'xmlrpc/client'
 
 module CollectiveIdea
   module Acts #:nodoc:
@@ -17,15 +16,13 @@ module CollectiveIdea
         def acts_as_geocodable(options = {})
           options = {
             :address => {:street => :street, :city => :city, :region => :state, :postal_code => :zip, :country => :country},
-            :normalize_address => false,
-            :background => true
+            :normalize_address => false
           }.merge(options)
           
-          write_inheritable_attribute(:acts_as_geocodable_options, options)
-          
+          write_inheritable_attribute :acts_as_geocodable_options, options
           class_inheritable_reader :acts_as_geocodable_options
 
-          has_many :geocodings, :as => :geocodable, :dependent => true
+          has_many :geocodings, :as => :geocodable, :dependent => :destroy
           has_many :geocodes, :through => :geocodings
           
           after_save  :attach_geocode          
@@ -100,22 +97,14 @@ module CollectiveIdea
           end
         end
         
-        def attach_geocode(background = acts_as_geocodable_options[:background])
-          update_geocode = Proc.new do
-            # Only geocode if we haven't before.
-            if self.geocodes.empty?
-              self.send :geocode
-            end
-          
-            if self.acts_as_geocodable_options[:normalize_address]
-              self.update_address
-            end
+        def attach_geocode
+          # Only geocode if we haven't before.
+          if self.geocodes.empty?
+            self.send :geocode
           end
-          # perform in background
-          if background
-            Thread.new { update_geocode.call }
-          else
-            update_geocode.call
+        
+          if self.acts_as_geocodable_options[:normalize_address]
+            self.update_address
           end
         end
         

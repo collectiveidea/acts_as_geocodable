@@ -17,7 +17,7 @@ class Geocode < ActiveRecord::Base
     end
     
     # Beautify some strings
-    result.address = result.address.titleize if result.address
+    result.street = result.street.titleize if result.street
     result.city = result.city.titleize if result.city
 
     result
@@ -79,7 +79,7 @@ class Geocode < ActiveRecord::Base
       self.latitude  = geocoded_location.latitude
       self.longitude = geocoded_location.longitude
       
-      self.street = geocoded_location.address if geocoded_location.address
+      self.street = geocoded_location.street if geocoded_location.street
       self.city = geocoded_location.city if geocoded_location.city
       self.region = geocoded_location.state if geocoded_location.state
       self.postal_code = geocoded_location.zip if geocoded_location.zip
