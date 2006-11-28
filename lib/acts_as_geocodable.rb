@@ -15,7 +15,7 @@ module CollectiveIdea
         
         def acts_as_geocodable(options = {})
           options = {
-            :address => {:street => :street, :city => :city, :region => :state, :postal_code => :zip, :country => :country},
+            :address => {:street => :street, :city => :city, :region => :region, :postal_code => :postal_code, :country => :country},
             :normalize_address => false
           }.merge(options)
           
@@ -25,7 +25,7 @@ module CollectiveIdea
           has_many :geocodings, :as => :geocodable, :dependent => :destroy
           has_many :geocodes, :through => :geocodings
           
-          after_save  :attach_geocode          
+          after_save  :geocode          
           
           include CollectiveIdea::Acts::Geocodable::InstanceMethods
           extend CollectiveIdea::Acts::Geocodable::SingletonMethods
@@ -36,7 +36,6 @@ module CollectiveIdea
       module SingletonMethods
         
         def find_within_radius(location, radius=50, units=:miles)
-
           # Ensure valid floats
           latitude, longitude = location.latitude.to_f, location.longitude.to_f, radius.to_f
           class_name = ActiveRecord::Base.send(:class_name_of_active_record_descendant, self).to_s
@@ -66,10 +65,11 @@ module CollectiveIdea
             {:latitude => latitude, :longitude => longitude, :radius => radius}])
         end
         
-        def find_within_radius_of_zip(zip, radius=50)
-          location = Geocode.find_or_create_by_query(zip)
+        def find_within_radius_of_postal_code(postal_code, radius=50)
+          location = Geocode.find_or_create_by_query(postal_code)
           self.find_within_radius(location, radius)
         end
+
       end
 
       # Adds instance methods.
@@ -78,12 +78,13 @@ module CollectiveIdea
         # Return the entire address in one string.
         def full_address
           returning("") { |address|
-            address << "#{self.street}\n" unless self.street.blank?
-            address << "#{self.city}, " unless self.city.blank?
-            address << "#{self.state} " unless self.state.blank?
-            address << "#{self.zip}" unless self.zip.blank?
+            address << "#{geocodable_attribute(:street)}\n" unless geocodable_attribute(:street).blank?
+            address << "#{geocodable_attribute(:city)}, " unless geocodable_attribute(:city).blank?
+            address << "#{geocodable_attribute(:region)} " unless geocodable_attribute(:region).blank?
+            address << "#{geocodable_attribute(:postal_code)}" unless geocodable_attribute(:postal_code).blank?
+            address << " #{geocodable_attribute(:country)}" unless geocodable_attribute(:country).blank?
           }.strip
-        end   
+        end
         
         def distance_to(other, units=:miles)
           Geocode.distance self.geocodes.first, other.geocodes.first, units
@@ -95,32 +96,26 @@ module CollectiveIdea
             geocode = Geocode.find_or_create_by_query(location)
             geocode.on self unless geocode.new_record?
           end
-        end
-        
-        def attach_geocode
-          # Only geocode if we haven't before.
-          if self.geocodes.empty?
-            self.send :geocode
-          end
-        
-          if self.acts_as_geocodable_options[:normalize_address]
-            self.update_address
-          end
+          self.update_address(self.acts_as_geocodable_options[:normalize_address])
         end
         
         def update_address(force = false)
           unless self.geocodes.empty?
             self.acts_as_geocodable_options[:address].each do |attribute,method|
-              if self.respond_to?(method) && (self.send(method).blank? || force)
-                self.send "#{method}=", self.geocodes.first.send(attribute)
+              if self.respond_to?("#{method}=") && (self.send(method).blank? || force)
+                self.send "#{method}=", self.geocodes.last.send(attribute)
               end
             end
             update_without_callbacks
           end
         end
-         
-      end
+        
+        def geocodable_attribute(attr_key)
+          attr_name = self.acts_as_geocodable_options[:address][attr_key]
+          attr_name && self.respond_to?(attr_name) ? self.send(attr_name) : nil
+        end
 
+      end
     end
   end
 end

@@ -1,15 +1,11 @@
 require File.join(File.dirname(__FILE__), 'test_helper')
 
 class Vacation < ActiveRecord::Base
-  acts_as_geocodable :normalize_address => true, :background => false
+  acts_as_geocodable :normalize_address => true
 end
 
 class City < ActiveRecord::Base
-  acts_as_geocodable :background => false
-  
-  def full_address
-    zip
-  end
+  acts_as_geocodable :address => {:postal_code => :zip}  
 end
 
 class ActsAsGeocodableTest < Test::Unit::TestCase
@@ -37,19 +33,17 @@ class ActsAsGeocodableTest < Test::Unit::TestCase
   #   mystery_spot = save_vacation_to_create_geocode
   # 
   #   assert_match /Ignace/, mystery_spot.city
-  #   assert_equal 'MI', mystery_spot.state
+  #   assert_equal 'MI', mystery_spot.region
   # end
   
   def test_geocode_creation_without_address_normalization
-    Vacation.write_inheritable_attribute(:acts_as_geocodable_options, {
-      :normalize_address => false
-    })
+    Vacation.acts_as_geocodable_options.merge! :normalize_address => false
     assert !Vacation.acts_as_geocodable_options[:normalize_address]
     
     mystery_spot = save_vacation_to_create_geocode
     
     assert_nil mystery_spot.city
-    assert_nil mystery_spot.state
+    assert_nil mystery_spot.region
   end
 
   def test_geocode_creation_with_empty_full_address
@@ -71,7 +65,7 @@ class ActsAsGeocodableTest < Test::Unit::TestCase
   def test_geocode_creation_with_nil_full_address
     nowhere = cities(:nowhere)
     nowhere.zip = nil
-    assert_nil nowhere.full_address
+    assert nowhere.full_address.empty?
     assert_equal 0, nowhere.geocodes.size
     
     assert_no_difference(Geocode, :count) do
@@ -96,7 +90,7 @@ class ActsAsGeocodableTest < Test::Unit::TestCase
         saugatuck.reload
         
         saugatuck.city = 'Beverly Hills'
-        saugatuck.zip = '90210'
+        saugatuck.postal_code = '90210'
         saugatuck.save!
         saugatuck.reload
       end
@@ -106,29 +100,28 @@ class ActsAsGeocodableTest < Test::Unit::TestCase
     assert_equal original_geocode, saugatuck.geocodes.first
   end
   
-  def test_find_within_radius_of_zip
-    nearby = []
-    douglas_zip = '49406'
-    assert_nil Geocode.find_by_postal_code(douglas_zip)
+  def test_find_within_radius_of_postal_code
+    douglas_postal_code = '49406'
+    assert_nil Geocode.find_by_postal_code(douglas_postal_code)
     
     assert_difference(Geocode, :count, 1) do
       assert_no_difference(Geocoding, :count) do
         assert_no_difference(Vacation, :count) do
-          nearby = Vacation.find_within_radius_of_zip(douglas_zip, 10)
+          nearby = Vacation.find_within_radius_of_postal_code(douglas_postal_code, 10)
+
+          assert_equal 1, nearby.size
+          assert_equal vacations(:saugatuck), nearby.first
+
+          assert_not_nil nearby.first.distance
+          assert_in_delta 0.794248231790402, nearby.first.distance.to_f, 0.2
         end
       end
     end
-    
-    assert_equal 1, nearby.size
-    assert_equal vacations(:saugatuck), nearby.first
-    
-    assert_not_nil nearby.first.distance
-    assert_in_delta 0.794248231790402, nearby.first.distance.to_f, 0.2
   end
   
   def test_distance_to
     saugatuck = vacations(:saugatuck)
-    douglas = Vacation.create(:name => 'Douglas', :zip => '49406')
+    douglas = Vacation.create(:name => 'Douglas', :postal_code => '49406')
     douglas.reload # reload to get geocode
     
     distance = douglas.distance_to(saugatuck)
@@ -151,7 +144,7 @@ class ActsAsGeocodableTest < Test::Unit::TestCase
     returning vacations(:mystery_spot) do |mystery_spot|
       assert mystery_spot.geocodes.empty?
       assert_nil mystery_spot.city
-      assert_nil mystery_spot.state
+      assert_nil mystery_spot.region
 
       assert_difference(Geocode, :count, 1) do
         mystery_spot.save!

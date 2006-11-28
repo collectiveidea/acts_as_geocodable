@@ -1,48 +1,28 @@
 ActsAsGeocodable
 ================
 
-gem install yahoo-geocode --include-dependencies
+gem install graticule --include-dependencies
 
-./script/generate geocodable_migration add_geocodable_tables
+  ./script/generate geocodable_migration add_geocodable_tables
 
 Set the default geocoder in the bottom of your environment.rb file.
 
-Example: 
-Geocode.geocoder = Yahoo::Geocode.new 'your_api_key'
+  Geocode.geocoder = Graticule.service(:yahoo).new 'your_api_key'
 
 Then, in each model you want to make geocodable, add "acts_as_geocodable". For example, 
 
-class Stores < ActiveRecord::Base
-	acts_as_geocodable
-end
+  class Store < ActiveRecord::Base
+  	acts_as_geocodable
+  end
 
-Alternatively, you if you use the address methods below (or provide setters), you can automatically update the address fields if the geocoding process returns more accurate data
+acts_as_geocodable can also update your address fields with the data returned from the geocoding service:
 
-class Stores < ActiveRecord::Base
-	acts_as_geocodable :normalize_address => true
-end
+  class Store < ActiveRecord::Base
+  	acts_as_geocodable :normalize_address => true
+  end
 
-The geocoder process in a background thread by default.  This makes it nice and speedy, but can cause problems if you want the results immediately.  To change, simple pass false to the :background option
+By default, acts_as_geocodable looks for attributes called street, city, region, postal_code, and country.  To change these, you can provide a mapping in the :address option:
 
-class Stores < ActiveRecord::Base
-	acts_as_geocodable :background => false
-end
-
-
-Each Model that acts_as_geocodable needs to have a some sort of address that is referenced via the provided full_address method.  You can use any field names for you addresses, but if they are different than mine (street, city, state, zip), you will have to provide your own full_address method that concatenates them together.
-
-def full_address
-	address = ''
-	address += self.street+"\n" unless self.street.blank?
-	address += self.city+', ' unless self.city.blank?
-	address += self.state+' ' unless self.state.blank?
-	address += self.zip unless self.zip.blank?
-	address
-end
-
-
-Gotchas:
-
-* Geocoding process uses a background thread, so your geocode might not be immediately available.  
-* Geocode won't change if you change the location's address, geocode won't be updated.... should it?
-* 
+  class Store < ActiveRecord::Base
+  	acts_as_geocodable :address => {:street => :address1, :city => :city, :region => :state, :postal_code => :zip}
+  end
