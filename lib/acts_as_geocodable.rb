@@ -41,7 +41,7 @@ module CollectiveIdea
           class_name = ActiveRecord::Base.send(:class_name_of_active_record_descendant, self).to_s
           # TODO: refactor so SQL is database agnostic
           return find_by_sql(
-            ["SELECT #{table_name}.*, geocodes.latitude, geocodes.longitude, (#{Geocode.earth_radius(units)} * ACOS(
+            ["SELECT DISTINCT #{table_name}.*, geocodes.latitude, geocodes.longitude, (#{Geocode.earth_radius(units)} * ACOS(
                                       COS(RADIANS(`latitude`))*COS(RADIANS(`longitude`))
                                       	* COS(RADIANS(:latitude))*COS(RADIANS(:longitude))
                                       + COS(RADIANS(`latitude`))*SIN(RADIANS(`longitude`))
