@@ -1,5 +1,3 @@
-require 'active_record'
-
 module CollectiveIdea
   module Acts #:nodoc:
     module Geocodable #:nodoc:
@@ -86,9 +84,9 @@ module CollectiveIdea
           }.strip
         end
         
-        def distance_to(other, units=:miles)
-          Geocode.distance self.geocodes.first, other.geocodes.first, units
-        end     
+        def distance_to(destination, units = :miles, formula = :haversine)
+          "Graticule::Distance::#{formula.to_s.titleize}".constantize.distance(self.geocodes.last, destination.geocodes.last, units)
+        end
         
         # Set the latitude and longitude. 
         def geocode(locations=[self.full_address])
