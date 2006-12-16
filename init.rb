@@ -1,3 +1,4 @@
+require 'rubygems'
 require 'graticule'
 
 require 'acts_as_geocodable'
