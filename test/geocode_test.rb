@@ -4,23 +4,13 @@ require File.join(File.dirname(__FILE__), 'test_helper')
 class GeocodeTest < Test::Unit::TestCase
   fixtures :geocodes
   
-  @@earth_radius_in_miles = 3963.1676
-  @@earth_radius_in_kilometers = 6378.135
-
-  
-  def test_earth_radius
-    assert_equal @@earth_radius_in_miles, Geocode.earth_radius
-    assert_equal @@earth_radius_in_miles, Geocode.earth_radius(:miles)
-    assert_equal @@earth_radius_in_kilometers, Geocode.earth_radius(:kilometers)
-  end
-  
-  def test_distance
+  def test_distance_to
     washington_dc = geocodes(:white_house_geocode)
     chicago = geocodes(:chicago_geocode)
     
-    distance_in_default_units = Geocode.distance(washington_dc, chicago)
-    distance_in_miles = Geocode.distance(washington_dc, chicago, :miles)
-    distance_in_kilometers = Geocode.distance(washington_dc, chicago, :kilometers)
+    distance_in_default_units = washington_dc.distance_to(chicago)
+    distance_in_miles = washington_dc.distance_to(chicago, :miles)
+    distance_in_kilometers = washington_dc.distance_to(chicago, :kilometers)
     
     assert_in_delta 594.820, distance_in_default_units, 1.0
     assert_in_delta 594.820, distance_in_miles, 1.0
@@ -31,27 +21,17 @@ class GeocodeTest < Test::Unit::TestCase
     chicago = geocodes(:chicago_geocode)
     fake = Geocode.new
     
-    assert !Geocode.distance(chicago, fake)
-    assert !Geocode.distance(chicago, nil)
+    assert !chicago.distance_to(fake)
+    assert !chicago.distance_to(nil)
   end
  
-  def test_class_geocode
-    result = Geocode.geocode('Holland, MI')
-    assert_geocode_result result
-  end
-  
   def test_instance_geocode
     result = nil
     
-    assert_difference(Geocode, :count, 1) do
-      result = Geocode.create(:query => 'Holland, MI')
-      assert_geocode_result result
-    end
-    
     # Ensure that when we query with the same value, we don't create a new Geocode
     assert_no_difference(Geocode, :count) do
-      duplicate = Geocode.find_or_create_by_query('Holland, MI')
-      assert_equal result, duplicate
+      result = Geocode.find_or_create_by_query('Holland, MI')
+      assert_equal geocodes(:holland), result
     end
   end
   
@@ -75,7 +55,7 @@ class GeocodeTest < Test::Unit::TestCase
   #
   def assert_geocode_result(result)
     assert_not_nil result
-    assert result.latitude.is_a?(BigDecimal) || result.latitude.is_a?(Float)
+    assert result.latitude.is_a?(BigDecimal) || result.latitude.is_a?(Float), "latitude is a #{result.latitude.class.name}"
     assert result.longitude.is_a?(BigDecimal) || result.longitude.is_a?(Float)
     
     # Depending on the geocoder, we'll get slightly different results

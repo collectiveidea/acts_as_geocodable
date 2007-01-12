@@ -1,7 +1,6 @@
 class Geocode < ActiveRecord::Base
   include Comparable
-  include Math
-  
+
   has_many :geocodings
   
   validates_uniqueness_of :query
@@ -26,56 +25,19 @@ class Geocode < ActiveRecord::Base
     # Geocoder threw exception
     return nil
   end
-  
-  def self.earth_radius(units=:miles)
-    if units == :kilometers
-      6378.135
-    else
-      3963.1676
-    end
-  end
-  
-  def self.distance(first, second, units=:miles)
-    return false unless first && first.geocoded? && second && second.geocoded?
-  
-    # TODO: Does anyone have an equation that is either faster or more accurate?
-    first_longitude = self.deg2rad(first.longitude)
-    first_latitude = self.deg2rad(first.latitude)
-    second_longitude = self.deg2rad(second.longitude)
-    second_latitude = self.deg2rad(second.latitude)
-        
-    Math.acos(
-        Math.cos(first_longitude) *
-        Math.cos(second_longitude) * 
-        Math.cos(first_latitude) * 
-        Math.cos(second_latitude) +
-         
-        Math.cos(first_latitude) *
-        Math.sin(first_longitude) *
-        Math.cos(second_latitude) *
-        Math.sin(second_longitude) +
-        
-        Math.sin(first_latitude) *
-        Math.sin(second_latitude)
-    ) * self.earth_radius(units)
+
+  def distance_to(destination, units = :miles, formula = :haversine)
+    "Graticule::Distance::#{formula.to_s.titleize}".constantize.distance(self, destination, units)
   end
 
   def geocoded?
     !latitude.blank? && !longitude.blank?
   end
   
-  def self.deg2rad(deg)
-  	(deg * Math::PI / 180)
-  end
-
-  def self.rad2deg(rad)
-  	(rad * 180 / Math::PI)
-  end
-  
   # Set the latitude and longitude.
-  def geocode    
+  def geocode
     geocoded_location = Geocode.geocode query
-
+    
     unless geocoded_location.nil?     
       self.latitude  = geocoded_location.latitude
       self.longitude = geocoded_location.longitude
@@ -89,6 +51,7 @@ class Geocode < ActiveRecord::Base
       # Halt callback
       false
     end
+    
   end
  
   def geocoded

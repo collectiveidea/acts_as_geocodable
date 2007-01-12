@@ -13,8 +13,8 @@ class ActsAsGeocodableTest < Test::Unit::TestCase
   
   def test_acts_as_geocodable_declaration
     assert vacations(:whitehouse).respond_to?(:acts_as_geocodable_options)
-    assert vacations(:whitehouse).geocodings.is_a?(Array)
-    assert vacations(:whitehouse).geocodes.is_a?(Array)
+    assert vacations(:whitehouse).respond_to?(:geocoding)
+    assert vacations(:whitehouse).respond_to?(:geocode)
   end
   
   def test_full_address
@@ -49,7 +49,7 @@ class ActsAsGeocodableTest < Test::Unit::TestCase
   def test_geocode_creation_with_empty_full_address
     nowhere = cities(:nowhere)
     assert_equal '', nowhere.full_address
-    assert_equal 0, nowhere.geocodes.size
+    assert_nil nowhere.geocode
     
     assert_no_difference(Geocode, :count) do
       assert_no_difference(Geocoding, :count) do
@@ -59,14 +59,14 @@ class ActsAsGeocodableTest < Test::Unit::TestCase
       end
     end
     
-    assert_equal 0, nowhere.geocodes.size
+    assert_nil nowhere.geocoding
   end
   
   def test_geocode_creation_with_nil_full_address
     nowhere = cities(:nowhere)
     nowhere.zip = nil
     assert nowhere.full_address.empty?
-    assert_equal 0, nowhere.geocodes.size
+    assert_nil nowhere.geocode
     
     assert_no_difference(Geocode, :count) do
       assert_no_difference(Geocoding, :count) do
@@ -76,47 +76,59 @@ class ActsAsGeocodableTest < Test::Unit::TestCase
       end
     end
     
-    assert_equal 0, nowhere.geocodes.size
+    assert_nil nowhere.geocoding
   end
   
-  def test_save_respects_existing_geocode
+  def test_save_without_change_does_not_create_geocode
     saugatuck = vacations(:saugatuck)
-    assert_equal 1, saugatuck.geocodes.count
-    original_geocode = saugatuck.geocodes.first
+    assert_not_nil saugatuck.geocoding
+    original_geocode = saugatuck.geocode
     
     assert_no_difference(Geocode, :count) do
       assert_no_difference(Geocoding, :count) do
         saugatuck.save!
         saugatuck.reload
-        
-        saugatuck.city = 'Beverly Hills'
-        saugatuck.postal_code = '90210'
-        saugatuck.save!
-        saugatuck.reload
       end
     end
     
-    assert_equal 1, saugatuck.geocodes.count
-    assert_equal original_geocode, saugatuck.geocodes.first
+    assert_equal original_geocode, saugatuck.geocode
+  end
+
+  def test_updates_geocode_on_save
+    saugatuck = vacations(:saugatuck)
+    assert_not_nil saugatuck.geocoding
+    original_geocode = saugatuck.geocode
+    
+    assert_no_difference(Geocoding, :count) do
+      saugatuck.city = 'Beverly Hills'
+      saugatuck.postal_code = '90210'
+      saugatuck.save!
+      saugatuck.reload
+    end
+    
+    assert_equal geocodes(:beverly_hills), saugatuck.geocode
   end
   
   def test_find_within_radius_of_postal_code
     douglas_postal_code = '49406'
-    assert_nil Geocode.find_by_postal_code(douglas_postal_code)
     
-    assert_difference(Geocode, :count, 1) do
-      assert_no_difference(Geocoding, :count) do
-        assert_no_difference(Vacation, :count) do
-          nearby = Vacation.find_within_radius_of_postal_code(douglas_postal_code, 10)
+    assert_no_difference(Geocoding, :count) do
+      assert_no_difference(Vacation, :count) do
+        nearby = Vacation.find_within_radius_of_postal_code(douglas_postal_code, 10)
 
-          assert_equal 1, nearby.size
-          assert_equal vacations(:saugatuck), nearby.first
+        assert_equal 1, nearby.size
+        assert_equal vacations(:saugatuck), nearby.first
 
-          assert_not_nil nearby.first.distance
-          assert_in_delta 0.794248231790402, nearby.first.distance.to_f, 0.2
-        end
+        assert_not_nil nearby.first.distance
+        assert_in_delta 0.794248231790402, nearby.first.distance.to_f, 0.2
       end
     end
+  end
+  
+  def test_find_all_within_radius
+    douglas = Geocode.find_by_postal_code '49406'
+    nearby = Vacation.find_all_within_radius douglas, 10
+    assert_equal 1, nearby.size
   end
   
   def test_distance_to
@@ -142,7 +154,7 @@ class ActsAsGeocodableTest < Test::Unit::TestCase
   #
   def save_vacation_to_create_geocode
     returning vacations(:mystery_spot) do |mystery_spot|
-      assert mystery_spot.geocodes.empty?
+      assert mystery_spot.geocode.blank?
       assert_nil mystery_spot.city
       assert_nil mystery_spot.region
 
@@ -150,7 +162,7 @@ class ActsAsGeocodableTest < Test::Unit::TestCase
         mystery_spot.save!
         mystery_spot.reload
       end
-      assert_equal 1, mystery_spot.geocodes.count
+      assert_not_nil mystery_spot.geocode
     end
   end
 end

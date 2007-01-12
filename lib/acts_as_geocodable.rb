@@ -20,10 +20,9 @@ module CollectiveIdea
           write_inheritable_attribute :acts_as_geocodable_options, options
           class_inheritable_reader :acts_as_geocodable_options
 
-          has_many :geocodings, :as => :geocodable, :dependent => :destroy
-          has_many :geocodes, :through => :geocodings
+          has_one :geocoding, :as => :geocodable, :include => :geocode, :dependent => :destroy
           
-          after_save  :geocode          
+          after_save :attach_geocode          
           
           include CollectiveIdea::Acts::Geocodable::InstanceMethods
           extend CollectiveIdea::Acts::Geocodable::SingletonMethods
@@ -33,13 +32,44 @@ module CollectiveIdea
 
       module SingletonMethods
         
+        def find_all_within_radius(from, radius = 50, options = {})
+          units = options.delete(:units) || :miles
+          with_scope(:find => { :include => {:geocoding => :geocode}, :conditions => 'geocodes.id is not null' }) do
+            find(:all, options).select {|to| to.geocode && from.distance_to(to.geocode, units) <= radius}
+          end
+        end
+        
         def find_within_radius(location, radius=50, units=:miles)
           # Ensure valid floats
           latitude, longitude = location.latitude.to_f, location.longitude.to_f, radius.to_f
           class_name = ActiveRecord::Base.send(:class_name_of_active_record_descendant, self).to_s
           # TODO: refactor so SQL is database agnostic
+          
+          # with_scope :find => {
+          #       :conditions => ["(#{Graticule::Distance::EARTH_RADIUS[units]} * ACOS(
+          #         COS(RADIANS(`latitude`))*COS(RADIANS(`longitude`))
+          #         	* COS(RADIANS(:latitude))*COS(RADIANS(:longitude))
+          #         + COS(RADIANS(`latitude`))*SIN(RADIANS(`longitude`))
+          #         	* COS(RADIANS(:latitude))*SIN(RADIANS(:longitude))
+          #         + SIN(RADIANS(`latitude`))
+          #         	* SIN(RADIANS(:latitude))
+          #         ) ) <= :radius",
+          #         {:latitude => latitude, :longitude => longitude, :radius => radius}],
+          #       :order => "distance"
+          #     } do
+          #   find(:all, :select => "DISTINCT #{table_name}.*, geocodes.latitude, geocodes.longitude,
+          #       (#{Graticule::Distance::EARTH_RADIUS[units]} * ACOS(
+          #       COS(RADIANS(`latitude`))*COS(RADIANS(`longitude`))
+          #       	* COS(RADIANS(:latitude))*COS(RADIANS(:longitude))
+          #       + COS(RADIANS(`latitude`))*SIN(RADIANS(`longitude`))
+          #       	* COS(RADIANS(:latitude))*SIN(RADIANS(:longitude))
+          #       + SIN(RADIANS(`latitude`))
+          #       	* SIN(RADIANS(:latitude))
+          #       ) ) as distance")
+          # end
+        
           return find_by_sql(
-            ["SELECT DISTINCT #{table_name}.*, geocodes.latitude, geocodes.longitude, (#{Geocode.earth_radius(units)} * ACOS(
+            ["SELECT DISTINCT #{table_name}.*, geocodes.latitude, geocodes.longitude, (#{Graticule::Distance::EARTH_RADIUS[units]} * ACOS(
                                       COS(RADIANS(`latitude`))*COS(RADIANS(`longitude`))
                                       	* COS(RADIANS(:latitude))*COS(RADIANS(:longitude))
                                       + COS(RADIANS(`latitude`))*SIN(RADIANS(`longitude`))
@@ -51,7 +81,7 @@ module CollectiveIdea
             "WHERE #{table_name}.#{primary_key} = geocodings.geocodable_id " +
             "AND geocodings.geocodable_type = '#{class_name}' " +
             "AND geocodings.geocode_id = geocodes.id "+
-            "AND (#{Geocode.earth_radius(units)} * ACOS(
+            "AND (#{Graticule::Distance::EARTH_RADIUS[units]} * ACOS(
                                       COS(RADIANS(`latitude`))*COS(RADIANS(`longitude`))
                                       	* COS(RADIANS(:latitude))*COS(RADIANS(:longitude))
                                       + COS(RADIANS(`latitude`))*SIN(RADIANS(`longitude`))
@@ -73,42 +103,47 @@ module CollectiveIdea
       # Adds instance methods.
       module InstanceMethods
         
+        def geocode
+          geocoding.geocode if geocoding
+        end
+        
         # Return the entire address in one string.
         def full_address
           returning("") { |address|
-            address << "#{geocodable_attribute(:street)}\n" unless geocodable_attribute(:street).blank?
-            address << "#{geocodable_attribute(:city)}, " unless geocodable_attribute(:city).blank?
-            address << "#{geocodable_attribute(:region)} " unless geocodable_attribute(:region).blank?
-            address << "#{geocodable_attribute(:postal_code)}" unless geocodable_attribute(:postal_code).blank?
-            address << " #{geocodable_attribute(:country)}" unless geocodable_attribute(:country).blank?
+            address << "#{geo_attribute(:street)}\n" unless geo_attribute(:street).blank?
+            address << "#{geo_attribute(:city)}, " unless geo_attribute(:city).blank?
+            address << "#{geo_attribute(:region)} " unless geo_attribute(:region).blank?
+            address << "#{geo_attribute(:postal_code)}" unless geo_attribute(:postal_code).blank?
+            address << " #{geo_attribute(:country)}" unless geo_attribute(:country).blank?
           }.strip
         end
         
         def distance_to(destination, units = :miles, formula = :haversine)
-          "Graticule::Distance::#{formula.to_s.titleize}".constantize.distance(self.geocodes.last, destination.geocodes.last, units)
+          self.geocode.distance_to(destination.geocode, units, formula)
         end
         
         # Set the latitude and longitude. 
-        def geocode(locations=[self.full_address])
-          locations.each do |location|
-            geocode = Geocode.find_or_create_by_query(location)
-            geocode.on self unless geocode.new_record?
+        def attach_geocode
+          geocode = Geocode.find_or_create_by_query(self.full_address)
+          unless geocode == self.geocode || geocode.new_record?
+            self.geocoding.destroy unless self.geocoding.blank?
+            self.geocoding = Geocoding.new :geocode => geocode
+            self.update_address self.acts_as_geocodable_options[:normalize_address]
           end
-          self.update_address(self.acts_as_geocodable_options[:normalize_address])
         end
         
         def update_address(force = false)
-          unless self.geocodes.empty?
+          unless self.geocode.blank?
             self.acts_as_geocodable_options[:address].each do |attribute,method|
               if self.respond_to?("#{method}=") && (self.send(method).blank? || force)
-                self.send "#{method}=", self.geocodes.last.send(attribute)
+                self.send "#{method}=", self.geocode.send(attribute)
               end
             end
             update_without_callbacks
           end
         end
         
-        def geocodable_attribute(attr_key)
+        def geo_attribute(attr_key)
           attr_name = self.acts_as_geocodable_options[:address][attr_key]
           attr_name && self.respond_to?(attr_name) ? self.send(attr_name) : nil
         end
