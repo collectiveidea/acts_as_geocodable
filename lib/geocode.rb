@@ -27,7 +27,9 @@ class Geocode < ActiveRecord::Base
   end
 
   def distance_to(destination, units = :miles, formula = :haversine)
-    "Graticule::Distance::#{formula.to_s.titleize}".constantize.distance(self, destination, units)
+    if destination && destination.latitude && destination.longitude
+      Graticule::Distance.const_get(formula.to_s.camelize).distance(self, destination, units)
+    end
   end
 
   def geocoded?
@@ -47,11 +49,11 @@ class Geocode < ActiveRecord::Base
       self.region = geocoded_location.state if geocoded_location.state
       self.postal_code = geocoded_location.zip if geocoded_location.zip
       self.country = geocoded_location.country if geocoded_location.country
+      self
     else
       # Halt callback
       false
     end
-    
   end
  
   def geocoded

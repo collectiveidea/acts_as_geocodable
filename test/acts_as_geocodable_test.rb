@@ -109,27 +109,27 @@ class ActsAsGeocodableTest < Test::Unit::TestCase
     assert_equal geocodes(:beverly_hills), saugatuck.geocode
   end
   
-  def test_find_within_radius_of_postal_code
-    douglas_postal_code = '49406'
-    
-    assert_no_difference(Geocoding, :count) do
-      assert_no_difference(Vacation, :count) do
-        nearby = Vacation.find_within_radius_of_postal_code(douglas_postal_code, 10)
-
-        assert_equal 1, nearby.size
-        assert_equal vacations(:saugatuck), nearby.first
-
-        assert_not_nil nearby.first.distance
-        assert_in_delta 0.794248231790402, nearby.first.distance.to_f, 0.2
-      end
-    end
-  end
-  
-  def test_find_all_within_radius
-    douglas = Geocode.find_by_postal_code '49406'
-    nearby = Vacation.find_all_within_radius douglas, 10
-    assert_equal 1, nearby.size
-  end
+  # def test_find_within_radius_of_postal_code
+  #   douglas_postal_code = '49406'
+  #   
+  #   assert_no_difference(Geocoding, :count) do
+  #     assert_no_difference(Vacation, :count) do
+  #       nearby = Vacation.find_within_radius_of_postal_code(douglas_postal_code, 10)
+  # 
+  #       assert_equal 1, nearby.size
+  #       assert_equal vacations(:saugatuck), nearby.first
+  # 
+  #       assert_not_nil nearby.first.distance
+  #       assert_in_delta 0.794248231790402, nearby.first.distance.to_f, 0.2
+  #     end
+  #   end
+  # end
+  # 
+  # def test_find_all_within_radius
+  #   douglas = Geocode.find_by_postal_code '49406'
+  #   nearby = Vacation.find_all_within_radius douglas, 10
+  #   assert_equal 1, nearby.size
+  # end
   
   def test_distance_to
     saugatuck = vacations(:saugatuck)
@@ -142,16 +142,88 @@ class ActsAsGeocodableTest < Test::Unit::TestCase
     distance = saugatuck.distance_to(douglas)
     assert_in_delta 0.794248231790402, distance, 0.2
     
-    distance = douglas.distance_to(saugatuck, :miles)
+    distance = douglas.distance_to(saugatuck, :units => :miles)
     assert_in_delta 0.794248231790402, distance, 0.2
     
-    distance = douglas.distance_to(saugatuck, :kilometers)
+    distance = douglas.distance_to(saugatuck, :units => :kilometers)
     assert_in_delta 1.27821863, distance, 0.2
   end
   
-  #
-  # Helpers
-  #
+  def test_find_adds_distance_to_model
+    saugatuck = Vacation.find(1, :origin => "49406")
+    assert_in_delta 0.794248231790402, saugatuck.distance, 0.2
+  end
+  
+  def test_find_within
+    spots = Vacation.find(:all, :origin => "49406", :within => 3)
+    assert_equal 1, spots.size
+    assert_equal vacations(:saugatuck), spots.first
+  end
+  
+  def test_within_kilometers
+    saugatuck = Vacation.find(:first, :within => 2, :units => :kilometers, :origin => "49406")
+    assert_equal vacations(:saugatuck), saugatuck
+    assert_in_delta 1.27821863, saugatuck.distance, 0.2
+  end
+  
+  def test_find_beyond
+    spots = Vacation.find(:all, :origin => "49406", :beyond => 3)
+    assert_equal 1, spots.size
+    assert_equal vacations(:whitehouse), spots.first
+  end
+
+  def test_find_beyond_in_kilometers
+    whitehouse = Vacation.find(:first, :beyond => 3, :units => :kilometers, :origin => "49406")
+    assert_equal vacations(:whitehouse), whitehouse
+    assert_in_delta 877.554975851074, whitehouse.distance, 1
+  end
+  
+  def test_find_nearest
+    assert_equal vacations(:saugatuck), Vacation.find(:nearest, :origin => "49406")
+  end
+  
+  def test_find_nearest
+    assert_equal vacations(:whitehouse), Vacation.find(:farthest, :origin => "49406")
+  end
+  
+  def test_uses_units_set_in_declared_options
+    Vacation.acts_as_geocodable_options.merge! :units => :kilometers
+    saugatuck = Vacation.find(:first, :within => 2, :units => :kilometers, :origin => "49406")
+    assert_in_delta 1.27821863, saugatuck.distance, 0.2
+  end
+  
+  def test_extract_origin_from_empty_options
+    assert_nil Vacation.send(:extract_origin_from_options!, {})
+  end
+  
+  def test_extract_origin_from_options_with_geocode
+    g = Geocode.new
+    assert(g === Vacation.send(:extract_origin_from_options!, :origin => g))
+  end
+  
+  def test_extract_origin_from_options_with_string
+    assert_equal geocodes(:douglas), Vacation.send(:extract_origin_from_options!, :origin => '49406')
+  end
+
+  def test_extract_origin_from_options_with_fixnum
+    assert_equal geocodes(:douglas), Vacation.send(:extract_origin_from_options!, :origin => 49406)
+  end
+  
+  def test_extract_origin_from_options_with_geocodable
+    assert_equal geocodes(:white_house_geocode),
+      Vacation.send(:extract_origin_from_options!, :origin => vacations(:whitehouse))
+  end
+  
+  def test_extract_origin_from_options_removes_origin
+    options = {:origin => '49406', :limit => 5}
+    Vacation.send(:extract_origin_from_options!, options)
+    assert_nil options[:origin]
+    assert_equal 1, options.size
+    assert_equal 5, options[:limit]
+  end
+
+private
+  
   def save_vacation_to_create_geocode
     returning vacations(:mystery_spot) do |mystery_spot|
       assert mystery_spot.geocode.blank?
@@ -165,4 +237,5 @@ class ActsAsGeocodableTest < Test::Unit::TestCase
       assert_not_nil mystery_spot.geocode
     end
   end
+  
 end

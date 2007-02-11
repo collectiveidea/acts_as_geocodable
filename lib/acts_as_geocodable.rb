@@ -6,15 +6,14 @@ module CollectiveIdea
         mod.extend(ClassMethods)
       end
 
-      # declare the class level helper methods which
-      # will load the relevant instance methods
-      # defined below when invoked
       module ClassMethods
         
         def acts_as_geocodable(options = {})
           options = {
             :address => {:street => :street, :city => :city, :region => :region, :postal_code => :postal_code, :country => :country},
-            :normalize_address => false
+            :normalize_address => false,
+            :distance_column => 'distance',
+            :units => :miles
           }.merge(options)
           
           write_inheritable_attribute :acts_as_geocodable_options, options
@@ -32,77 +31,99 @@ module CollectiveIdea
 
       module SingletonMethods
         
-        def find_all_within_radius(from, radius = 50, options = {})
-          units = options.delete(:units) || :miles
-          with_scope(:find => { :include => {:geocoding => :geocode}, :conditions => 'geocodes.id is not null' }) do
-            find(:all, options).select {|to| to.geocode && from.distance_to(to.geocode, units) <= radius}
+        # * :origin
+        #
+        # * :farthest
+        # * :nearest
+        #
+        # * :within
+        # * :beyond
+        # 
+        def find(*args)
+          options = extract_options_from_args! args
+          origin = extract_origin_from_options! options
+          if origin
+            options[:units] ||= acts_as_geocodable_options[:units]
+            add_distance_to_select!(origin, options)
+            with_proximity!(args) do
+              join_geocodes do
+                geocode_conditions!(options, origin) do
+                  super *args.push(options)
+                end
+              end
+            end
+          else
+            super *args.push(options)
           end
         end
         
-        def find_within_radius(location, radius=50, units=:miles)
-          # Ensure valid floats
-          latitude, longitude = location.latitude.to_f, location.longitude.to_f, radius.to_f
-          class_name = ActiveRecord::Base.send(:class_name_of_active_record_descendant, self).to_s
-          # TODO: refactor so SQL is database agnostic
-          
-          # with_scope :find => {
-          #       :conditions => ["(#{Graticule::Distance::EARTH_RADIUS[units]} * ACOS(
-          #         COS(RADIANS(`latitude`))*COS(RADIANS(`longitude`))
-          #         	* COS(RADIANS(:latitude))*COS(RADIANS(:longitude))
-          #         + COS(RADIANS(`latitude`))*SIN(RADIANS(`longitude`))
-          #         	* COS(RADIANS(:latitude))*SIN(RADIANS(:longitude))
-          #         + SIN(RADIANS(`latitude`))
-          #         	* SIN(RADIANS(:latitude))
-          #         ) ) <= :radius",
-          #         {:latitude => latitude, :longitude => longitude, :radius => radius}],
-          #       :order => "distance"
-          #     } do
-          #   find(:all, :select => "DISTINCT #{table_name}.*, geocodes.latitude, geocodes.longitude,
-          #       (#{Graticule::Distance::EARTH_RADIUS[units]} * ACOS(
-          #       COS(RADIANS(`latitude`))*COS(RADIANS(`longitude`))
-          #       	* COS(RADIANS(:latitude))*COS(RADIANS(:longitude))
-          #       + COS(RADIANS(`latitude`))*SIN(RADIANS(`longitude`))
-          #       	* COS(RADIANS(:latitude))*SIN(RADIANS(:longitude))
-          #       + SIN(RADIANS(`latitude`))
-          #       	* SIN(RADIANS(:latitude))
-          #       ) ) as distance")
-          # end
-        
-          return find_by_sql(
-            ["SELECT DISTINCT #{table_name}.*, geocodes.latitude, geocodes.longitude, (#{Graticule::Distance::EARTH_RADIUS[units]} * ACOS(
-                                      COS(RADIANS(`latitude`))*COS(RADIANS(`longitude`))
-                                      	* COS(RADIANS(:latitude))*COS(RADIANS(:longitude))
-                                      + COS(RADIANS(`latitude`))*SIN(RADIANS(`longitude`))
-                                      	* COS(RADIANS(:latitude))*SIN(RADIANS(:longitude))
-                                      + SIN(RADIANS(`latitude`))
-                                      	* SIN(RADIANS(:latitude))
-                                      ) ) as distance
-                                      FROM #{table_name}, geocodes, geocodings " +
-            "WHERE #{table_name}.#{primary_key} = geocodings.geocodable_id " +
-            "AND geocodings.geocodable_type = '#{class_name}' " +
-            "AND geocodings.geocode_id = geocodes.id "+
-            "AND (#{Graticule::Distance::EARTH_RADIUS[units]} * ACOS(
-                                      COS(RADIANS(`latitude`))*COS(RADIANS(`longitude`))
-                                      	* COS(RADIANS(:latitude))*COS(RADIANS(:longitude))
-                                      + COS(RADIANS(`latitude`))*SIN(RADIANS(`longitude`))
-                                      	* COS(RADIANS(:latitude))*SIN(RADIANS(:longitude))
-                                      + SIN(RADIANS(`latitude`))
-                                      	* SIN(RADIANS(:latitude))
-                                      ) ) <= :radius " +
-            "ORDER BY distance",
-            {:latitude => latitude, :longitude => longitude, :radius => radius}])
+        def location_to_geocode(location)
+          case location
+          when Geocode then location
+          when InstanceMethods then location.geocode
+          when String, Fixnum then Geocode.find_or_create_by_query(location)
+          end
+        end
+      
+      private
+      
+        def extract_origin_from_options!(options)
+          location_to_geocode(options.delete(:origin))
         end
         
-        def find_within_radius_of_postal_code(postal_code, radius=50)
-          location = Geocode.find_or_create_by_query(postal_code)
-          self.find_within_radius(location, radius)
+        def add_distance_to_select!(origin, options)
+          (options[:select] ||= "#{table_name}.*") << ", geocodes.*, #{sql_for_distance(origin, options[:units])} AS #{acts_as_geocodable_options[:distance_column]}"
         end
-
+      
+        def with_proximity!(args)
+          if [:nearest, :farthest].include?(args.first)
+            direction = args.first == :nearest ? "ASC" : "DESC"
+            args[0] = :first
+            with_scope :find => { :order => "#{acts_as_geocodable_options[:distance_column]} #{direction}"} do
+              yield
+            end
+          else
+            yield
+          end
+        end
+        
+        def join_geocodes(&block)
+          with_scope :find => { :joins => "JOIN geocodings ON
+              #{table_name}.#{primary_key} = geocodings.geocodable_id AND
+                geocodings.geocodable_type = '#{class_name}'
+              JOIN geocodes ON geocodings.geocode_id = geocodes.id" } do
+            yield
+          end
+        end
+        
+        def geocode_conditions!(options, origin)
+          conditions = []
+          units = options.delete(:units)
+          conditions << "#{sql_for_distance(origin, units)} <= #{options.delete(:within)}" if options[:within]
+          conditions << "#{sql_for_distance(origin, units)} > #{options.delete(:beyond)}" if options[:beyond]
+          if conditions.empty?
+            yield
+          else
+            with_scope(:find => { :conditions => conditions.join(" AND ") }) { yield }
+          end
+        end
+        
+        def sql_for_distance(origin, units = acts_as_geocodable_options[:units])
+          Graticule::Distance::Spherical.to_sql(
+            :latitude => origin.latitude,
+            :longitude => origin.longitude,
+            :latitude_column => "geocodes.latitude",
+            :longitude_column => "geocodes.longitude",
+            :units => units
+          )
+        end
+        
       end
 
       # Adds instance methods.
       module InstanceMethods
         
+        # Get the geocode for this model
         def geocode
           geocoding.geocode if geocoding
         end
@@ -118,9 +139,29 @@ module CollectiveIdea
           }.strip
         end
         
-        def distance_to(destination, units = :miles, formula = :haversine)
-          self.geocode.distance_to(destination.geocode, units, formula)
+        # Get the distance to the given destination. The destination can be an
+        # acts_as_geocodable model, a Geocode, or a string
+        #
+        #   myhome.distance_to "Chicago, IL"
+        #   myhome.distance_to "49423"
+        #   myhome.distance_to other_model
+        #
+        # == Options
+        # * <tt>:units</tt>: <tt>:miles</tt> or <tt>:kilometers</tt>
+        # * <tt>:formula</tt>: The formula to use to calculate the distance. This can
+        #   be any formula supported by Graticule. The default is <tt>:haversine</tt>.
+        #  
+        def distance_to(destination, options = {})
+          options = {
+            :units => self.class.acts_as_geocodable_options[:units],
+            :formula => :haversine
+          }.merge(options)
+          
+          geocode = self.class.location_to_geocode(destination)
+          self.geocode.distance_to(geocode, options[:units], options[:formula])
         end
+        
+      protected
         
         # Set the latitude and longitude. 
         def attach_geocode

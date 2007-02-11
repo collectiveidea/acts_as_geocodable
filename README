@@ -26,3 +26,9 @@ By default, acts_as_geocodable looks for attributes called street, city, region,
   class Store < ActiveRecord::Base
   	acts_as_geocodable :address => {:street => :address1, :city => :city, :region => :state, :postal_code => :zip}
   end
+
+
+To Do:
+
+* Documentation!!!
+* configurable formulas
