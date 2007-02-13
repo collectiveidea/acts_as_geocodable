@@ -1,4 +1,4 @@
-module CollectiveIdea
+module CollectiveIdea #:nodoc:
   module Acts #:nodoc:
     module Geocodable #:nodoc:
       
@@ -8,6 +8,21 @@ module CollectiveIdea
 
       module ClassMethods
         
+        # Make a model geocodable.
+        #
+        #  class Event < ActiveRecord::Base
+        #    acts_as_geocodable
+        #  end
+        #
+        # == Options
+        # * <tt>:address</tt>: A hash that maps geocodable attirbutes (<tt>:street</tt>,
+        #   <tt>:city</tt>, <tt>:region</tt>, <tt>:postal_code</tt>, <tt>:country</tt>)
+        #   to you models address fields
+        # * <tt>:normalize_address</tt>: If set to true, you address fields will be updated
+        #   using the address fields returned by the geocoder. (Default is +false+)
+        # * <tt>:units</tt>: Default units-<tt>:miles</tt> or <tt>:kilometers</tt>-used for
+        #   distance calculations and queries. (Default is <tt>:miles</tt>)
+        #
         def acts_as_geocodable(options = {})
           options = {
             :address => {:street => :street, :city => :city, :region => :region, :postal_code => :postal_code, :country => :country},
@@ -31,14 +46,33 @@ module CollectiveIdea
 
       module SingletonMethods
         
-        # * :origin
+        # Extends ActiveRecord's find method to be geo-aware.
         #
-        # * :farthest
-        # * :nearest
+        #   Model.find(:all, :within => 10, :origin => "Chicago, IL")
         #
-        # * :within
-        # * :beyond
-        # 
+        # Whenever find is called with an <tt>:origin</tt>, a +distance+ attribute
+        # indicating the distance to the origin is added to each of the results:
+        #
+        #   Model.find(:first, :origin => "Portland, OR").distance #=> 388.383
+        #
+        # +acts_as_geocodable+ adds 2 other retrieval approaches to ActiveRecord's default
+        # find by id, find <tt>:first</tt>, and find <tt>:all</tt>:
+        #
+        # * <tt>:nearest</tt>: find the nearest location to the given origin
+        # * <tt>:farthest</tt>: find the farthest location from the given origin
+        #
+        #   Model.find(:nearest, :origin => "Grand Rapids, MI")
+        #
+        # == Options
+        #
+        # * <tt>:origin</tt>: A Geocode, string, or geocodable model that specifies
+        #   the origin
+        # * <tt>:within</tt>: Limit to results within this radius of the origin
+        # * <tt>:beyond</tt>: Limit to results outside of this radius from the origin
+        # * <tt>:units</tt>: Units to use for <tt>:within</tt> or <tt>:beyond</tt>.
+        #   Default is <tt>:miles</tt> unless specified otherwise in the +acts_as_geocodable+
+        #   declaration.
+        #
         def find(*args)
           options = extract_options_from_args! args
           origin = extract_origin_from_options! options
@@ -57,6 +91,7 @@ module CollectiveIdea
           end
         end
         
+        # Convert the given location to a Geocode
         def location_to_geocode(location)
           case location
           when Geocode then location
@@ -67,7 +102,7 @@ module CollectiveIdea
       
       private
       
-        def extract_origin_from_options!(options)
+        def extract_origin_from_options!(options) 
           location_to_geocode(options.delete(:origin))
         end
         

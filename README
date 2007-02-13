@@ -1,34 +1,75 @@
-ActsAsGeocodable
-================
+= acts_as_geocodable
 
-gem install graticule --include-dependencies
+acts_as_geocodable is a plugin to help build geo-aware applications. It automatically geocodes your models when they are saved, giving you the ability to search by location and calculate distances between records.
 
-  ./script/generate geocodable_migration add_geocodable_tables
+== Usage
 
-Set the default geocoder in the bottom of your environment.rb file.
+  event = Event.create :street => "777 NE Martin Luther King, Jr. Blvd.",
+    :city => "Portland", :region => "Oregon", :postal_code => 97232
+    
+  event.geocode.latitude                                #=> 45.529100000000
+  event.geocode.longitude                               #=> -122.644200000000
+  
+  event.distance_to "49423"                             #=> 1807.66560483205
+  
+  Event.find(:all, :within => 50, :origin => "97232")
+  
+  Event.find(:nearest, :origin => "Portland, OR")
+  
+== Installation
+
+Graticule[link:http://rubyforge.org/projects/graticule] is used for all the heavy lifting.
+
+  gem install graticule --include-dependencies
+
+Install the plugin
+
+  script/plugin install -x http://source.collectiveidea.com/public/rails/plugins/acts_as_geocodable/
+
+== Configuration
+
+Create the required tables
+  
+  script/generate geocodable_migration add_geocodable_tables
+  rake db:migrate
+
+Set the default geocoder in your environment.rb file.
 
   Geocode.geocoder = Graticule.service(:yahoo).new 'your_api_key'
 
-Then, in each model you want to make geocodable, add "acts_as_geocodable". For example, 
+Then, in each model you want to make geocodable, add acts_as_geocodable.
 
-  class Store < ActiveRecord::Base
+  class Event < ActiveRecord::Base
   	acts_as_geocodable
+  end
+
+The only requirement is that your model must have address fields. By default, acts_as_geocodable looks for attributes called +street+, +city+, +region+, +postal_code+, and +country+.  To change these, you can provide a mapping in the <tt>:address</tt> option:
+
+  class Event < ActiveRecord::Base
+  	acts_as_geocodable :address => {:street => :address1, :city => :city, :region => :state, :postal_code => :zip}
+  end
+
+If that doesn't meet your needs, simply override the default +full_address+ method in your model.
+
+  def full_address
+    self.location.to_s
   end
 
 acts_as_geocodable can also update your address fields with the data returned from the geocoding service:
 
-  class Store < ActiveRecord::Base
+  class Event < ActiveRecord::Base
   	acts_as_geocodable :normalize_address => true
   end
 
-By default, acts_as_geocodable looks for attributes called street, city, region, postal_code, and country.  To change these, you can provide a mapping in the :address option:
+== Development
 
-  class Store < ActiveRecord::Base
-  	acts_as_geocodable :address => {:street => :address1, :city => :city, :region => :state, :postal_code => :zip}
-  end
+The source code is available at:
 
+  http://source.collectiveidea.com/public/rails/plugins/acts_as_geocodable/
 
-To Do:
+Patches and suggestions are welcome!
+
+== To Do
 
 * Documentation!!!
 * configurable formulas
