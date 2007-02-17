@@ -65,7 +65,7 @@ module CollectiveIdea #:nodoc:
         #
         # == Options
         #
-        # * <tt>:origin</tt>: A Geocode, string, or geocodable model that specifies
+        # * <tt>:origin</tt>: A Geocode, String, or geocodable model that specifies
         #   the origin
         # * <tt>:within</tt>: Limit to results within this radius of the origin
         # * <tt>:beyond</tt>: Limit to results outside of this radius from the origin
@@ -75,15 +75,13 @@ module CollectiveIdea #:nodoc:
         #
         def find(*args)
           options = extract_options_from_args! args
-          origin = extract_origin_from_options! options
+          origin = location_to_geocode options.delete(:origin)
           if origin
             options[:units] ||= acts_as_geocodable_options[:units]
             add_distance_to_select!(origin, options)
             with_proximity!(args) do
-              join_geocodes do
-                geocode_conditions!(options, origin) do
-                  super *args.push(options)
-                end
+              geocode_conditions!(options, origin) do
+                join_geocodes { super *args.push(options) }
               end
             end
           else
@@ -102,12 +100,10 @@ module CollectiveIdea #:nodoc:
       
       private
       
-        def extract_origin_from_options!(options) 
-          location_to_geocode(options.delete(:origin))
-        end
-        
         def add_distance_to_select!(origin, options)
-          (options[:select] ||= "#{table_name}.*") << ", geocodes.*, #{sql_for_distance(origin, options[:units])} AS #{acts_as_geocodable_options[:distance_column]}"
+          (options[:select] ||= "#{table_name}.*") << ", geocodes.*,
+            #{sql_for_distance(origin, options[:units])} AS
+            #{acts_as_geocodable_options[:distance_column]}"
         end
       
         def with_proximity!(args)
@@ -132,8 +128,8 @@ module CollectiveIdea #:nodoc:
         end
         
         def geocode_conditions!(options, origin)
-          conditions = []
           units = options.delete(:units)
+          conditions = []
           conditions << "#{sql_for_distance(origin, units)} <= #{options.delete(:within)}" if options[:within]
           conditions << "#{sql_for_distance(origin, units)} > #{options.delete(:beyond)}" if options[:beyond]
           if conditions.empty?
@@ -155,7 +151,6 @@ module CollectiveIdea #:nodoc:
         
       end
 
-      # Adds instance methods.
       module InstanceMethods
         
         # Get the geocode for this model
@@ -198,7 +193,7 @@ module CollectiveIdea #:nodoc:
         
       protected
         
-        # Set the latitude and longitude. 
+        # Perform the geocoding
         def attach_geocode
           geocode = Geocode.find_or_create_by_query(self.full_address)
           unless geocode == self.geocode || geocode.new_record?

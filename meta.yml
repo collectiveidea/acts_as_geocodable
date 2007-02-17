@@ -1,7 +1,0 @@
-author: 
-    name: Daniel Morrison, Collective Idea
-    homepage: http://collectiveidea.com
-summary: Geocoding plugin.
-homepage: http://collectiveidea.com
-plugin: https://source.collectiveidea.com/public/rails/plugins/acts_as_geocodable
-license: MIT
