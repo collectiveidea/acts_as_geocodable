@@ -9,21 +9,17 @@ class Geocode < ActiveRecord::Base
   cattr_accessor :geocoder
   
   def self.geocode(location)
+    logger.debug "lookup up geocode for '#{location}'"
     result = geocoder.locate(location)
     
     # Yahoo Geocoder returns and array of possibilities.  We take the first one.
-    if result.is_a? Array
-      result = result.first
-    end
+    result = result.first if result.is_a? Array
     
     # Beautify some strings
     result.street = result.street.titleize if result.street
     result.city = result.city.titleize if result.city
 
     result
-  rescue
-    # Geocoder threw exception
-    return nil
   end
 
   def distance_to(destination, units = :miles, formula = :haversine)

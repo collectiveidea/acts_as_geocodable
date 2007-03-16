@@ -101,8 +101,8 @@ module CollectiveIdea #:nodoc:
       private
       
         def add_distance_to_select!(origin, options)
-          (options[:select] ||= "#{table_name}.*") << ", geocodes.*,
-            #{sql_for_distance(origin, options[:units])} AS
+          (options[:select] ||= "#{table_name}.*") <<
+            ", #{sql_for_distance(origin, options[:units])} AS
             #{acts_as_geocodable_options[:distance_column]}"
         end
       
@@ -201,6 +201,8 @@ module CollectiveIdea #:nodoc:
             self.geocoding = Geocoding.new :geocode => geocode
             self.update_address self.acts_as_geocodable_options[:normalize_address]
           end
+        rescue Graticule::Error => e
+          logger.warn e.message
         end
         
         def update_address(force = false)

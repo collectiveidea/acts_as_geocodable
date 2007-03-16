@@ -192,36 +192,28 @@ class ActsAsGeocodableTest < Test::Unit::TestCase
     assert_in_delta 1.27821863, saugatuck.distance, 0.2
   end
   
-  def test_extract_origin_from_empty_options
-    assert_nil Vacation.send(:extract_origin_from_options!, {})
+  def test_location_to_geocode_nil
+    assert_nil Vacation.send(:location_to_geocode, nil)
   end
   
-  def test_extract_origin_from_options_with_geocode
+  def test_location_to_geocode_with_geocode
     g = Geocode.new
-    assert(g === Vacation.send(:extract_origin_from_options!, :origin => g))
+    assert(g === Vacation.send(:location_to_geocode, g))
   end
   
-  def test_extract_origin_from_options_with_string
-    assert_equal geocodes(:douglas), Vacation.send(:extract_origin_from_options!, :origin => '49406')
+  def test_location_to_geocode_with_string
+    assert_equal geocodes(:douglas), Vacation.send(:location_to_geocode, '49406')
   end
 
-  def test_extract_origin_from_options_with_fixnum
-    assert_equal geocodes(:douglas), Vacation.send(:extract_origin_from_options!, :origin => 49406)
+  def test_location_to_geocode_with_fixnum
+    assert_equal geocodes(:douglas), Vacation.send(:location_to_geocode, 49406)
   end
   
-  def test_extract_origin_from_options_with_geocodable
+  def test_location_to_geocode_with_geocodable
     assert_equal geocodes(:white_house_geocode),
-      Vacation.send(:extract_origin_from_options!, :origin => vacations(:whitehouse))
+      Vacation.send(:location_to_geocode, vacations(:whitehouse))
   end
   
-  def test_extract_origin_from_options_removes_origin
-    options = {:origin => '49406', :limit => 5}
-    Vacation.send(:extract_origin_from_options!, options)
-    assert_nil options[:origin]
-    assert_equal 1, options.size
-    assert_equal 5, options[:limit]
-  end
-
 private
   
   def save_vacation_to_create_geocode
