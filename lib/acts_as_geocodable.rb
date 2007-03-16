@@ -79,7 +79,7 @@ module CollectiveIdea #:nodoc:
           if origin
             options[:units] ||= acts_as_geocodable_options[:units]
             add_distance_to_select!(origin, options)
-            with_proximity!(args) do
+            with_proximity!(args, options) do
               geocode_conditions!(options, origin) do
                 join_geocodes { super *args.push(options) }
               end
@@ -106,8 +106,9 @@ module CollectiveIdea #:nodoc:
             #{acts_as_geocodable_options[:distance_column]}"
         end
       
-        def with_proximity!(args)
+        def with_proximity!(args, options)
           if [:nearest, :farthest].include?(args.first)
+            raise ArgumentError, ":include cannot be specified with :nearest and :farthest" if options[:include]
             direction = args.first == :nearest ? "ASC" : "DESC"
             args[0] = :first
             with_scope :find => { :order => "#{acts_as_geocodable_options[:distance_column]} #{direction}"} do

@@ -31,6 +31,7 @@ ActiveRecord::Schema.define(:version => 1) do
     t.column "city", :string
     t.column "region", :string
     t.column "postal_code", :string
+    t.column "city_id", :integer
   end
   
   create_table "cities", :force => true do |t|

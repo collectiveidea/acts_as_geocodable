@@ -2,6 +2,7 @@ require File.join(File.dirname(__FILE__), 'test_helper')
 
 class Vacation < ActiveRecord::Base
   acts_as_geocodable :normalize_address => true
+  belongs_to :nearest_city, :class_name => 'City', :foreign_key => 'city_id'
 end
 
 class City < ActiveRecord::Base
@@ -212,6 +213,10 @@ class ActsAsGeocodableTest < Test::Unit::TestCase
   def test_location_to_geocode_with_geocodable
     assert_equal geocodes(:white_house_geocode),
       Vacation.send(:location_to_geocode, vacations(:whitehouse))
+  end
+  
+  def test_find_nearest_raises_error_with_include
+    assert_raises(ArgumentError) { Vacation.find(:nearest, :include => :nearest_city, :origin => 49406) }
   end
   
 private
