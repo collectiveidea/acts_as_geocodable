@@ -1,0 +1,6 @@
+0.1.0
+* Added remote_location to get a users location based on their remote_ip
+* renamed :city to :locality in address mapping to be consistent with Graticule 0.2
+  create a migration with:
+    rename_column :geocodes, :city, :locality
+* replace #full_address with #to_location

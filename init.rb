@@ -1,4 +1,9 @@
-require 'graticule'
+begin 
+  gem 'graticule', '>= 0.2.0'
+  require 'graticule'
+rescue LoadError
+  raise "Graticule >= 0.2.0 is required for acts_as_geocodable"
+end
 require File.dirname(__FILE__) + '/lib/acts_as_geocodable'
 require File.dirname(__FILE__) + '/lib/geocoding'
 require File.dirname(__FILE__) + '/lib/geocode'

@@ -1,21 +1,15 @@
 saugatuck:
   id: 1
   name: Saugatuck, Michigan
-  street: 
-  city:
-  region:
-  postal_code:
 whitehouse: 
   id: 2
   name: The White House
   street: 1600 Pennsylvania Ave NW 
-  city: Washington
+  locality: Washington
   region: DC
   postal_code: 20502
 mystery_spot:
   id: 3
   name: The Mystery Spot
   street: 150 Martin Lake Rd.
-  city: 
-  region: 
   postal_code: 49781

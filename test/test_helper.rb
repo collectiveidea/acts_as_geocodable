@@ -49,15 +49,15 @@ class Test::Unit::TestCase #:nodoc:
     end
   end
   
+  # Turn off transactional fixtures if you're working with MyISAM tables in MySQL
+  self.use_transactional_fixtures = true
+  
+  # Instantiated fixtures are slow, but give you @david where you otherwise would need people(:david)
+  self.use_instantiated_fixtures  = false
+
+  # Add more helper methods to be used by all tests here...
+
   # http://project.ioni.st/post/217#post-217
-  #
-  #  def test_new_publication
-  #    assert_difference(Publication, :count) do
-  #      post :create, :publication => {...}
-  #      # ...
-  #    end
-  #  end
-  # 
   def assert_difference(object, method = nil, difference = 1)
     initial_value = object.send(method)
     yield
@@ -69,11 +69,13 @@ class Test::Unit::TestCase #:nodoc:
     assert_difference object, method, 0, &block
   end
 
-  # Turn off transactional fixtures if you're working with MyISAM tables in MySQL
-  self.use_transactional_fixtures = true
-  
-  # Instantiated fixtures are slow, but give you @david where you otherwise would need people(:david)
-  self.use_instantiated_fixtures  = false
-
-  # Add more helper methods to be used by all tests here...
+  def assert_geocode_result(result)
+    assert_not_nil result
+    assert result.latitude.is_a?(BigDecimal) || result.latitude.is_a?(Float), "latitude is a #{result.latitude.class.name}"
+    assert result.longitude.is_a?(BigDecimal) || result.longitude.is_a?(Float)
+    
+    # Depending on the geocoder, we'll get slightly different results
+    assert_in_delta 42.787567, result.latitude, 0.001
+    assert_in_delta -86.109039, result.longitude, 0.001
+  end
 end

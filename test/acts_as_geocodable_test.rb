@@ -18,13 +18,16 @@ class ActsAsGeocodableTest < Test::Unit::TestCase
     assert vacations(:whitehouse).respond_to?(:geocode)
   end
   
-  def test_full_address
-    whitehouse = vacations(:whitehouse)
-    expected_address = "1600 Pennsylvania Ave NW\nWashington, DC 20502"
-    assert_equal expected_address, whitehouse.full_address
-    
-    holland = cities(:holland)
-    assert_equal '49423', holland.full_address
+  def test_to_location_full_address
+    expected = Graticule::Location.new :street => '1600 Pennsylvania Ave NW',
+      :locality => 'Washington', :region => 'DC', :postal_code => '20502',
+      :country => nil
+    assert_equal expected, vacations(:whitehouse).to_location
+  end
+  
+  def test_to_location_partial_address
+    assert_equal Graticule::Location.new(:postal_code => '49423'),
+      cities(:holland).to_location
   end
   
   # FIXME: this test is failing, why?
@@ -36,20 +39,20 @@ class ActsAsGeocodableTest < Test::Unit::TestCase
   #   assert_match /Ignace/, mystery_spot.city
   #   assert_equal 'MI', mystery_spot.region
   # end
-  
-  def test_geocode_creation_without_address_normalization
-    Vacation.acts_as_geocodable_options.merge! :normalize_address => false
-    assert !Vacation.acts_as_geocodable_options[:normalize_address]
-    
-    mystery_spot = save_vacation_to_create_geocode
-    
-    assert_nil mystery_spot.city
-    assert_nil mystery_spot.region
-  end
+  # 
+  # def test_geocode_creation_without_address_normalization
+  #   Vacation.acts_as_geocodable_options.merge! :normalize_address => false
+  #   assert !Vacation.acts_as_geocodable_options[:normalize_address]
+  #   
+  #   mystery_spot = save_vacation_to_create_geocode
+  #   
+  #   assert_nil mystery_spot.locality
+  #   assert_nil mystery_spot.region
+  # end
 
-  def test_geocode_creation_with_empty_full_address
+  def test_geocode_creation_with_empty_attributes
     nowhere = cities(:nowhere)
-    assert_equal '', nowhere.full_address
+    assert nowhere.to_location.attributes.empty?
     assert_nil nowhere.geocode
     
     assert_no_difference(Geocode, :count) do
@@ -63,10 +66,10 @@ class ActsAsGeocodableTest < Test::Unit::TestCase
     assert_nil nowhere.geocoding
   end
   
-  def test_geocode_creation_with_nil_full_address
+  def test_geocode_creation_with_nil_attributes
     nowhere = cities(:nowhere)
     nowhere.zip = nil
-    assert nowhere.full_address.empty?
+    assert nowhere.to_location.attributes.empty?
     assert_nil nowhere.geocode
     
     assert_no_difference(Geocode, :count) do
@@ -101,7 +104,7 @@ class ActsAsGeocodableTest < Test::Unit::TestCase
     original_geocode = saugatuck.geocode
     
     assert_no_difference(Geocoding, :count) do
-      saugatuck.city = 'Beverly Hills'
+      saugatuck.locality = 'Beverly Hills'
       saugatuck.postal_code = '90210'
       saugatuck.save!
       saugatuck.reload
@@ -224,7 +227,7 @@ private
   def save_vacation_to_create_geocode
     returning vacations(:mystery_spot) do |mystery_spot|
       assert mystery_spot.geocode.blank?
-      assert_nil mystery_spot.city
+      assert_nil mystery_spot.locality
       assert_nil mystery_spot.region
 
       assert_difference(Geocode, :count, 1) do

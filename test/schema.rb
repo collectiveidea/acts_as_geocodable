@@ -5,7 +5,7 @@ ActiveRecord::Schema.define(:version => 1) do
     t.column "longitude", :decimal, :precision => 15, :scale => 12
     t.column "query",     :string
     t.column "street",    :string
-    t.column "city",      :string
+    t.column "locality",      :string
     t.column "region",     :string
     t.column "postal_code", :string
     t.column "country",   :string
@@ -28,7 +28,7 @@ ActiveRecord::Schema.define(:version => 1) do
   create_table "vacations", :force => true do |t|
     t.column "name", :string
     t.column "street", :string
-    t.column "city", :string
+    t.column "locality", :string
     t.column "region", :string
     t.column "postal_code", :string
     t.column "city_id", :integer

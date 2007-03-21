@@ -5,7 +5,7 @@ acts_as_geocodable is a plugin to help build geo-aware applications. It automati
 == Usage
 
   event = Event.create :street => "777 NE Martin Luther King, Jr. Blvd.",
-    :city => "Portland", :region => "Oregon", :postal_code => 97232
+    :locality => "Portland", :region => "Oregon", :postal_code => 97232
     
   event.geocode.latitude                                #=> 45.529100000000
   event.geocode.longitude                               #=> -122.644200000000
@@ -16,6 +16,19 @@ acts_as_geocodable is a plugin to help build geo-aware applications. It automati
   
   Event.find(:nearest, :origin => "Portland, OR")
   
+== Upgrading
+
+If you're upgrading from a previous version of this plugin, note that :city has been renamed to :locality to be consistent with Graticule 0.2.  Create a migration that has:
+
+  rename_column :geocodes, :city, :locality
+
+Also remember to change your mapping in your geocodable classes to use the :locality key instead of :city:
+
+class Event < ActiveRecord::Base
+	acts_as_geocodable :address => {:street => :address1, :locality => :city,
+	  :region => :state, :postal_code => :zip}
+end
+
 == Installation
 
 Graticule[link:http://rubyforge.org/projects/graticule] is used for all the heavy lifting.
@@ -43,23 +56,30 @@ Then, in each model you want to make geocodable, add acts_as_geocodable.
   	acts_as_geocodable
   end
 
-The only requirement is that your model must have address fields. By default, acts_as_geocodable looks for attributes called +street+, +city+, +region+, +postal_code+, and +country+.  To change these, you can provide a mapping in the <tt>:address</tt> option:
+The only requirement is that your model must have address fields. By default, acts_as_geocodable looks for attributes called +street+, +locality+, +region+, +postal_code+, and +country+.  To change these, you can provide a mapping in the <tt>:address</tt> option:
 
   class Event < ActiveRecord::Base
-  	acts_as_geocodable :address => {:street => :address1, :city => :city, :region => :state, :postal_code => :zip}
+  	acts_as_geocodable :address => {:street => :address1, :locality => :city, :region => :state, :postal_code => :zip}
   end
 
-If that doesn't meet your needs, simply override the default +full_address+ method in your model.
-
-  def full_address
-    self.location.to_s
-  end
+If that doesn't meet your needs, simply override the default +to_location+ method in your model, and return a Graticule::Location with those attributes set.
 
 acts_as_geocodable can also update your address fields with the data returned from the geocoding service:
 
   class Event < ActiveRecord::Base
   	acts_as_geocodable :normalize_address => true
   end
+
+== IP-based Geocoding
+
+acts_as_geocodable adds a remote_location method in your controllers that uses http://hostip.info to guess remote users location based on their IP address.
+
+  def index
+    @nearest = Store.find(:nearest, :origin => remote_location) if remote_location
+    @stores = Store.find(:all)
+  end
+
+Keep in mind that IP-based geocoding is not always accurate, and often will not return any results.
 
 == Development
 

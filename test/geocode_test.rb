@@ -21,8 +21,8 @@ class GeocodeTest < Test::Unit::TestCase
     chicago = geocodes(:chicago_geocode)
     fake = Geocode.new
     
-    assert !chicago.distance_to(fake)
-    assert !chicago.distance_to(nil)
+    assert_nil chicago.distance_to(fake)
+    assert_nil chicago.distance_to(nil)
   end
  
   def test_instance_geocode
@@ -35,13 +35,6 @@ class GeocodeTest < Test::Unit::TestCase
     end
   end
   
-  def test_empty_query
-    assert_no_difference(Geocode, :count) do
-      empty = Geocode.create(:query => '')
-      assert empty.new_record?
-    end
-  end
-  
   def test_cooridnates
     assert_equal "-86.200722,42.654781", geocodes(:saugatuck_geocode).coordinates
   end
@@ -49,18 +42,18 @@ class GeocodeTest < Test::Unit::TestCase
   def test_to_s
     assert_equal "-86.200722,42.654781", geocodes(:saugatuck_geocode).to_s
   end
-
-  #
-  # Helpers
-  #
-  def assert_geocode_result(result)
-    assert_not_nil result
-    assert result.latitude.is_a?(BigDecimal) || result.latitude.is_a?(Float), "latitude is a #{result.latitude.class.name}"
-    assert result.longitude.is_a?(BigDecimal) || result.longitude.is_a?(Float)
-    
-    # Depending on the geocoder, we'll get slightly different results
-    assert_in_delta 42.787567, result.latitude, 0.001
-    assert_in_delta -86.109039, result.longitude, 0.001
+  
+  def test_geocoded?
+    assert Geocode.new(:latitude => 1, :longitude => 1).geocoded?
+    assert !Geocode.new(:longitude => 1).geocoded?
+    assert !Geocode.new(:latitude => 1).geocoded?
+    assert !Geocode.new.geocoded?
   end
   
+  def test_find_or_create_by_location_finds_existing_geocode
+    location = Graticule::Location.new(:postal_code => "20502",
+      :street => "1600 Pennsylvania Ave NW")
+    assert_equal geocodes(:white_house_geocode), Geocode.find_or_create_by_location(location)
+  end
+
 end

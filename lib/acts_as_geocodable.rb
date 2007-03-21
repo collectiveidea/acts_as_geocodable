@@ -16,7 +16,7 @@ module CollectiveIdea #:nodoc:
         #
         # == Options
         # * <tt>:address</tt>: A hash that maps geocodable attirbutes (<tt>:street</tt>,
-        #   <tt>:city</tt>, <tt>:region</tt>, <tt>:postal_code</tt>, <tt>:country</tt>)
+        #   <tt>:locality</tt>, <tt>:region</tt>, <tt>:postal_code</tt>, <tt>:country</tt>)
         #   to you models address fields
         # * <tt>:normalize_address</tt>: If set to true, you address fields will be updated
         #   using the address fields returned by the geocoder. (Default is +false+)
@@ -25,7 +25,7 @@ module CollectiveIdea #:nodoc:
         #
         def acts_as_geocodable(options = {})
           options = {
-            :address => {:street => :street, :city => :city, :region => :region, :postal_code => :postal_code, :country => :country},
+            :address => {:street => :street, :locality => :locality, :region => :region, :postal_code => :postal_code, :country => :country},
             :normalize_address => false,
             :distance_column => 'distance',
             :units => :miles
@@ -159,15 +159,13 @@ module CollectiveIdea #:nodoc:
           geocoding.geocode if geocoding
         end
         
-        # Return the entire address in one string.
-        def full_address
-          returning("") { |address|
-            address << "#{geo_attribute(:street)}\n" unless geo_attribute(:street).blank?
-            address << "#{geo_attribute(:city)}, " unless geo_attribute(:city).blank?
-            address << "#{geo_attribute(:region)} " unless geo_attribute(:region).blank?
-            address << "#{geo_attribute(:postal_code)}" unless geo_attribute(:postal_code).blank?
-            address << " #{geo_attribute(:country)}" unless geo_attribute(:country).blank?
-          }.strip
+        # Create a Graticule::Location
+        def to_location
+          returning Graticule::Location.new do |location|
+            [:street, :locality, :region, :postal_code, :country].each do |attr|
+              location.send "#{attr}=", geo_attribute(attr)
+            end
+          end
         end
         
         # Get the distance to the given destination. The destination can be an
@@ -196,7 +194,7 @@ module CollectiveIdea #:nodoc:
         
         # Perform the geocoding
         def attach_geocode
-          geocode = Geocode.find_or_create_by_query(self.full_address)
+          geocode = Geocode.find_or_create_by_location self.to_location
           unless geocode == self.geocode || geocode.new_record?
             self.geocoding.destroy unless self.geocoding.blank?
             self.geocoding = Geocoding.new :geocode => geocode
