@@ -55,5 +55,10 @@ class GeocodeTest < Test::Unit::TestCase
       :street => "1600 Pennsylvania Ave NW")
     assert_equal geocodes(:white_house_geocode), Geocode.find_or_create_by_location(location)
   end
+  
+  def test_find_or_create_by_query_finds_existing_geocode
+    assert_equal geocodes(:white_house_geocode),
+      Geocode.find_or_create_by_query("1600 Pennsylvania Ave NW\n20502")
+  end
 
 end
