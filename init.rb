@@ -1,5 +1,4 @@
 begin 
-  gem 'graticule', '>= 0.2.0'
   require 'graticule'
 rescue LoadError
   raise "Graticule >= 0.2.0 is required for acts_as_geocodable"
