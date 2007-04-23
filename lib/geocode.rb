@@ -1,7 +1,7 @@
 class Geocode < ActiveRecord::Base
   include Comparable
 
-  has_many :geocodings
+  has_many :geocodings, :dependent => :destroy
   
   validates_uniqueness_of :query
 
