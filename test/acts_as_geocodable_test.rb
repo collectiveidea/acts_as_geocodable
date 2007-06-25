@@ -66,6 +66,23 @@ class ActsAsGeocodableTest < Test::Unit::TestCase
     assert_nil nowhere.geocoding
   end
   
+  def test_geocode_creation_with_whitespace_attributes
+    nowhere = cities(:nowhere)
+    nowhere.zip = "\n"
+    assert nowhere.to_location.attributes.empty?
+    assert_nil nowhere.geocode
+    
+    assert_no_difference(Geocode, :count) do
+      assert_no_difference(Geocoding, :count) do
+        # Force Geocode
+        nowhere.save!
+        nowhere.reload
+      end
+    end
+    
+    assert_nil nowhere.geocoding
+  end
+  
   def test_geocode_creation_with_nil_attributes
     nowhere = cities(:nowhere)
     nowhere.zip = nil
