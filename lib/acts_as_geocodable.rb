@@ -74,7 +74,7 @@ module CollectiveIdea #:nodoc:
         #   declaration.
         #
         def find(*args)
-          options = extract_options_from_args! args
+          options = args.extract_options!
           origin = location_to_geocode options.delete(:origin)
           if origin
             options[:units] ||= acts_as_geocodable_options[:units]
