@@ -34,6 +34,19 @@ ActiveRecord::Schema.define(:version => 1) do
     t.column "city_id", :integer
   end
   
+  create_table "validated_vacations", :force => true do |t|
+    t.column "name", :string
+    t.column "street", :string
+    t.column "locality", :string
+    t.column "region", :string
+    t.column "postal_code", :string
+  end
+  
+  create_table "address_blob_vacations", :force => true do |t|
+    t.column "name", :string
+    t.column "address", :string
+  end
+    
   create_table "cities", :force => true do |t|
     t.column "name", :string
     t.column "zip", :string

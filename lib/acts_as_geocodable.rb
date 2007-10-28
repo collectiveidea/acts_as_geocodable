@@ -17,7 +17,7 @@ module CollectiveIdea #:nodoc:
         # == Options
         # * <tt>:address</tt>: A hash that maps geocodable attirbutes (<tt>:street</tt>,
         #   <tt>:locality</tt>, <tt>:region</tt>, <tt>:postal_code</tt>, <tt>:country</tt>)
-        #   to you models address fields
+        #   to your model's address fields, or a symbol to store the entire address in one field
         # * <tt>:normalize_address</tt>: If set to true, you address fields will be updated
         #   using the address fields returned by the geocoder. (Default is +false+)
         # * <tt>:units</tt>: Default units-<tt>:miles</tt> or <tt>:kilometers</tt>-used for
@@ -97,6 +97,16 @@ module CollectiveIdea #:nodoc:
           when Geocode then location
           when InstanceMethods then location.geocode
           when String, Fixnum then Geocode.find_or_create_by_query(location)
+          end
+        end
+        
+        def validates_as_geocodable(options = {})
+          options = options.reverse_merge :message => "Address could not be geocoded.", :allow_nil => false
+          validate do |geocodable|
+            if !(options[:allow_nil] && geocodable.to_location.attributes.all?(&:blank?)) &&
+                !Geocode.find_or_create_by_location(geocodable.to_location)
+              geocodable.errors.add_to_base options[:message]
+            end
           end
         end
       
@@ -196,10 +206,10 @@ module CollectiveIdea #:nodoc:
         
         # Perform the geocoding
         def attach_geocode
-          unless self.to_location.attributes.all?(&:blank?)
-            geocode = Geocode.find_or_create_by_location self.to_location
-            unless geocode == self.geocode || geocode.new_record?
-              self.geocoding.destroy unless self.geocoding.blank?
+          geocode = Geocode.find_or_create_by_location self.to_location unless self.to_location.attributes.all?(&:blank?)
+          if geocode.nil? || geocode != self.geocode || geocode.new_record?
+            self.geocoding.destroy unless self.geocoding.blank?
+            if geocode
               self.geocoding = Geocoding.new :geocode => geocode
               self.update_address self.acts_as_geocodable_options[:normalize_address]
             end
@@ -210,20 +220,32 @@ module CollectiveIdea #:nodoc:
         
         def update_address(force = false)
           unless self.geocode.blank?
-            self.acts_as_geocodable_options[:address].each do |attribute,method|
+            if self.acts_as_geocodable_options[:address].is_a? Symbol
+              method = self.acts_as_geocodable_options[:address]
               if self.respond_to?("#{method}=") && (self.send(method).blank? || force)
-                self.send "#{method}=", self.geocode.send(attribute)
+                self.send "#{method}=", self.geocode.to_location.to_s
+              end
+            else
+              self.acts_as_geocodable_options[:address].each do |attribute,method|
+                if self.respond_to?("#{method}=") && (self.send(method).blank? || force)
+                  self.send "#{method}=", self.geocode.send(attribute)
+                end
               end
             end
+            
             update_without_callbacks
           end
         end
         
         def geo_attribute(attr_key)
-          attr_name = self.acts_as_geocodable_options[:address][attr_key]
-          attr_name && self.respond_to?(attr_name) ? self.send(attr_name) : nil
+          if self.acts_as_geocodable_options[:address].is_a? Symbol
+            attr_name = self.acts_as_geocodable_options[:address]
+            attr_key == :street ? self.send(attr_name) : nil
+          else
+            attr_name = self.acts_as_geocodable_options[:address][attr_key]
+            attr_name && self.respond_to?(attr_name) ? self.send(attr_name) : nil
+          end
         end
-
       end
     end
   end

@@ -9,6 +9,15 @@ class City < ActiveRecord::Base
   acts_as_geocodable :address => {:postal_code => :zip}  
 end
 
+class ValidatedVacation < ActiveRecord::Base
+  acts_as_geocodable
+  validates_as_geocodable
+end
+
+class AddressBlobVacation < ActiveRecord::Base
+  acts_as_geocodable :address => :address, :normalize_address => true
+end
+
 class ActsAsGeocodableTest < Test::Unit::TestCase
   fixtures :vacations, :cities, :geocodes, :geocodings
   
@@ -45,25 +54,26 @@ class ActsAsGeocodableTest < Test::Unit::TestCase
       cities(:holland).to_location
   end
   
-  # FIXME: this test is failing, why?
-  # def test_geocode_creation_with_address_normalization
-  #   assert Vacation.acts_as_geocodable_options[:normalize_address]
-  # 
-  #   mystery_spot = save_vacation_to_create_geocode
-  # 
-  #   assert_match /Ignace/, mystery_spot.city
-  #   assert_equal 'MI', mystery_spot.region
-  # end
-  # 
-  # def test_geocode_creation_without_address_normalization
-  #   Vacation.acts_as_geocodable_options.merge! :normalize_address => false
-  #   assert !Vacation.acts_as_geocodable_options[:normalize_address]
-  #   
-  #   mystery_spot = save_vacation_to_create_geocode
-  #   
-  #   assert_nil mystery_spot.locality
-  #   assert_nil mystery_spot.region
-  # end
+  def test_geocode_creation_with_address_normalization
+    Geocode.geocoder.expects(:locate).returns(Graticule::Location.new(:locality => "Ignace", :region => "MI"))
+
+    assert Vacation.acts_as_geocodable_options[:normalize_address]
+
+    mystery_spot = save_vacation_to_create_geocode
+
+    assert_match /Ignace/, mystery_spot.locality
+    assert_equal 'MI', mystery_spot.region
+  end
+  
+  def test_geocode_creation_without_address_normalization
+    Vacation.acts_as_geocodable_options.merge! :normalize_address => false
+    assert !Vacation.acts_as_geocodable_options[:normalize_address]
+    
+    mystery_spot = save_vacation_to_create_geocode
+    
+    assert_nil mystery_spot.locality
+    assert_nil mystery_spot.region
+  end
 
   def test_geocode_creation_with_empty_attributes
     nowhere = cities(:nowhere)
@@ -116,19 +126,59 @@ class ActsAsGeocodableTest < Test::Unit::TestCase
   end
   
   def test_save_without_change_does_not_create_geocode
-    saugatuck = vacations(:saugatuck)
-    assert_not_nil saugatuck.geocoding
-    original_geocode = saugatuck.geocode
+    whitehouse = vacations(:whitehouse)
+    assert_not_nil whitehouse.geocoding
+    original_geocode = whitehouse.geocode
     
     assert_no_difference(Geocode, :count) do
       assert_no_difference(Geocoding, :count) do
-        saugatuck.save!
-        saugatuck.reload
+        whitehouse.save!
+        whitehouse.reload
       end
     end
     
-    assert_equal original_geocode, saugatuck.geocode
+    assert_equal original_geocode, whitehouse.geocode
   end
+  
+  
+  def test_save_blank_location_destroys_geocoding
+    whitehouse = vacations(:whitehouse)
+    assert_not_nil whitehouse.geocoding
+    [:name, :street, :locality, :region, :postal_code].each do |attribute|
+      whitehouse.send("#{attribute}=", nil)
+    end
+    
+    assert_no_difference(Geocode, :count) do
+      assert_difference(Geocoding, :count, -1) do
+        whitehouse.save!
+        whitehouse.reload
+      end
+    end
+    
+    assert whitehouse.geocode.nil?
+  end
+  
+  def test_validates_as_geocodable_fails
+    Geocode.geocoder.expects(:locate).raises(Graticule::Error)
+    vacation = ValidatedVacation.new
+    assert !vacation.valid?
+    assert_equal 1, vacation.errors.size
+    assert_equal "Address could not be geocoded.", vacation.errors.on(:base)
+  end
+  
+  def test_validates_as_geocodable_passes
+    vacation = ValidatedVacation.new :locality => "Grand Rapids", :region => "MI"
+    assert vacation.valid?
+  end
+    
+  def test_normalize_address_with_address_blob
+    Geocode.geocoder.expects(:locate).returns(Graticule::Location.new(:locality => "Grand Rapids", :region => "MI", :country => "US"))
+    
+    vacation = AddressBlobVacation.new :address => "grand rapids, mi"
+    assert vacation.save
+    assert_equal "Grand Rapids, MI US", vacation.address
+  end
+    
 
   def test_updates_geocode_on_save
     saugatuck = vacations(:saugatuck)

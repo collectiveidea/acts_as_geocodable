@@ -9,7 +9,7 @@ white_house_geocode:
   id: 2
   latitude: 38.898748
   longitude: -77.037684
-  query: "1600 Pennsylvania Ave NW\n20502"
+  query: "1600 Pennsylvania Ave NW\nWashington, DC 20502"
   street: 1600 Pennsylvania Ave NW 
   locality: Washington
   region: DC

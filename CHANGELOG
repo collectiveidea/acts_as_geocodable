@@ -1,3 +1,7 @@
+0.2.0 - 2007-10-27
+* Added validates_as_geocodable (Mark Van Holstyn)
+* Allow address mapping to be a single field (Mark Van Holstyn)
+
 0.1.0
 * Added remote_location to get a users location based on their remote_ip
 * renamed :city to :locality in address mapping to be consistent with Graticule 0.2

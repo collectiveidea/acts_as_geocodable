@@ -28,6 +28,7 @@ require File.expand_path(File.join(File.dirname(__FILE__), '../../../../config/e
 require 'rubygems'
 require 'active_support/breakpoint'
 require 'active_record/fixtures'
+require 'mocha'
 
 config = YAML::load(IO.read(File.dirname(__FILE__) + '/database.yml'))
 ActiveRecord::Base.logger = Logger.new(File.dirname(__FILE__) + "/debug.log")
