@@ -25,7 +25,9 @@ module CollectiveIdea #:nodoc:
         #
         def acts_as_geocodable(options = {})
           options = {
-            :address => {:street => :street, :locality => :locality, :region => :region, :postal_code => :postal_code, :country => :country},
+            :address => {
+              :street => :street, :locality => :locality, :region => :region,
+              :postal_code => :postal_code, :country => :country},
             :normalize_address => false,
             :distance_column => 'distance',
             :units => :miles

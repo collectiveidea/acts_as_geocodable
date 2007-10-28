@@ -14,10 +14,25 @@ class ActsAsGeocodableTest < Test::Unit::TestCase
   
   def test_acts_as_geocodable_declaration
     assert vacations(:whitehouse).respond_to?(:acts_as_geocodable_options)
-    assert vacations(:whitehouse).respond_to?(:geocoding)
-    assert vacations(:whitehouse).respond_to?(:geocode)
   end
   
+  def test_declaration_adds_geocoding_association
+    geocoding = Vacation.reflect_on_association(:geocoding)
+    assert_not_nil geocoding
+    assert_equal :has_one, geocoding.macro
+    assert_equal :geocoding, geocoding.name
+    assert_equal 'Geocoding', geocoding.class_name
+  end
+  
+  def test_declaration_adds_geocode_geocode_method
+    vacation = vacations(:whitehouse)
+    assert_equal vacation.geocoding.geocode, vacation.geocode
+  end
+
+  def test_geocode_method_without_geocoding
+    assert_nil Vacation.new.geocode
+  end
+
   def test_to_location_full_address
     expected = Graticule::Location.new :street => '1600 Pennsylvania Ave NW',
       :locality => 'Washington', :region => 'DC', :postal_code => '20502',
@@ -207,10 +222,20 @@ class ActsAsGeocodableTest < Test::Unit::TestCase
     assert_equal vacations(:whitehouse), Vacation.find(:farthest, :origin => "49406")
   end
   
+  def test_find_nearest_with_include_raises_error
+    assert_raises(ArgumentError) { Vacation.find(:nearest, :origin => '49406', :include => :nearest_city) }
+  end
+  
   def test_uses_units_set_in_declared_options
     Vacation.acts_as_geocodable_options.merge! :units => :kilometers
     saugatuck = Vacation.find(:first, :within => 2, :units => :kilometers, :origin => "49406")
     assert_in_delta 1.27821863, saugatuck.distance, 0.2
+  end
+  
+  def test_find_with_order
+    expected = [vacations(:saugatuck), vacations(:whitehouse)]
+    actual = Vacation.find(:all, :origin => '49406', :order => 'distance')
+    assert_equal expected, actual
   end
   
   def test_location_to_geocode_nil
