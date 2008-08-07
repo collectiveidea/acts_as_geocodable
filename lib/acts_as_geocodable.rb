@@ -91,6 +91,22 @@ module CollectiveIdea #:nodoc:
           end
         end
         
+        # Acts like find(), except doesn't add the distance alias to the select 
+        def count(*args)
+          options = args.extract_options!
+          origin = location_to_geocode options.delete(:origin)
+          if origin
+            options[:units] ||= acts_as_geocodable_options[:units]
+            with_proximity!(args, options) do
+              geocode_conditions!(options, origin) do
+                join_geocodes { super *args.push(options) }
+              end
+            end
+          else
+            super *args.push(options)
+          end
+        end
+  
         # Convert the given location to a Geocode
         def location_to_geocode(location)
           case location
