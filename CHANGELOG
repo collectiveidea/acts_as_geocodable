@@ -1,3 +1,6 @@
+0.2.1 - 2008-8-8
+* Results are now WillPaginate compatible
+
 0.2.0 - 2007-10-27
 * Added validates_as_geocodable (Mark Van Holstyn)
 * Allow address mapping to be a single field (Mark Van Holstyn)

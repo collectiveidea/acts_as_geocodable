@@ -91,7 +91,20 @@ module CollectiveIdea #:nodoc:
           end
         end
         
-        # Acts like find(), except doesn't add the distance alias to the select 
+        # Extends ActiveRecord's count method to be geo-aware.
+        #
+        #   Model.count(:within => 10, :origin => "Chicago, IL")
+        #
+        # == Options
+        #
+        # * <tt>:origin</tt>: A Geocode, String, or geocodable model that specifies
+        #   the origin
+        # * <tt>:within</tt>: Limit to results within this radius of the origin
+        # * <tt>:beyond</tt>: Limit to results outside of this radius from the origin
+        # * <tt>:units</tt>: Units to use for <tt>:within</tt> or <tt>:beyond</tt>.
+        #   Default is <tt>:miles</tt> unless specified otherwise in the +acts_as_geocodable+
+        #   declaration.
+        #
         def count(*args)
           options = args.extract_options!
           origin = location_to_geocode options.delete(:origin)

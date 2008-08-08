@@ -247,8 +247,8 @@ class ActsAsGeocodableTest < Test::Unit::TestCase
   end
   
   def test_count_within
-    spots = Vacation.count(:all, :origin => "49406", :within => 3)
-    assert_equal 1, spots
+    spots_count = Vacation.count(:origin => "49406", :within => 3)
+    assert_equal 1, spots_count
   end
   
   def test_within_kilometers
@@ -261,6 +261,11 @@ class ActsAsGeocodableTest < Test::Unit::TestCase
     spots = Vacation.find(:all, :origin => "49406", :beyond => 3)
     assert_equal 1, spots.size
     assert_equal vacations(:whitehouse), spots.first
+  end
+
+  def test_count_beyond
+    spots = Vacation.count(:origin => "49406", :beyond => 3)
+    assert_equal 1, spots
   end
 
   def test_find_beyond_in_kilometers
