@@ -37,7 +37,11 @@ Graticule[link:http://rubyforge.org/projects/graticule] is used for all the heav
 
 Install the plugin
 
-  script/plugin install -x http://source.collectiveidea.com/public/rails/plugins/acts_as_geocodable/
+  script/plugin install git://github.com/collectiveidea/acts_as_geocodable.git
+
+== Upgrading
+  
+Before October 2008, precision wasn't included in the Geocode model. Make sure you add a string precision column to your geocode table if you're upgrading from an older version, and update Graticule.
 
 == Configuration
 
@@ -84,8 +88,8 @@ Keep in mind that IP-based geocoding is not always accurate, and often will not 
 == Development
 
 The source code is available at:
-
-  http://source.collectiveidea.com/public/rails/plugins/acts_as_geocodable/
+   http://github.com/collectiveidea/acts_as_geocodable
+   git://github.com/collectiveidea/acts_as_geocodable.git
 
 Patches and suggestions are welcome!
 
