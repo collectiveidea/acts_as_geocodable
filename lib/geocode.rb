@@ -35,6 +35,10 @@ class Geocode < ActiveRecord::Base
     nil
   end
   
+  def precision=(name)
+    super(name.to_s)
+  end
+  
   def geocoded
     @geocoded ||= geocodings.collect { |geocoding| geocoding.geocodable }
   end
