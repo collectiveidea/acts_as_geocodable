@@ -83,10 +83,12 @@ class GeocodeTest < ActiveSupport::TestCase
   end
   
   def test_to_location
-    expected = Graticule::Location.new :street => '1600 Pennsylvania Ave NW',
-      :locality => 'Washington', :region => 'DC', :postal_code => '20502',
-      :country => nil
-    assert_equal expected, geocodes(:white_house_geocode).to_location
+    location = geocodes(:white_house_geocode).to_location
+
+    assert_kind_of Graticule::Location, location
+    [:street, :locality, :region, :postal_code, :latitude, :longitude].each do |attr|
+      assert_not_nil location.send(attr)
+    end
   end
 
 end

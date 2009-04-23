@@ -61,10 +61,6 @@ class Geocode < ActiveRecord::Base
   
   # Create a Graticule::Location
   def to_location
-    returning Graticule::Location.new do |location|
-      [:street, :locality, :region, :postal_code, :country].each do |attr|
-        location.send "#{attr}=", send(attr)
-      end
-    end
+    Graticule::Location.new(attributes.except('id', 'query'))
   end
 end
