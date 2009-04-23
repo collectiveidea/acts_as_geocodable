@@ -3,6 +3,7 @@ plugin_test_dir = File.dirname(__FILE__)
 
 require 'rubygems'
 require 'test/unit'
+require 'active_support'
 require 'active_record'
 require 'action_controller'
 require 'active_record/fixtures'
@@ -19,7 +20,9 @@ load(File.join(plugin_test_dir, "db", "schema.rb"))
 
 Geocode.geocoder ||= Graticule.service(:bogus).new
 
-class Test::Unit::TestCase #:nodoc:
+class ActiveSupport::TestCase #:nodoc:
+  include ActiveRecord::TestFixtures
+  
   self.fixture_path = File.dirname(__FILE__) + "/fixtures/"
   
   # Turn off transactional fixtures if you're working with MyISAM tables in MySQL

@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), 'test_helper')
 
-class GeocodeTest < Test::Unit::TestCase
+class GeocodeTest < ActiveSupport::TestCase
   fixtures :geocodes
   
   def test_distance_to

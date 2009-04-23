@@ -18,7 +18,7 @@ class AddressBlobVacation < ActiveRecord::Base
   acts_as_geocodable :address => :address, :normalize_address => true
 end
 
-class ActsAsGeocodableTest < Test::Unit::TestCase
+class ActsAsGeocodableTest < ActiveSupport::TestCase
   fixtures :vacations, :cities, :geocodes, :geocodings
   
   def test_acts_as_geocodable_declaration
