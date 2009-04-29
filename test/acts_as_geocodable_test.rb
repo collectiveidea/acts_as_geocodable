@@ -18,6 +18,15 @@ class AddressBlobVacation < ActiveRecord::Base
   acts_as_geocodable :address => :address, :normalize_address => true
 end
 
+class CallbackLocation < ActiveRecord::Base
+  acts_as_geocodable :address => :address
+  after_geocoding :done_geocoding
+  
+  def done_geocoding
+    true
+  end
+end
+
 class ActsAsGeocodableTest < ActiveSupport::TestCase
   fixtures :vacations, :cities, :geocodes, :geocodings
   
@@ -323,6 +332,21 @@ class ActsAsGeocodableTest < ActiveSupport::TestCase
   def test_find_nearest_raises_error_with_include
     assert_raises(ArgumentError) { Vacation.find(:nearest, :include => :nearest_city, :origin => 49406) }
   end
+  
+  def test_callback_after_geocoding
+    location = CallbackLocation.new :address => "grand rapids, mi"
+    assert_nil location.geocoding
+    location.expects(:done_geocoding).once.returns(true)
+    assert location.save!
+  end
+
+  def test_does_not_run_the_callback_after_geocoding_if_object_dont_change
+    location = CallbackLocation.create(:address => "grand rapids, mi")
+    assert_not_nil location.geocoding
+    location.expects(:done_geocoding).never
+    assert location.save!
+  end
+
   
 private
   

@@ -35,7 +35,9 @@ module CollectiveIdea #:nodoc:
           
           write_inheritable_attribute :acts_as_geocodable_options, options
           class_inheritable_reader :acts_as_geocodable_options
-
+          
+          define_callbacks :after_geocoding
+          
           has_one :geocoding, :as => :geocodable, :include => :geocode, :dependent => :destroy
           
           after_save :attach_geocode          
@@ -242,10 +244,12 @@ module CollectiveIdea #:nodoc:
               self.geocoding = Geocoding.new :geocode => geocode
               self.update_address self.acts_as_geocodable_options[:normalize_address]
             end
+            callback :after_geocoding
           end
         rescue Graticule::Error => e
           logger.warn e.message
         end
+        
         
         def update_address(force = false)
           unless self.geocode.blank?

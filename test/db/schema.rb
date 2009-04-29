@@ -46,6 +46,11 @@ ActiveRecord::Schema.define(:version => 1) do
     t.column "name", :string
     t.column "address", :string
   end
+  
+  create_table "callback_locations", :force => true do |t|
+    t.column "name", :string
+    t.column "address", :string
+  end
     
   create_table "cities", :force => true do |t|
     t.column "name", :string
