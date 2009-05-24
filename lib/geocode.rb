@@ -1,6 +1,4 @@
 class Geocode < ActiveRecord::Base
-  include Comparable
-
   has_many :geocodings, :dependent => :destroy
   
   validates_uniqueness_of :query
@@ -45,10 +43,6 @@ class Geocode < ActiveRecord::Base
   
   def on(geocodable)
     geocodings.create :geocodable => geocodable
-  end
-  
-  def <=>(comparison_object)
-    self.to_s <=> comparison_object.to_s
   end
   
   def coordinates
