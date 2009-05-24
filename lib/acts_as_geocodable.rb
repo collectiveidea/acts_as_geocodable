@@ -235,13 +235,14 @@ module CollectiveIdea #:nodoc:
         
         # Perform the geocoding
         def attach_geocode
-          geocode = Geocode.find_or_create_by_location self.to_location unless self.to_location.blank?
-          self.geocoding.destroy if self.geocoding && self.geocoding != geocode
-          if geocode
-            self.geocoding = Geocoding.new :geocode => geocode
+          new_geocode = Geocode.find_or_create_by_location self.to_location unless self.to_location.blank?
+          if new_geocode && self.geocode != new_geocode
+            self.geocoding = Geocoding.new :geocode => new_geocode
             self.update_address self.acts_as_geocodable_options[:normalize_address]
+            callback :after_geocoding
+          elsif !new_geocode && self.geocoding
+            self.geocoding.destroy
           end
-          callback :after_geocoding
         rescue Graticule::Error => e
           logger.warn e.message
         end
