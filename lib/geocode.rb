@@ -35,7 +35,7 @@ class Geocode < ActiveRecord::Base
   end
   
   def precision=(name)
-    super(name.to_s)
+    self[:precision] = name.to_s
   end
   
   def geocoded
