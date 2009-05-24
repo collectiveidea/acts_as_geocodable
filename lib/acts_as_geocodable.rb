@@ -224,28 +224,24 @@ module CollectiveIdea #:nodoc:
         #   be any formula supported by Graticule. The default is <tt>:haversine</tt>.
         #  
         def distance_to(destination, options = {})
-          options = {
-            :units => self.class.acts_as_geocodable_options[:units],
-            :formula => :haversine
-          }.merge(options)
+          units = options[:units] || acts_as_geocodable_options[:units]
+          formula = options[:formula] || :haversine
           
           geocode = self.class.location_to_geocode(destination)
-          self.geocode.distance_to(geocode, options[:units], options[:formula])
+          self.geocode.distance_to(geocode, units, formula)
         end
         
       protected
         
         # Perform the geocoding
         def attach_geocode
-          geocode = Geocode.find_or_create_by_location self.to_location unless self.to_location.attributes.all?(&:blank?)
-          if geocode.nil? || geocode != self.geocode || geocode.new_record?
-            self.geocoding.destroy unless self.geocoding.blank?
-            if geocode
-              self.geocoding = Geocoding.new :geocode => geocode
-              self.update_address self.acts_as_geocodable_options[:normalize_address]
-            end
-            callback :after_geocoding
+          geocode = Geocode.find_or_create_by_location self.to_location unless self.to_location.blank?
+          self.geocoding.destroy if self.geocoding && self.geocoding != geocode
+          if geocode
+            self.geocoding = Geocoding.new :geocode => geocode
+            self.update_address self.acts_as_geocodable_options[:normalize_address]
           end
+          callback :after_geocoding
         rescue Graticule::Error => e
           logger.warn e.message
         end
