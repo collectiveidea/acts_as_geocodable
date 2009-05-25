@@ -1,3 +1,8 @@
+require 'acts_as_geocodable/geocoding'
+require 'acts_as_geocodable/geocode'
+require 'acts_as_geocodable/remote_location'
+require 'acts_as_geocodable/compatibility'
+
 module CollectiveIdea #:nodoc:
   module Acts #:nodoc:
     module Geocodable #:nodoc:
