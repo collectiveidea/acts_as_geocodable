@@ -3,6 +3,7 @@ plugin_test_dir = File.dirname(__FILE__)
 
 require 'rubygems'
 require 'test/unit'
+require 'multi_rails_init'
 require 'active_support'
 require 'active_record'
 require 'action_controller'
@@ -23,7 +24,7 @@ load(File.join(plugin_test_dir, "db", "schema.rb"))
 Geocode.geocoder ||= Graticule.service(:bogus).new
 
 class ActiveSupport::TestCase #:nodoc:
-  include ActiveRecord::TestFixtures
+  include ActiveRecord::TestFixtures if ActiveRecord.const_defined?(:TestFixtures)
   
   self.fixture_path = File.dirname(__FILE__) + "/fixtures/"
   
