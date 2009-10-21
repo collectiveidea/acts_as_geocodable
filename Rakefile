@@ -32,6 +32,7 @@ begin
     gemspec.homepage = 'http://github.com/collectiveidea/acts_as_geocodable'
     gemspec.authors = ['Daniel Morrison', 'Brandon Keepers']
   end
+  Jeweler::GemcutterTasks.new
 rescue LoadError
   puts "Jeweler not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"
 end

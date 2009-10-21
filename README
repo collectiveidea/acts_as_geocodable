@@ -35,9 +35,14 @@ Graticule[link:http://rubyforge.org/projects/graticule] is used for all the heav
 
   gem install graticule --include-dependencies
 
-Install the plugin
+Install as a plugin
 
   script/plugin install git://github.com/collectiveidea/acts_as_geocodable.git
+  
+Or, install as a gem
+  
+  gem install acts_as_geocodable --source=http://gemcutter.org
+  
 
 == Upgrading
   

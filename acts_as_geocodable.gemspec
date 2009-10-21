@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
      "Rakefile",
      "VERSION",
      "about.yml",
+     "acts_as_geocodable.gemspec",
      "generators/geocodable_migration/USAGE",
      "generators/geocodable_migration/geocodable_migration_generator.rb",
      "generators/geocodable_migration/templates/migration.rb",
