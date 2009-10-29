@@ -12,7 +12,7 @@ require 'shoulda'
 require 'matchy'
 require 'mocha'
 
-require plugin_test_dir + '/../init.rb'
+require plugin_test_dir + '/../rails/init.rb'
 
 ActiveRecord::Base.logger = Logger.new(plugin_test_dir + "/debug.log")
 

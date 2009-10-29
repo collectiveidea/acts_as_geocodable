@@ -32,9 +32,7 @@ class ActsAsGeocodableTest < ActiveSupport::TestCase
   fixtures :vacations, :cities, :geocodes, :geocodings
 
   # enable Should macros
-  def self.model_class
-    Vacation
-  end
+  subject { Vacation.new }
   
   should_have_one :geocoding
   
