@@ -167,18 +167,39 @@ class ActsAsGeocodableTest < ActiveSupport::TestCase
   
   context "validates_as_geocodable" do
     setup do
-      @vacation = ValidatedVacation.new :locality => "Grand Rapids", :region => "MI"
+      @model = Class.new(Vacation)
+      @vacation = @model.new :locality => "Grand Rapids", :region => "MI"
+    end
+
+    should "be valid with geocodable address" do
+      @model.validates_as_geocodable
+      assert @vacation.valid?
     end
 
     should "be invalid without geocodable address" do
+      @model.validates_as_geocodable
       Geocode.geocoder.expects(:locate).raises(Graticule::Error)
       assert !@vacation.valid?
       assert_equal 1, @vacation.errors.size
       assert_equal "Address could not be geocoded.", @vacation.errors.on(:base)
     end
     
-    should "be valid with geocodable address" do
+    should "be valid with proper precision" do
+      @model.validates_as_geocodable :precision => :street
+      Geocode.geocoder.expects(:locate).returns(Graticule::Location.new(:precision => 'street'))
       assert @vacation.valid?
+    end
+    
+    should "be invalid without proper precision" do
+      @model.validates_as_geocodable :precision => :street
+      Geocode.geocoder.expects(:locate).returns(Graticule::Location.new(:precision => 'city'))
+      assert !@vacation.valid?
+      assert_equal "Address could not be geocoded.", @vacation.errors.on(:base)
+    end
+
+    should "allow nil" do
+      @model.validates_as_geocodable :allow_nil => true
+      assert @model.new.valid?
     end
   end
   

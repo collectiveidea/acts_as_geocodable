@@ -135,12 +135,22 @@ module CollectiveIdea #:nodoc:
           end
         end
         
+        # Validate that the model can be geocoded
+        #
+        # Options:
+        # * +:message+: Added to errors base (Default: Address could not be geocoded.)
+        # * +:allow_nil+: If all the address attributes are blank, then don't try to validate the geocode (Default: false)
+        # * +:precision+: Require a certain geocoding precision
+        #
         def validates_as_geocodable(options = {})
           options = options.reverse_merge :message => "Address could not be geocoded.", :allow_nil => false
-          validate do |geocodable|
-            if !(options[:allow_nil] && geocodable.to_location.attributes.all?(&:blank?)) &&
-                !Geocode.find_or_create_by_location(geocodable.to_location)
-              geocodable.errors.add_to_base options[:message]
+          validate do |model|
+            is_blank = model.to_location.attributes.except(:precision).all?(&:blank?)
+            unless options[:allow_nil] && is_blank
+              geocode = model.send :attach_geocode
+              if !geocode || (options[:precision] && options[:precision].to_s != geocode.precision)
+                model.errors.add_to_base options[:message]
+              end
             end
           end
         end
@@ -247,6 +257,7 @@ module CollectiveIdea #:nodoc:
           elsif !new_geocode && self.geocoding
             self.geocoding.destroy
           end
+          new_geocode
         rescue Graticule::Error => e
           logger.warn e.message
         end
