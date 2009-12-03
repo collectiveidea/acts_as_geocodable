@@ -138,9 +138,9 @@ module CollectiveIdea #:nodoc:
         # Validate that the model can be geocoded
         #
         # Options:
-        # * +:message+: Added to errors base (Default: Address could not be geocoded.)
-        # * +:allow_nil+: If all the address attributes are blank, then don't try to validate the geocode (Default: false)
-        # * +:precision+: Require a certain geocoding precision
+        # * <tt>:message</tt>: Added to errors base (Default: Address could not be geocoded.)
+        # * <tt>:allow_nil</tt>: If all the address attributes are blank, then don't try to validate the geocode (Default: false)
+        # * <tt>:precision</tt>: Require a certain geocoding precision
         #
         def validates_as_geocodable(options = {})
           options = options.reverse_merge :message => "Address could not be geocoded.", :allow_nil => false
@@ -263,7 +263,7 @@ module CollectiveIdea #:nodoc:
         end
         
         
-        def update_address(force = false)
+        def update_address(force = false) #:nodoc:
           unless self.geocode.blank?
             if self.acts_as_geocodable_options[:address].is_a? Symbol
               method = self.acts_as_geocodable_options[:address]
@@ -282,7 +282,7 @@ module CollectiveIdea #:nodoc:
           end
         end
         
-        def geo_attribute(attr_key)
+        def geo_attribute(attr_key) #:nodoc:
           if self.acts_as_geocodable_options[:address].is_a? Symbol
             attr_name = self.acts_as_geocodable_options[:address]
             attr_key == :street ? self.send(attr_name) : nil
