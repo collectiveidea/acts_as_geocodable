@@ -139,8 +139,16 @@ module CollectiveIdea #:nodoc:
         #
         # Options:
         # * <tt>:message</tt>: Added to errors base (Default: Address could not be geocoded.)
-        # * <tt>:allow_nil</tt>: If all the address attributes are blank, then don't try to validate the geocode (Default: false)
+        # * <tt>:allow_nil</tt>: If all the address attributes are blank, then don't try to
+        #   validate the geocode (Default: false)
         # * <tt>:precision</tt>: Require a certain geocoding precision
+        #
+        # validates_as_geocodable also takes a block that you can use to performa additional
+        # checks on the geocodoe. If this block returns false, then validation will fail.
+        #
+        #   validates_as_geocodable do |geocode|
+        #     geocode.country == "US"
+        #   end
         #
         def validates_as_geocodable(options = {})
           options = options.reverse_merge :message => "Address could not be geocoded.", :allow_nil => false
@@ -148,13 +156,15 @@ module CollectiveIdea #:nodoc:
             is_blank = model.to_location.attributes.except(:precision).all?(&:blank?)
             unless options[:allow_nil] && is_blank
               geocode = model.send :attach_geocode
-              if !geocode || (options[:precision] && options[:precision].to_s != geocode.precision)
+              if !geocode ||
+                  (options[:precision] && options[:precision].to_s != geocode.precision) ||
+                  (block_given? && yield(geocode) == false)
                 model.errors.add_to_base options[:message]
               end
             end
           end
         end
-      
+        
       private
       
         def add_distance_to_select!(origin, options)

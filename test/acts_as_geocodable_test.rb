@@ -201,6 +201,23 @@ class ActsAsGeocodableTest < ActiveSupport::TestCase
       @model.validates_as_geocodable :allow_nil => true
       assert @model.new.valid?
     end
+    
+    should "be invalid if block returns false" do
+      @model.validates_as_geocodable(:allow_nil => false) do |geocode|
+        ["USA", "US"].include?(geocode.country)
+      end
+      Geocode.geocoder.expects(:locate).returns(Graticule::Location.new(:country => 'CA'))
+      assert !@vacation.valid?
+    end
+
+    should "be valid if block returns true" do
+      @model.validates_as_geocodable(:allow_nil => false) do |geocode|
+        ["USA", "US"].include?(geocode.country)
+      end
+      Geocode.geocoder.expects(:locate).returns(Graticule::Location.new(:country => 'US'))
+      
+      assert @vacation.valid?
+    end
   end
   
   context "find with origin" do
