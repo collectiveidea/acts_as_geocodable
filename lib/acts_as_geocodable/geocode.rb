@@ -34,6 +34,10 @@ class Geocode < ActiveRecord::Base
     nil
   end
   
+  def precision
+    Graticule::Precision.new(self[:precision].to_s)
+  end
+  
   def precision=(name)
     self[:precision] = name.to_s
   end

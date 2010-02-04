@@ -184,15 +184,21 @@ class ActsAsGeocodableTest < ActiveSupport::TestCase
       assert_equal "Address could not be geocoded.", @vacation.errors.on(:base)
     end
     
-    should "be valid with proper precision" do
+    should "be valid with the same precision" do
       @model.validates_as_geocodable :precision => :street
       Geocode.geocoder.expects(:locate).returns(Graticule::Location.new(:precision => 'street'))
       assert @vacation.valid?
     end
     
-    should "be invalid without proper precision" do
+    should "be valid with a higher precision" do
+      @model.validates_as_geocodable :precision => :region
+      Geocode.geocoder.expects(:locate).returns(Graticule::Location.new(:precision => 'street'))
+      assert @vacation.valid?
+    end
+    
+    should "be invalid with a lower precision" do
       @model.validates_as_geocodable :precision => :street
-      Geocode.geocoder.expects(:locate).returns(Graticule::Location.new(:precision => 'city'))
+      Geocode.geocoder.expects(:locate).returns(Graticule::Location.new(:precision => 'region'))
       assert !@vacation.valid?
       assert_equal "Address could not be geocoded.", @vacation.errors.on(:base)
     end
