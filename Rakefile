@@ -31,6 +31,7 @@ begin
     gemspec.email = 'info@collectiveidea.com'
     gemspec.homepage = 'http://github.com/collectiveidea/acts_as_geocodable'
     gemspec.authors = ['Daniel Morrison', 'Brandon Keepers']
+    gemspec.add_dependency 'graticule', '>=1.0.0.pre2'
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
