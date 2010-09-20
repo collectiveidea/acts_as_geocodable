@@ -228,7 +228,7 @@ module CollectiveIdea #:nodoc:
         
         # Create a Graticule::Location
         def to_location
-          returning Graticule::Location.new do |location|
+          Graticule::Location.new.tap do |location|
             [:street, :locality, :region, :postal_code, :country].each do |attr|
               location.send "#{attr}=", geo_attribute(attr)
             end
