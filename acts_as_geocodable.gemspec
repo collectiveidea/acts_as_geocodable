@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{acts_as_geocodable}
-  s.version = "1.0.3"
+  s.version = "1.0.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Daniel Morrison", "Brandon Keepers"]
-  s.date = %q{2010-03-17}
+  s.date = %q{2010-09-20}
   s.description = %q{Simple geocoding for Rails ActiveRecord models. See the README for more details.}
   s.email = %q{info@collectiveidea.com}
   s.extra_rdoc_files = [
@@ -18,6 +18,8 @@ Gem::Specification.new do |s|
   s.files = [
     ".gitignore",
      "CHANGELOG",
+     "Gemfile",
+     "Gemfile.lock",
      "MIT-LICENSE",
      "README",
      "Rakefile",
@@ -48,7 +50,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/collectiveidea/acts_as_geocodable}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.5}
+  s.rubygems_version = %q{1.3.6}
   s.summary = %q{Simple geocoding for Rails ActiveRecord models}
   s.test_files = [
     "test/acts_as_geocodable_test.rb",
