@@ -49,6 +49,41 @@ module ActsAsGeocodable #:nodoc:
       
       after_save :attach_geocode          
       
+      # Would love to do a simpler scope here, like: 
+      # scope :with_geocode_fields, includes(:geocoding)
+      # But we need to use select() and it would get overwritten.
+      scope :with_geocode_fields, lambda {
+        joins("JOIN geocodings ON
+            #{table_name}.#{primary_key} = geocodings.geocodable_id AND
+              geocodings.geocodable_type = '#{model_name}'
+            JOIN geocodes ON geocodings.geocode_id = geocodes.id")
+      }
+      
+      scope :beyond, lambda {|beyond_distance|
+        having("#{acts_as_geocodable_options[:distance_column]} > #{beyond_distance}")
+      }
+      
+      scope :within, lambda {|within_distance|
+        having("#{acts_as_geocodable_options[:distance_column]} <= #{within_distance}")
+      }
+
+      scope :origin, lambda {|*args|
+        origin = args[0]
+        options = {
+          :units => acts_as_geocodable_options[:units],
+        }.merge(args[1] || {})
+        
+        scope = with_geocode_fields.select("#{table_name}.*, #{sql_for_distance(origin, options[:units])} AS
+             #{acts_as_geocodable_options[:distance_column]}")
+        
+        scope = scope.beyond(options[:beyond]) if options[:beyond]
+        scope = scope.within(options[:within]) if options[:within]
+        scope
+      }
+      
+      scope :near, order("#{acts_as_geocodable_options[:distance_column]} ASC")
+      scope :far, order("#{acts_as_geocodable_options[:distance_column]} DESC")
+      
       include ActsAsGeocodable::InstanceMethods
       extend ActsAsGeocodable::SingletonMethods
     end
@@ -84,45 +119,24 @@ module ActsAsGeocodable #:nodoc:
     #   Default is <tt>:miles</tt> unless specified otherwise in the +acts_as_geocodable+
     #   declaration.
     #
+    
+    def nearest
+      near.first
+    end
+    
+    def farthest
+      far.first
+    end
+    
+    
     def find(*args)
       options = args.extract_options!
       origin = location_to_geocode options.delete(:origin)
       if origin
         options[:units] ||= acts_as_geocodable_options[:units]
         add_distance_to_select!(origin, options)
-        with_proximity!(args, options) do
-          geocode_conditions!(options, origin) do
-            join_geocodes { super *args.push(options) }
-          end
-        end
-      else
-        super *args.push(options)
-      end
-    end
-    
-    # Extends ActiveRecord's count method to be geo-aware.
-    #
-    #   Model.count(:within => 10, :origin => "Chicago, IL")
-    #
-    # == Options
-    #
-    # * <tt>:origin</tt>: A Geocode, String, or geocodable model that specifies
-    #   the origin
-    # * <tt>:within</tt>: Limit to results within this radius of the origin
-    # * <tt>:beyond</tt>: Limit to results outside of this radius from the origin
-    # * <tt>:units</tt>: Units to use for <tt>:within</tt> or <tt>:beyond</tt>.
-    #   Default is <tt>:miles</tt> unless specified otherwise in the +acts_as_geocodable+
-    #   declaration.
-    #
-    def count(*args)
-      options = args.extract_options!
-      origin = location_to_geocode options.delete(:origin)
-      if origin
-        options[:units] ||= acts_as_geocodable_options[:units]
-        with_proximity!(args, options) do
-          geocode_conditions!(options, origin) do
-            join_geocodes { super *args.push(options) }
-          end
+        geocode_conditions!(options, origin) do
+          join_geocodes { super *args.push(options) }
         end
       else
         super *args.push(options)
@@ -175,24 +189,11 @@ module ActsAsGeocodable #:nodoc:
         ", #{sql_for_distance(origin, options[:units])} AS
         #{acts_as_geocodable_options[:distance_column]}"
     end
-  
-    def with_proximity!(args, options)
-      if [:nearest, :farthest].include?(args.first)
-        raise ArgumentError, ":include cannot be specified with :nearest and :farthest" if options[:include]
-        direction = args.first == :nearest ? "ASC" : "DESC"
-        args[0] = :first
-        with_scope :find => { :order => "#{acts_as_geocodable_options[:distance_column]} #{direction}"} do
-          yield
-        end
-      else
-        yield
-      end
-    end
     
     def join_geocodes(&block)
       with_scope :find => { :joins => "JOIN geocodings ON
           #{table_name}.#{primary_key} = geocodings.geocodable_id AND
-            geocodings.geocodable_type = '#{class_name}'
+            geocodings.geocodable_type = '#{model_name}'
           JOIN geocodes ON geocodings.geocode_id = geocodes.id" } do
         yield
       end
@@ -202,7 +203,6 @@ module ActsAsGeocodable #:nodoc:
       units = options.delete(:units)
       conditions = []
       conditions << "#{sql_for_distance(origin, units)} <= #{options.delete(:within)}" if options[:within]
-      conditions << "#{sql_for_distance(origin, units)} > #{options.delete(:beyond)}" if options[:beyond]
       if conditions.empty?
         yield
       else
@@ -211,6 +211,7 @@ module ActsAsGeocodable #:nodoc:
     end
     
     def sql_for_distance(origin, units = acts_as_geocodable_options[:units])
+      origin = location_to_geocode(origin)
       Graticule::Distance::Spherical.to_sql(
         :latitude => origin.latitude,
         :longitude => origin.longitude,

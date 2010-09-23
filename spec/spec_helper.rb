@@ -12,6 +12,7 @@ require 'active_record'
 require 'action_controller'
 require 'factory_girl'
 require 'database_cleaner'
+require 'ruby-debug'
 
 require plugin_test_dir + '/../rails/init.rb'
 
@@ -22,7 +23,7 @@ ActiveRecord::Base.establish_connection(ENV["DB"] || "mysql")
 ActiveRecord::Migration.verbose = false
 load(File.join(plugin_test_dir, "db", "schema.rb"))
 
-Geocode.geocoder ||= Graticule.service(:bogus).new
+require 'support/geocoder'
 
 def assert_geocode_result(result)
   assert_not_nil result
@@ -49,7 +50,7 @@ end
 
 class Vacation < ActiveRecord::Base
   acts_as_geocodable :normalize_address => true
-  belongs_to :nearest_city, :class => 'City', :foreign_key => 'city_id'
+  belongs_to :nearest_city, :class_name => 'City', :foreign_key => 'city_id'
 end
 
 class City < ActiveRecord::Base
@@ -75,4 +76,4 @@ class CallbackLocation < ActiveRecord::Base
   end
 end
 
-require 'factories'
+require 'support/factories'

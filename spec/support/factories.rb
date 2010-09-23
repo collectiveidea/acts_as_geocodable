@@ -83,13 +83,14 @@ Factory.define :white_house_geocoding, :class => Geocoding do |g|
 end
 
 Factory.define :saugatuck_geocoding, :class => Geocoding do |g|
-  g.geocode_id 1
-  g.geocodable_id 1
-  g.geocodable_type 'Vacation'
+  g.geocode { Factory(:saugatuck_geocode) }
+  g.geocodable { Factory(:saugatuck) }
 end
 
 Factory.define :saugatuck, :class => Vacation do |v|
   v.name 'Saugatuck, Michigan'
+  v.locality 'Saugatuck'
+  v.region 'MI'
 end
 
 Factory.define :whitehouse, :class => Vacation do |v|
