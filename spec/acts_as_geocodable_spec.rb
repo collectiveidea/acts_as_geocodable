@@ -1,20 +1,14 @@
 require 'spec_helper'
 
 describe ActsAsGeocodable do
-  # fixtures :vacations, :cities, :geocodes, :geocodings
-
-  # # enable Should macros
-  # subject { Vacation.new }
-  # 
-  # should_have_one :geocoding
+  before do
+    @white_house = Factory(:whitehouse)
+    @saugatuck = Factory(:saugatuck)
+  end
   
   describe "geocode" do
-    before do
-      @location = vacations(:whitehouse)
-    end
-
     it "should be the geocode from the geocoding" do
-      @location.geocode.should == @location.geocoding.geocode
+      @white_house.geocode.should == @white_house.geocoding.geocode
     end
     
     it "should be nil without a geocoding" do
@@ -28,11 +22,11 @@ describe ActsAsGeocodable do
       expected = Graticule::Location.new :street => '1600 Pennsylvania Ave NW',
         :locality => 'Washington', :region => 'DC', :postal_code => '20502',
         :country => nil
-      vacations(:whitehouse).to_location.should == expected
+      @white_house.to_location.should == expected
     end
     
     it "should return a graticule location for mapped locations" do
-      cities(:holland).to_location.should == Graticule::Location.new(:postal_code => '49423')
+      Factory(:holland).to_location.should == Graticule::Location.new(:postal_code => '49423')
     end
   end
   
@@ -92,47 +86,46 @@ describe ActsAsGeocodable do
     end
 
     it "should destroy existing geocoding" do
-      whitehouse = vacations(:whitehouse)
       [:name, :street, :locality, :region, :postal_code].each do |attribute|
-        whitehouse.send("#{attribute}=", nil)
+        @white_house.send("#{attribute}=", nil)
       end
-      assert_difference 'Geocoding.count', -1 do
-        whitehouse.save!
-      end
-      whitehouse.reload
-      whitehouse.geocoding.should be_nil
+      
+      lambda { @white_house.save! }.should change(Geocoding, :count, -1)
+      @white_house.reload
+      @white_house.geocoding.should be_nil
     end
   end
 
   describe "on save" do
     it "should not create geocode without changes" do
-      whitehouse = vacations(:whitehouse)
-      assert_not_nil whitehouse.geocoding
-      original_geocode = whitehouse.geocode
+      @white_house.geocoding.should_not be_nil
+      original_geocode = @white_house.geocode
+      lambda { @white_house.save!; @white_house.reload }.should_not change(Geocode, :count)
+      @white_house.geocode.should == original_geocode
+    end
     
-      assert_no_difference 'Geocode.count + Geocoding.count' do
-        whitehouse.save!
-        whitehouse.reload
-      end
-    
-      assert_equal original_geocode, whitehouse.geocode
+    it "should not create geocoding without changes" do
+      @white_house.geocoding.should_not be_nil
+      original_geocode = @white_house.geocode
+      lambda { @white_house.save!; @white_house.reload }.should_not change(Geocoding, :count)
+      @white_house.geocode.should == original_geocode
     end
     
   end
   
   describe "on save with an existing geocode" do
     before do
-      @location = vacations(:saugatuck)
-      @location.attributes = {:locality => 'Beverly Hills', :postal_code => '90210'}
+      @beverly_hills = Factory(:beverly_hills)
+      @white_house.attributes = {:locality => 'Beverly Hills', :postal_code => '90210'}
     end
     
     it "should destroy the old geocoding" do
-      assert_no_difference('Geocoding.count') { @location.save! }
+      lambda { @white_house.save! }.should_not change(Geocoding, :count) 
     end
 
     it "should set the new geocode" do
-      @location.save!
-      @location.geocode.should == geocodes(:beverly_hills)
+      @white_house.save!
+      @white_house.geocode.should == @beverly_hills
     end
     
   end
@@ -150,51 +143,50 @@ describe ActsAsGeocodable do
 
     it "should be invalid without geocodable address" do
       @model.validates_as_geocodable
-      Geocode.geocoder.expects(:locate).raises(Graticule::Error)
-      assert !@vacation.valid?
-      assert_equal 1, @vacation.errors.size
-      assert_equal "Address could not be geocoded.", @vacation.errors[:base]
+      Geocode.geocoder.should_receive(:locate).and_raise(Graticule::Error)
+      @vacation.should_not be_valid
+      @vacation.errors.size.should == 1
+      @vacation.errors[:base].should == "Address could not be geocoded."
     end
     
     it "should be valid with the same precision" do
       @model.validates_as_geocodable :precision => :street
-      Geocode.geocoder.expects(:locate).returns(Graticule::Location.new(:precision => 'street'))
-      assert @vacation.valid?
+      Geocode.geocoder.should_receive(:locate).and_return(Graticule::Location.new(:precision => 'street'))
+      @vacation.should be_valid
     end
     
     it "should be valid with a higher precision" do
       @model.validates_as_geocodable :precision => :region
-      Geocode.geocoder.expects(:locate).returns(Graticule::Location.new(:precision => 'street'))
-      assert @vacation.valid?
+      Geocode.geocoder.should_receive(:locate).and_return(Graticule::Location.new(:precision => 'street'))
+      @vacation.should be_valid
     end
     
     it "should be invalid with a lower precision" do
       @model.validates_as_geocodable :precision => :street
-      Geocode.geocoder.expects(:locate).returns(Graticule::Location.new(:precision => 'region'))
-      assert !@vacation.valid?
-      assert_equal "Address could not be geocoded.", @vacation.errors[:base]
+      Geocode.geocoder.should_receive(:locate).and_return(Graticule::Location.new(:precision => 'region'))
+      @vacation.should_not be_valid
+      @vacation.errors[:base].should == "Address could not be geocoded."
     end
 
     it "should allow nil" do
       @model.validates_as_geocodable :allow_nil => true
-      assert @model.new.valid?
+      @model.new.should be_valid
     end
     
     it "should be invalid if block returns false" do
       @model.validates_as_geocodable(:allow_nil => false) do |geocode|
         ["USA", "US"].include?(geocode.country)
       end
-      Geocode.geocoder.expects(:locate).returns(Graticule::Location.new(:country => 'CA'))
-      assert !@vacation.valid?
+      Geocode.geocoder.should_receive(:locate).and_return(Graticule::Location.new(:country => 'CA'))
+      @vacation.should_not be_valid
     end
 
     it "should be valid if block returns true" do
       @model.validates_as_geocodable(:allow_nil => false) do |geocode|
         ["USA", "US"].include?(geocode.country)
       end
-      Geocode.geocoder.expects(:locate).returns(Graticule::Location.new(:country => 'US'))
-      
-      assert @vacation.valid?
+      Geocode.geocoder.should_receive(:locate).and_return(Graticule::Location.new(:country => 'US'))
+      @model.new.should be_valid
     end
   end
   
@@ -210,7 +202,7 @@ describe ActsAsGeocodable do
     end
     
     it "should find locations within radius" do
-      @results.should include(vacations(:saugatuck))
+      @results.should include(@saugatuck)
     end
     
     it "should add distance to results" do
@@ -219,18 +211,18 @@ describe ActsAsGeocodable do
     
     it "should find within" do
       spots = Vacation.find(:all, :origin => "49406", :within => 3)
-      assert_equal 1, spots.size
-      assert_equal vacations(:saugatuck), spots.first
+      spots.size.should == 1
+      spots.first.should == @saugatuck
     end
 
     it "should count within" do
       spots_count = Vacation.count(:origin => "49406", :within => 3)
-      assert_equal 1, spots_count
+      spots_count.should == 1
     end
 
     it "should be able to find within kilometers" do
       saugatuck = Vacation.find(:first, :within => 2, :units => :kilometers, :origin => "49406")
-      assert_equal vacations(:saugatuck), saugatuck
+      saugatuck.should == @saugatuck
       assert_in_delta 1.27821863, saugatuck.distance, 0.2
     end
     
@@ -238,15 +230,15 @@ describe ActsAsGeocodable do
   
   describe "distance_to" do
     before do
-      @saugatuck = vacations(:saugatuck)
+      @saugatuck_geocode = Factory(:saugatuck_geocode)
       @douglas = Vacation.create!(:name => 'Douglas', :postal_code => '49406')
     end
 
     it 'should calculate distance from a string' do
-      @douglas.distance_to(geocodes(:saugatuck_geocode).query).should be_close(0.794248231790402, 0.2)
+      @douglas.distance_to(@saugatuck_geocode.query).should be_close(0.794248231790402, 0.2)
     end
     it 'should calculate distance from a geocode' do
-      @douglas.distance_to(geocodes(:saugatuck_geocode)).should be_close(0.794248231790402, 0.2)
+      @douglas.distance_to(@saugatuck_geocode).should be_close(0.794248231790402, 0.2)
     end
 
     it 'should calculate distance from a geocodable model' do
@@ -272,7 +264,7 @@ describe ActsAsGeocodable do
   it "should have beyond" do
     spots = Vacation.find(:all, :origin => "49406", :beyond => 3)
     spots.size.should == 1
-    spots.first.should == vacations(:whitehouse)
+    spots.first.should == @white_house
   end
 
   it "should have count for beyond" do
@@ -282,20 +274,20 @@ describe ActsAsGeocodable do
 
   it "should find beyond with other units" do
     whitehouse = Vacation.find(:first, :beyond => 3, :units => :kilometers, :origin => "49406")
-    assert_equal vacations(:whitehouse), whitehouse
+    whitehouse.should == @white_house
     assert_in_delta 877.554975851074, whitehouse.distance, 1
   end
   
   it "should find nearest" do
-    assert_equal vacations(:saugatuck), Vacation.find(:nearest, :origin => "49406")
+    Vacation.find(:nearest, :origin => "49406").should == @saugatuck
   end
   
   it "should find farthest" do
-    assert_equal vacations(:whitehouse), Vacation.find(:farthest, :origin => "49406")
+    Vacation.find(:farthest, :origin => "49406").should == @white_house
   end
   
   it "should raise error with find nearest and including" do
-    assert_raises(ArgumentError) { Vacation.find(:nearest, :origin => '49406', :include => :nearest_city) }
+    lambda { Vacation.find(:nearest, :origin => '49406', :include => :nearest_city) }.should raise(ArgumentError)
   end
   
   it "should use units set in declared options" do
@@ -307,47 +299,48 @@ describe ActsAsGeocodable do
   it "should find with order" do
     expected = [vacations(:saugatuck), vacations(:whitehouse)]
     actual = Vacation.find(:all, :origin => '49406', :order => 'distance')
-    assert_equal expected, actual
+    actual.should == expected
   end
   
   it "can set the geocode to nil" do
-    assert_nil Vacation.send(:location_to_geocode, nil)
+    Vacation.send(:location_to_geocode, nil).should be_nil
   end
   
   it "can convert to a geocode" do
     g = Geocode.new
-    assert(g === Vacation.send(:location_to_geocode, g))
+    Vacation.send(:location_to_geocode, g).should === g
   end
   
   it "can convert a string to a geocode" do
-    assert_equal geocodes(:douglas), Vacation.send(:location_to_geocode, '49406')
+    douglas_geocode = Factory(:douglas_geocode)
+    Vacation.send(:location_to_geocode, '49406').should == douglas_geocode
   end
 
   it "can covert a numeric zip to a geocode" do
-    assert_equal geocodes(:douglas), Vacation.send(:location_to_geocode, 49406)
+    douglas_geocode = Factory(:douglas_geocode)
+    Vacation.send(:location_to_geocode, 49406).should == douglas_geocode
   end
   
   it "should convert a geocodable to a geocode" do
-    assert_equal geocodes(:white_house_geocode),
-      Vacation.send(:location_to_geocode, vacations(:whitehouse))
+    Vacation.send(:location_to_geocode, @white_house).should == @white_house.geocode
   end
   
   it "should raise an error with nearest city and bad arguments" do
-    assert_raises(ArgumentError) { Vacation.find(:nearest, :include => :nearest_city, :origin => 49406) }
+    lambda { Vacation.find(:nearest, :include => :nearest_city, :origin => 49406) }.should raise(ArgumentError)
   end
   
   it "should run a callback after geocoding" do
     location = CallbackLocation.new :address => "Holland, MI"
-    assert_nil location.geocoding
-    location.expects(:done_geocoding).once.returns(true)
-    assert location.save!
+    location.geocoding.should be_nil
+    location.should_receive(:done_geocoding).once.and_returns(true)
+    location.save!.should be_true
   end
 
   it "should not run callbacks after geocoding if the object is the same" do
     location = CallbackLocation.create(:address => "Holland, MI")
-    assert_not_nil location.geocoding
-    location.expects(:done_geocoding).never
-    assert location.save!
+    location.geocoding.should_not be_nil
+    location.should_not_receive(:done_geocoding)
+    location.save!.should be_true
   end
   
   
