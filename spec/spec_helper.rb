@@ -49,7 +49,7 @@ end
 
 class Vacation < ActiveRecord::Base
   acts_as_geocodable :normalize_address => true
-  belongs_to :nearest_city, :class_name => 'City', :foreign_key => 'city_id'
+  belongs_to :nearest_city, :class => 'City', :foreign_key => 'city_id'
 end
 
 class City < ActiveRecord::Base
