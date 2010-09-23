@@ -1,10 +1,23 @@
+# -*- encoding: utf-8 -*-
+$LOAD_PATH.unshift File.expand_path("../lib", __FILE__)
+require 'rubygems'
+require 'bundler/setup'
+
+require 'acts_as_geocodable/version'
 require 'rake'
-require 'load_multi_rails_rake_tasks'
 require 'rake/testtask'
 require 'rake/rdoctask'
 
 desc 'Default: run unit tests.'
 task :default => :test
+
+task :build do
+  system "gem build acts_as_geocodable.gemspec"
+end
+ 
+task :release => :build do
+  system "gem push acts_as_geocodable-#{ActsAsGeocodable::VERSION}"
+end
 
 desc 'Test the acts_as_geocodable plugin.'
 Rake::TestTask.new(:test) do |t|
@@ -20,20 +33,4 @@ Rake::RDocTask.new(:rdoc) do |rdoc|
   rdoc.options << '--line-numbers' << '--inline-source'
   rdoc.rdoc_files.include('README')
   rdoc.rdoc_files.include('lib/**/*.rb')
-end
-
-begin
-  require 'jeweler'
-  Jeweler::Tasks.new do |gemspec|
-    gemspec.name = 'acts_as_geocodable'
-    gemspec.summary = 'Simple geocoding for Rails ActiveRecord models'
-    gemspec.description = 'Simple geocoding for Rails ActiveRecord models. See the README for more details.'
-    gemspec.email = 'info@collectiveidea.com'
-    gemspec.homepage = 'http://github.com/collectiveidea/acts_as_geocodable'
-    gemspec.authors = ['Daniel Morrison', 'Brandon Keepers']
-    gemspec.add_dependency 'graticule', '>=1.0.0.pre2'
-  end
-  Jeweler::GemcutterTasks.new
-rescue LoadError
-  puts "Jeweler not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"
 end

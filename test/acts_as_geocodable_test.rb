@@ -21,7 +21,7 @@ end
 
 class CallbackLocation < ActiveRecord::Base
   acts_as_geocodable :address => :address
-  after_geocoding :done_geocoding
+  # after_geocoding :done_geocoding
   
   def done_geocoding
     true

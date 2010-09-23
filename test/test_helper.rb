@@ -2,14 +2,13 @@ $:.unshift(File.dirname(__FILE__) + '/../lib')
 plugin_test_dir = File.dirname(__FILE__)
 
 require 'rubygems'
+require 'bundler/setup'
 require 'test/unit'
-require 'multi_rails_init'
 require 'active_support'
 require 'active_record'
 require 'action_controller'
 require 'active_record/fixtures'
 require 'shoulda'
-require 'matchy'
 require 'mocha'
 
 require plugin_test_dir + '/../rails/init.rb'

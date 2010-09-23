@@ -1,7 +1,0 @@
-author: 
-    name: Brandon Keepers and Daniel Morrison, Collective Idea
-    homepage: http://collectiveidea.com
-summary: A plugin to help build geo-aware applications
-homepage: http://opensoul.org/2007/2/13/geocoding-as-easy-as-1-2
-plugin: http://source.collectiveidea.com/public/rails/plugins/acts_as_geocodable
-license: MIT

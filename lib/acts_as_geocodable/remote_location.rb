@@ -1,4 +1,4 @@
-module CollectiveIdea #:nodoc:
+module ActsAsGeocodable #:nodoc:
   module RemoteLocation #:nodoc:
     
     # Get the remote location of the request IP using http://hostip.info
