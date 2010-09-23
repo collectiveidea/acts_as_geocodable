@@ -35,7 +35,7 @@ module ActsAsGeocodable #:nodoc:
       write_inheritable_attribute :acts_as_geocodable_options, options
       class_inheritable_reader :acts_as_geocodable_options
       
-      define_callbacks :after_geocoding
+      define_callbacks :geocoding
       
       has_one :geocoding, :as => :geocodable, :include => :geocode, :dependent => :destroy
       
@@ -253,12 +253,13 @@ module ActsAsGeocodable #:nodoc:
   protected
     
     # Perform the geocoding
-    def attach_geocode
+    def attach_geocode      
       new_geocode = Geocode.find_or_create_by_location self.to_location unless self.to_location.blank?
       if new_geocode && self.geocode != new_geocode
-        self.geocoding = Geocoding.new :geocode => new_geocode
-        self.update_address self.acts_as_geocodable_options[:normalize_address]
-        callback :after_geocoding
+        run_callbacks :geocoding do
+          self.geocoding = Geocoding.new :geocode => new_geocode
+          self.update_address self.acts_as_geocodable_options[:normalize_address]
+        end
       elsif !new_geocode && self.geocoding
         self.geocoding.destroy
       end
