@@ -2,6 +2,14 @@ require 'acts_as_geocodable/geocoding'
 require 'acts_as_geocodable/geocode'
 require 'acts_as_geocodable/remote_location'
 
+module ActiveSupport::Callbacks::ClassMethods
+  def without_callback(*args, &block)
+    skip_callback(*args)
+    yield
+    set_callback(*args)
+  end
+end
+
 module ActsAsGeocodable #:nodoc:
   extend ActiveSupport::Concern
   
@@ -154,7 +162,7 @@ module ActsAsGeocodable #:nodoc:
           if !geocode ||
               (options[:precision] && geocode.precision < options[:precision]) ||
               (block_given? && yield(geocode) == false)
-            model.errors.add_to_base options[:message]
+            model.errors.add :base, options[:message]
           end
         end
       end
@@ -284,7 +292,9 @@ module ActsAsGeocodable #:nodoc:
           end
         end
         
-        update_without_callbacks
+        self.class.without_callback(:save, :after, :attach_geocode) do
+          save
+        end
       end
     end
     

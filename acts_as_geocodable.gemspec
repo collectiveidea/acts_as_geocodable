@@ -21,9 +21,10 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency     'graticule', ">= 2.0.0.pre1"
   s.add_development_dependency 'rails'
-  s.add_development_dependency 'shoulda'
-  s.add_development_dependency 'mocha'
   s.add_development_dependency 'sqlite3-ruby', '1.2.5'
   s.add_development_dependency 'mysql',        '2.8.1'
+  s.add_development_dependency 'rspec'
+  s.add_development_dependency 'factory_girl'
+  s.add_development_dependency 'ruby-debug'
 end
 

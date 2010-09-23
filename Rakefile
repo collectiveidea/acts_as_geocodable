@@ -2,14 +2,17 @@
 $LOAD_PATH.unshift File.expand_path("../lib", __FILE__)
 require 'rubygems'
 require 'bundler/setup'
-
 require 'acts_as_geocodable/version'
-require 'rake'
-require 'rake/testtask'
-require 'rake/rdoctask'
 
-desc 'Default: run unit tests.'
-task :default => :test
+require 'spec/rake/spectask'
+desc 'Run the specs'
+Spec::Rake::SpecTask.new(:spec) do |t|
+  t.libs << 'lib'
+  t.pattern = 'spec/*_spec.rb'
+  t.verbose = true
+end
+
+task :default => :spec
 
 task :build do
   system "gem build acts_as_geocodable.gemspec"
@@ -19,13 +22,7 @@ task :release => :build do
   system "gem push acts_as_geocodable-#{ActsAsGeocodable::VERSION}"
 end
 
-desc 'Test the acts_as_geocodable plugin.'
-Rake::TestTask.new(:test) do |t|
-  t.libs << 'lib'
-  t.pattern = 'test/**/*_test.rb'
-  t.verbose = true
-end
-
+require 'rake/rdoctask'
 desc 'Generate documentation for the acts_as_geocodable plugin.'
 Rake::RDocTask.new(:rdoc) do |rdoc|
   rdoc.rdoc_dir = 'rdoc'
