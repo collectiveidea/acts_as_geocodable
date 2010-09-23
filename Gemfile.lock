@@ -38,6 +38,8 @@ GEM
       activesupport (~> 3.0.0)
     builder (2.1.2)
     columnize (0.3.1)
+    database_cleaner (0.5.2)
+    diff-lcs (1.1.2)
     erubis (2.6.6)
       abstract (>= 1.0.0)
     factory_girl (1.3.2)
@@ -76,7 +78,14 @@ GEM
       rake (>= 0.8.4)
       thor (~> 0.14.0)
     rake (0.8.7)
-    rspec (1.3.0)
+    rspec (2.0.0.beta.20)
+      rspec-core (= 2.0.0.beta.20)
+      rspec-expectations (= 2.0.0.beta.20)
+      rspec-mocks (= 2.0.0.beta.20)
+    rspec-core (2.0.0.beta.20)
+    rspec-expectations (2.0.0.beta.20)
+      diff-lcs (>= 1.1.2)
+    rspec-mocks (2.0.0.beta.20)
     ruby-debug (0.10.3)
       columnize (>= 0.1)
       ruby-debug-base (~> 0.10.3.0)
@@ -93,10 +102,11 @@ PLATFORMS
 
 DEPENDENCIES
   acts_as_geocodable!
+  database_cleaner
   factory_girl
   graticule (>= 2.0.0.pre1)
   mysql (= 2.8.1)
   rails
-  rspec
+  rspec (~> 2.0.0.beta)
   ruby-debug
   sqlite3-ruby (= 1.2.5)

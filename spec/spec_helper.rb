@@ -4,13 +4,14 @@ plugin_test_dir = File.dirname(__FILE__)
 require 'rubygems'
 require 'bundler/setup'
 
-require 'spec'
+require 'rspec'
 require 'logger'
 
 require 'active_support'
 require 'active_record'
 require 'action_controller'
 require 'factory_girl'
+require 'database_cleaner'
 
 require plugin_test_dir + '/../rails/init.rb'
 
@@ -32,3 +33,46 @@ def assert_geocode_result(result)
   assert_in_delta 42.787567, result.latitude, 0.001
   assert_in_delta -86.109039, result.longitude, 0.001
 end
+
+Rspec.configure do |config|
+  # Use database cleaner to remove factories
+  config.before(:suite) do
+    DatabaseCleaner.strategy = :truncation
+  end
+  config.before(:each) do
+    DatabaseCleaner.start
+  end
+  config.after(:each) do
+    DatabaseCleaner.clean
+  end
+end
+
+class Vacation < ActiveRecord::Base
+  acts_as_geocodable :normalize_address => true
+  belongs_to :nearest_city, :class_name => 'City', :foreign_key => 'city_id'
+end
+
+class City < ActiveRecord::Base
+  acts_as_geocodable :address => {:postal_code => :zip}  
+end
+
+class ValidatedVacation < ActiveRecord::Base
+  acts_as_geocodable
+  validates_as_geocodable
+end
+
+class AddressBlobVacation < ActiveRecord::Base
+  acts_as_geocodable :address => :address, :normalize_address => true
+end
+
+class CallbackLocation < ActiveRecord::Base
+  acts_as_geocodable :address => :address
+  set_callback :geocoding, :after, :done_geocoding
+  # after_geocoding :done_geocoding
+  
+  def done_geocoding
+    true
+  end
+end
+
+require 'factories'

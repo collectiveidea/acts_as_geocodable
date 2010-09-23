@@ -1,33 +1,5 @@
 require 'spec_helper'
 
-class Vacation < ActiveRecord::Base
-  acts_as_geocodable :normalize_address => true
-  belongs_to :nearest_city, :class_name => 'City', :foreign_key => 'city_id'
-end
-
-class City < ActiveRecord::Base
-  acts_as_geocodable :address => {:postal_code => :zip}  
-end
-
-class ValidatedVacation < ActiveRecord::Base
-  acts_as_geocodable
-  validates_as_geocodable
-end
-
-class AddressBlobVacation < ActiveRecord::Base
-  acts_as_geocodable :address => :address, :normalize_address => true
-end
-
-class CallbackLocation < ActiveRecord::Base
-  acts_as_geocodable :address => :address
-  set_callback :geocoding, :after, :done_geocoding
-  # after_geocoding :done_geocoding
-  
-  def done_geocoding
-    true
-  end
-end
-
 describe ActsAsGeocodable do
   # fixtures :vacations, :cities, :geocodes, :geocodings
 
@@ -115,7 +87,7 @@ describe ActsAsGeocodable do
     it "should not create geocode" do
       Geocode.geocoder.expects(:locate).never
       assert_no_difference 'Geocode.count + Geocoding.count' do
-        Vacation.create!(:locality => "\n", :region => " ").geocoding.should be(nil)
+        Vacation.create!(:locality => "\n", :region => " ").geocoding.should be_nil
       end
     end
 
@@ -128,7 +100,7 @@ describe ActsAsGeocodable do
         whitehouse.save!
       end
       whitehouse.reload
-      whitehouse.geocoding.should be(nil)
+      whitehouse.geocoding.should be_nil
     end
   end
 
@@ -291,21 +263,21 @@ describe ActsAsGeocodable do
     end
     
     it 'should return nil with invalid geocode' do
-      @douglas.distance_to(Geocode.new).should be(nil)
-      @douglas.distance_to(nil).should be(nil)
+      @douglas.distance_to(Geocode.new).should be_nil
+      @douglas.distance_to(nil).should be_nil
     end
     
   end
   
   it "should have beyond" do
     spots = Vacation.find(:all, :origin => "49406", :beyond => 3)
-    assert_equal 1, spots.size
-    assert_equal vacations(:whitehouse), spots.first
+    spots.size.should == 1
+    spots.first.should == vacations(:whitehouse)
   end
 
   it "should have count for beyond" do
-    spots = Vacation.count(:origin => "49406", :beyond => 3)
-    assert_equal 1, spots
+    count = Vacation.count(:origin => "49406", :beyond => 3)
+    count.should == 1
   end
 
   it "should find beyond with other units" do

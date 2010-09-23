@@ -4,13 +4,8 @@ require 'rubygems'
 require 'bundler/setup'
 require 'acts_as_geocodable/version'
 
-require 'spec/rake/spectask'
-desc 'Run the specs'
-Spec::Rake::SpecTask.new(:spec) do |t|
-  t.libs << 'lib'
-  t.pattern = 'spec/*_spec.rb'
-  t.verbose = true
-end
+require "rspec/core/rake_task"
+RSpec::Core::RakeTask.new(:spec)
 
 task :default => :spec
 

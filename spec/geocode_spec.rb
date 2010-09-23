@@ -5,8 +5,8 @@ describe Geocode do
   
   describe 'distance_to' do
     before do
-      @washington_dc = geocodes(:white_house_geocode)
-      @chicago = geocodes(:chicago_geocode)
+      @washington_dc = Factory(:white_house_geocode)
+      @chicago = Factory(:chicago_geocode)
     end
 
     it 'should properly calculate distance in default units' do
@@ -22,62 +22,66 @@ describe Geocode do
     end
     
     it 'should return nil with invalid geocode' do
-      @chicago.distance_to(Geocode.new).should be(nil)
-      @chicago.distance_to(nil).should be(nil)
+      @chicago.distance_to(Geocode.new).should be_nil
+      @chicago.distance_to(nil).should be_nil
     end
   end
   
   describe 'find_or_create_by_query' do
     it 'should finds existing geocode' do
-      Geocode.find_or_create_by_query('Holland, MI').should == geocodes(:holland)
+      existing = Factory(:holland_geocode)
+      Geocode.find_or_create_by_query('Holland, MI').should == existing
     end
   end
   
   describe "find_or_create_by_location" do
     it "should find existing location" do
+      existing = Factory(:white_house_geocode)
       location = Graticule::Location.new(:postal_code => "20502",
         :street => "1600 Pennsylvania Ave NW",
         :locality => "Washington",
         :region => "DC")
-      Geocode.find_or_create_by_location(location).should == geocodes(:white_house_geocode)
+      Geocode.find_or_create_by_location(location).should == existing
     end
     
     it "should return nil when location can't be geocoded" do
-      Geocode.geocoder.expects(:locate).raises(Graticule::Error)
-      assert_no_difference 'Geocode.count' do 
-        Geocode.find_or_create_by_location(Graticule::Location.new(:street => 'FAIL!')).should be(nil)
-      end
+      Geocode.geocoder.should_receive(:locate).and_raise(Graticule::Error)
+      lambda { 
+        Geocode.find_or_create_by_location(Graticule::Location.new(:street => 'FAIL!')).should be_nil
+      }.should_not change(Geocode, :count)
     end
     
   end
   
   describe 'coordinates' do
     it 'should return longitude and latitude' do
-      geocodes(:saugatuck_geocode).coordinates.should == "-86.200722,42.654781"
+      geocode = Factory(:saugatuck_geocode)
+      geocode.coordinates.should == "-86.200722,42.654781"
     end
   end
   
   describe 'to_s' do
     it 'should return the coordinates' do
-      geocodes(:saugatuck_geocode).to_s.should == geocodes(:saugatuck_geocode).coordinates
+      geocode = Factory(:saugatuck_geocode)
+      geocode.to_s.should == geocode.coordinates
     end
   end
   
   describe 'geocoded?' do
     it 'should be true with both a latitude and a longitude' do
-      assert Geocode.new(:latitude => 1, :longitude => 1).geocoded?
+      Geocode.new(:latitude => 1, :longitude => 1).should be_geocoded
     end
     
     it 'should be false when missing coordinates' do
-      assert !Geocode.new.geocoded?
+      Geocode.new.should_not be_geocoded
     end
     
     it 'should be false when missing a latitude' do
-      assert !Geocode.new(:longitude => 1).geocoded?
+      Geocode.new(:latitude => 1).should_not be_geocoded
     end
 
     it 'should be false when missing a longitude' do
-      assert !Geocode.new(:latitude => 1).geocoded?
+      Geocode.new(:latitude => 1).should_not be_geocoded
     end
   end
   
