@@ -165,20 +165,16 @@ describe ActsAsGeocodable do
       @model.new.should be_valid
     end
     
-    it "should be invalid if block returns false" do
-      @model.validates_as_geocodable(:allow_nil => false) do |geocode|
-        ["USA", "US"].include?(geocode.country)
-      end
+    it "should be invalid if validation block returns false" do
       Geocode.geocoder.should_receive(:locate).and_return(Graticule::Location.new(:country => 'CA'))
-      @vacation.should_not be_valid
+      staycation = Staycation.new :locality => "Saugatuck", :region => "MI"
+      staycation.should_not be_valid
     end
 
-    it "should be valid if block returns true" do
-      @model.validates_as_geocodable(:allow_nil => false) do |geocode|
-        ["USA", "US"].include?(geocode.country)
-      end
+    it "should be valid if validation block returns true" do
       Geocode.geocoder.should_receive(:locate).and_return(Graticule::Location.new(:country => 'US'))
-      @model.new.should be_valid
+      staycation = Staycation.new :locality => "Saugatuck", :region => "MI"
+      staycation.should be_valid
     end
   end
   

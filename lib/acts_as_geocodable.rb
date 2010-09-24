@@ -59,25 +59,18 @@ module ActsAsGeocodable #:nodoc:
             JOIN geocodes ON geocodings.geocode_id = geocodes.id")
       }
 
-      scope :beyond, lambda {|beyond_distance|
-        having("#{acts_as_geocodable_options[:distance_column]} > #{beyond_distance}")
-      }
-
-      scope :within, lambda {|within_distance|
-        having("#{acts_as_geocodable_options[:distance_column]} <= #{within_distance}")
-      }
-
       scope :origin, lambda {|*args|
         origin = args[0]
         options = {
           :units => acts_as_geocodable_options[:units],
         }.merge(args[1] || {})
+        distance_sql = sql_for_distance(origin, options[:units])
 
-        scope = with_geocode_fields.select("#{table_name}.*, #{sql_for_distance(origin, options[:units])} AS
+        scope = with_geocode_fields.select("#{table_name}.*, #{distance_sql} AS
              #{acts_as_geocodable_options[:distance_column]}")
 
-        scope = scope.beyond(options[:beyond]) if options[:beyond]
-        scope = scope.within(options[:within]) if options[:within]
+        scope = scope.where("#{distance_sql} >  #{options[:beyond]}") if options[:beyond]
+        scope = scope.where("#{distance_sql} <= #{options[:within]}") if options[:within]
         scope
       }
 

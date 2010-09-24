@@ -29,7 +29,7 @@ def assert_geocode_result(result)
   assert_not_nil result
   assert result.latitude.is_a?(BigDecimal) || result.latitude.is_a?(Float), "latitude is a #{result.latitude.class.name}"
   assert result.longitude.is_a?(BigDecimal) || result.longitude.is_a?(Float)
-  
+
   # Depending on the geocoder, we'll get slightly different results
   assert_in_delta 42.787567, result.latitude, 0.001
   assert_in_delta -86.109039, result.longitude, 0.001
@@ -53,8 +53,17 @@ class Vacation < ActiveRecord::Base
   belongs_to :nearest_city, :class_name => 'City', :foreign_key => 'city_id'
 end
 
+class Staycation < ActiveRecord::Base
+  set_table_name 'vacations'
+
+  acts_as_geocodable
+  validates_as_geocodable(:allow_nil => false) do |geocode|
+    ["USA", "US"].include?(geocode.country)
+  end
+end
+
 class City < ActiveRecord::Base
-  acts_as_geocodable :address => {:postal_code => :zip}  
+  acts_as_geocodable :address => {:postal_code => :zip}
 end
 
 class ValidatedVacation < ActiveRecord::Base
@@ -70,7 +79,7 @@ class CallbackLocation < ActiveRecord::Base
   acts_as_geocodable :address => :address
   set_callback :geocoding, :after, :done_geocoding
   # after_geocoding :done_geocoding
-  
+
   def done_geocoding
     true
   end
