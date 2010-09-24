@@ -142,21 +142,18 @@ describe ActsAsGeocodable do
     end
     
     it "should be valid with the same precision" do
-      pending
       @model.validates_as_geocodable :precision => :street
       Geocode.geocoder.should_receive(:locate).and_return(Graticule::Location.new(:precision => 'street'))
       @vacation.should be_valid
     end
     
     it "should be valid with a higher precision" do
-      pending
       @model.validates_as_geocodable :precision => :region
       Geocode.geocoder.should_receive(:locate).and_return(Graticule::Location.new(:precision => 'street'))
       @vacation.should be_valid
     end
     
     it "should be invalid with a lower precision" do
-      pending
       @model.validates_as_geocodable :precision => :street
       Geocode.geocoder.should_receive(:locate).and_return(Graticule::Location.new(:precision => 'region'))
       @vacation.should_not be_valid
@@ -169,7 +166,6 @@ describe ActsAsGeocodable do
     end
     
     it "should be invalid if block returns false" do
-      pending
       @model.validates_as_geocodable(:allow_nil => false) do |geocode|
         ["USA", "US"].include?(geocode.country)
       end
@@ -178,7 +174,6 @@ describe ActsAsGeocodable do
     end
 
     it "should be valid if block returns true" do
-      pending
       @model.validates_as_geocodable(:allow_nil => false) do |geocode|
         ["USA", "US"].include?(geocode.country)
       end
@@ -213,7 +208,6 @@ describe ActsAsGeocodable do
     end
 
     it "should count within" do
-      pending
       spots_count = Vacation.origin("49406", :within => 3).count
       spots_count.should == 1
     end
@@ -264,7 +258,6 @@ describe ActsAsGeocodable do
   end
 
   it "should have count for beyond" do
-    pending
     count = Vacation.origin('49406', :beyond => 3).count
     count.should == 1
   end
