@@ -55,6 +55,25 @@ module ActsAsGeocodable #:nodoc:
           JOIN geocodes ON geocodings.geocode_id = geocodes.id")
     }
 
+    # Use ActiveRecord ARel style syntax for finding records.
+    #
+    #   Model.origin("Chicago, IL", :within => 10)
+    #
+    # a +distance+ attribute indicating the distance
+    # to the origin is added to each of the results:
+    #
+    #   Model.origin("Portland, OR").first.distance #=> 388.383
+    #
+    # == Options
+    #
+    # * <tt>origin</tt>: A Geocode, String, or geocodable model that specifies
+    #   the origin
+    # * <tt>:within</tt>: Limit to results within this radius of the origin
+    # * <tt>:beyond</tt>: Limit to results outside of this radius from the origin
+    # * <tt>:units</tt>: Units to use for <tt>:within</tt> or <tt>:beyond</tt>.
+    #   Default is <tt>:miles</tt> unless specified otherwise in the +acts_as_geocodable+
+    #   declaration.
+    #
     scope :origin, lambda {|*args|
       origin = args[0]
       options = {
@@ -81,38 +100,18 @@ module ActsAsGeocodable #:nodoc:
 
     module ClassMethods
 
-      # Extends ActiveRecord's find method to be geo-aware.
+      # Find the nearest location to the given origin
       #
-      #   Model.origin("Chicago, IL", :within => 10)
+      #   Model.origin("Grand Rapids, MI").nearest
       #
-      # Whenever find is called with an <tt>:origin</tt>, a +distance+ attribute
-      # indicating the distance to the origin is added to each of the results:
-      #
-      #   Model.origin("Portland, OR").first.distance #=> 388.383
-      #
-      # +acts_as_geocodable+ adds 2 other retrieval approaches to ActiveRecord's default
-      # find by id, find <tt>:first</tt>, and find <tt>:all</tt>:
-      #
-      # * <tt>:nearest</tt>: find the nearest location to the given origin
-      # * <tt>:farthest</tt>: find the farthest location from the given origin
-      #
-      #   Model.find(:nearest, :origin => "Grand Rapids, MI")
-      #
-      # == Options
-      #
-      # * <tt>:origin</tt>: A Geocode, String, or geocodable model that specifies
-      #   the origin
-      # * <tt>:within</tt>: Limit to results within this radius of the origin
-      # * <tt>:beyond</tt>: Limit to results outside of this radius from the origin
-      # * <tt>:units</tt>: Units to use for <tt>:within</tt> or <tt>:beyond</tt>.
-      #   Default is <tt>:miles</tt> unless specified otherwise in the +acts_as_geocodable+
-      #   declaration.
-      #
-
       def nearest
         near.first
       end
 
+      # Find the farthest location to the given origin
+      #
+      #   Model.origin("Grand Rapids, MI").farthest
+      #
       def farthest
         far.first
       end
