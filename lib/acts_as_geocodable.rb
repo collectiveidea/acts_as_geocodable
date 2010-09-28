@@ -1,3 +1,4 @@
+require 'graticule'
 require 'acts_as_geocodable/geocoding'
 require 'acts_as_geocodable/geocode'
 require 'acts_as_geocodable/remote_location'
@@ -257,3 +258,5 @@ module ActsAsGeocodable #:nodoc:
     end
   end
 end
+
+ActiveRecord::Base.send :extend, ActsAsGeocodable

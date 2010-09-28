@@ -1,6 +1,6 @@
 module ActsAsGeocodable #:nodoc:
   module RemoteLocation #:nodoc:
-    
+
     # Get the remote location of the request IP using http://hostip.info
     def remote_location
       if request.remote_ip == '127.0.0.1'
@@ -13,6 +13,8 @@ module ActsAsGeocodable #:nodoc:
       logger.warn "An error occurred while looking up the location of '#{request.remote_ip}': #{e.message}"
       nil
     end
-    
+
   end
 end
+
+ActionController::Base.send :include, ActsAsGeocodable::RemoteLocation
