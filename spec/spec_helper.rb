@@ -14,7 +14,7 @@ require 'factory_girl'
 require 'database_cleaner'
 require 'ruby-debug'
 
-require plugin_test_dir + '/../rails/init.rb'
+require 'acts_as_geocodable'
 
 ActiveRecord::Base.logger = Logger.new(plugin_test_dir + "/debug.log")
 

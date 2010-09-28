@@ -1,6 +1,6 @@
 = acts_as_geocodable
 
-acts_as_geocodable is a plugin to help build geo-aware applications. It automatically geocodes your models when they are saved, giving you the ability to search by location and calculate distances between records.
+acts_as_geocodable helps you build geo-aware applications. It automatically geocodes your models when they are saved, giving you the ability to search by location and calculate distances between records.
 
 == Usage
 
@@ -18,17 +18,11 @@ acts_as_geocodable is a plugin to help build geo-aware applications. It automati
 
 == Installation
 
-Graticule[link:http://rubyforge.org/projects/graticule] is used for all the heavy lifting.
-
-  gem install graticule
-
-Install as a plugin
-
-  rails plugin install git://github.com/collectiveidea/acts_as_geocodable.git
-
-Or, install as a gem
+Install as a gem
 
   gem install acts_as_geocodable
+
+Graticule[link:http://rubyforge.org/projects/graticule] is used for all the heavy lifting and will be installed too.
 
 == Upgrading
 
