@@ -16,7 +16,6 @@ describe 'ActsAsGeocodableGenerator' do
   it "should generate the correct file" do
     pending    
     Rails::Generators.invoke "acts_as_geocodable", :destination => fake_rails_root
-    # Rails::Generators::Scripts::Generate.new.run(["acts_as_geocodable"], :destination => fake_rails_root)
     new_file = (file_list - @original_files).first
     File.basename(new_file).should =~ /add_geocodable_tables/
   end
