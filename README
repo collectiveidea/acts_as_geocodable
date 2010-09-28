@@ -20,11 +20,11 @@ acts_as_geocodable is a plugin to help build geo-aware applications. It automati
 
 Graticule[link:http://rubyforge.org/projects/graticule] is used for all the heavy lifting.
 
-  gem install graticule --include-dependencies
+  gem install graticule
 
 Install as a plugin
 
-  script/plugin install git://github.com/collectiveidea/acts_as_geocodable.git
+  rails plugin install git://github.com/collectiveidea/acts_as_geocodable.git
 
 Or, install as a gem
 
@@ -49,7 +49,7 @@ end
 
 Create the required tables
 
-  script/generate geocodable_migration add_geocodable_tables
+  rails generate acts_as_geocodable
   rake db:migrate
 
 Set the default geocoder in your environment.rb file.
@@ -97,5 +97,4 @@ Patches and suggestions are welcome!
 
 == To Do
 
-* Documentation!!!
 * configurable formulas
