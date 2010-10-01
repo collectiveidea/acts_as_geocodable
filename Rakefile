@@ -14,7 +14,7 @@ task :build do
 end
  
 task :release => :build do
-  system "gem push acts_as_geocodable-#{ActsAsGeocodable::VERSION}"
+  system "gem push acts_as_geocodable-#{ActsAsGeocodable::VERSION}.gem"
 end
 
 require 'rake/rdoctask'
