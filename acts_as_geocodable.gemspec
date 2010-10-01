@@ -6,7 +6,7 @@ require 'acts_as_geocodable/version'
 Gem::Specification.new do |s|
   s.name = %q{acts_as_geocodable}
   s.version = ::ActsAsGeocodable::VERSION
-  s.authors = ["Daniel Morrison", "Brandon Keepers"]
+  s.authors = ["Daniel Morrison", "Brandon Keepers", "Brian Ryckbost"]
   s.description = %q{Simple geocoding for Rails ActiveRecord models. See the README for more details.}
   s.email = %q{info@collectiveidea.com}
   s.extra_rdoc_files = [

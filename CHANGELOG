@@ -1,3 +1,8 @@
+2.0.0 - 2010-10-01
+* Rewritten for Rails 3
+* New Rails 3/ARel finder syntax
+* Double Rainbows
+
 0.2.1 - 2008-8-8
 * Results are now WillPaginate compatible
 
