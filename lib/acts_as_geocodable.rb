@@ -76,7 +76,7 @@ module ActsAsGeocodable #:nodoc:
     #   declaration.
     #
     scope :origin, lambda {|*args|
-      origin = args[0]
+      origin = location_to_geocode(args[0])
       options = {
         :units => acts_as_geocodable_options[:units],
       }.merge(args[1] || {})
@@ -86,7 +86,9 @@ module ActsAsGeocodable #:nodoc:
            #{acts_as_geocodable_options[:distance_column]}")
 
       scope = scope.where("#{distance_sql} >  #{options[:beyond]}") if options[:beyond]
-      scope = scope.where("#{distance_sql} <= #{options[:within]}") if options[:within]
+      if options[:within]
+        scope = scope.where("(#{distance_sql} <= #{options[:within]}) OR (geocodes.latitude = :lat AND geocodes.longitude = :long)", {:lat => origin.latitude, :long => origin.longitude})
+      end
       scope
     }
 
@@ -159,7 +161,6 @@ module ActsAsGeocodable #:nodoc:
     private
 
       def sql_for_distance(origin, units = acts_as_geocodable_options[:units])
-        origin = location_to_geocode(origin)
         Graticule::Distance::Spherical.to_sql(
           :latitude => origin.latitude,
           :longitude => origin.longitude,
