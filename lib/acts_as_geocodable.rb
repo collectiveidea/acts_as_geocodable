@@ -87,7 +87,7 @@ module ActsAsGeocodable #:nodoc:
 
       scope = scope.where("#{distance_sql} >  #{options[:beyond]}") if options[:beyond]
       if options[:within]
-        scope = scope.where("(#{distance_sql} <= #{options[:within]}) OR (geocodes.latitude = :lat AND geocodes.longitude = :long)", {:lat => origin.latitude, :long => origin.longitude})
+        scope = scope.where("(geocodes.latitude = :lat AND geocodes.longitude = :long) OR (#{distance_sql} <= #{options[:within]})", {:lat => origin.latitude, :long => origin.longitude})
       end
       scope
     }
