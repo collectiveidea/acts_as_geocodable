@@ -1,0 +1,98 @@
+h1. acts_as_geocodable
+
+acts_as_geocodable helps you build geo-aware applications. It automatically geocodes your models when they are saved, giving you the ability to search by location and calculate distances between records.
+
+*Beginning with version 2, we require Rails 3.  Use one of the 1.0.x tags to work with Rails 2.3.*
+
+We've adopted the ARel style syntax for finding records.
+
+h2. Usage
+
+<pre><code>event = Event.create :street => "777 NE Martin Luther King, Jr. Blvd.",
+  :locality => "Portland", :region => "Oregon", :postal_code => 97232
+
+event.geocode.latitude                                #=> 45.529100000000
+event.geocode.longitude                               #=> -122.644200000000
+
+event.distance_to "49423"                             #=> 1807.66560483205
+
+Event.origin("97232", :within => 50)
+
+Event.origin("Portland, OR").nearest</code></pre>
+
+h2. Installation
+
+Install as a gem
+
+<pre><code>gem install acts_as_geocodable</code></pre>
+
+or add it to your Gemfile
+
+<pre><code>gem 'acts_as_geocodable'</code></pre>
+
+"Graticule":http://github.com/collectiveidea/graticule is used for all the heavy lifting and will be installed too.
+
+h2. Upgrading
+
+Before October 2008, precision wasn't included in the @Geocode@ model. Make sure you add a string precision column to your geocode table if you're upgrading from an older version, and update Graticule.
+
+Also, if you're upgrading from a previous version of this plugin, note that @:city@ has been renamed to @:locality@ to be consistent with Graticule 0.2.  Create a migration that has:
+
+<pre><code>rename_column :geocodes, :city, :locality</code></pre>
+
+Also remember to change your mapping in your geocodable classes to use the @:locality@ key instead of @:city@:
+
+<pre><code>class Event < ActiveRecord::Base
+  acts_as_geocodable :address => {:street => :address1, :locality => :city,
+    :region => :state, :postal_code => :zip}
+end</code></pre>
+
+h2. Configuration
+
+Create the required tables
+
+<pre><code>rails generate acts_as_geocodable
+rake db:migrate</code></pre>
+
+Set the default geocoder in your environment.rb file.
+
+<pre><code>Geocode.geocoder = Graticule.service(:yahoo).new 'your_api_key'</code></pre>
+
+Then, in each model you want to make geocodable, add @acts_as_geocodable@.
+
+<pre><code>class Event < ActiveRecord::Base
+  acts_as_geocodable
+end</code></pre>
+
+The only requirement is that your model must have address fields. By default, acts_as_geocodable looks for attributes called +street+, +locality+, +region+, +postal_code+, and +country+.  To change these, you can provide a mapping in the @:address@ option:
+
+<pre><code>class Event < ActiveRecord::Base
+  acts_as_geocodable :address => {:street => :address1, :locality => :city, :region => :state, :postal_code => :zip}
+end</code></pre>
+
+If that doesn't meet your needs, simply override the default @to_location@ method in your model, and return a @Graticule::Location@ with those attributes set.
+
+acts_as_geocodable can also update your address fields with the data returned from the geocoding service:
+
+<pre><code>class Event < ActiveRecord::Base
+  acts_as_geocodable :normalize_address => true
+end</code></pre>
+
+h2. IP-based Geocoding
+
+acts_as_geocodable adds a @remote_location@ method in your controllers that uses http://hostip.info to guess remote users location based on their IP address.
+
+<pre><code>def index
+  @nearest = Store.origin(remote_location).nearest if remote_location
+  @stores = Store.all
+end</code></pre>
+
+Keep in mind that IP-based geocoding is not always accurate, and often will not return any results.
+
+h2. Development
+
+Patches and suggestions are welcome!
+
+h3. To Do
+
+* configurable formulas
