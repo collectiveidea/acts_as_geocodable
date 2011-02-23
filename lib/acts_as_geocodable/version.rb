@@ -1,3 +1,3 @@
 module ActsAsGeocodable
-  VERSION = '2.0.0' unless defined?(::ActsAsGeocodable::VERSION)
+  VERSION = '2.0.2' unless defined?(::ActsAsGeocodable::VERSION)
 end
