@@ -24,11 +24,11 @@ class Geocode < ActiveRecord::Base
   end
 
   def self.find_or_create_by_location(location)
-    find_by_query(location.to_s) || create_from_location(location)
+    find_by_query(location.to_s.downcase) || create_from_location(location)
   end
 
   def self.create_from_location(location)
-    create geocoder.locate(location).attributes.merge(:query => location.to_s)
+    create geocoder.locate(location).attributes.merge(:query => location.to_s.downcase)
   rescue Graticule::Error => e
     logger.warn e.message
     nil
