@@ -16,11 +16,11 @@ class Geocode < ActiveRecord::Base
   end
 
   def self.find_or_create_by_query(query)
-    find_by_query(query) || create_by_query(query)
+    find_by_query(query.to_s.downcase) || create_by_query(query)
   end
 
   def self.create_by_query(query)
-    create geocoder.locate(query).attributes.merge(:query => query)
+    create geocoder.locate(query).attributes.merge(:query => query.to_s.downcase)
   end
 
   def self.find_or_create_by_location(location)
