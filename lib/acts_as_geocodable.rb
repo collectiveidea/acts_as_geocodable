@@ -37,8 +37,13 @@ module ActsAsGeocodable #:nodoc:
       :units => :miles
     }.merge(options)
 
-    write_inheritable_attribute :acts_as_geocodable_options, options
-    class_inheritable_reader :acts_as_geocodable_options
+    if ActiveRecord::VERSION::MAJOR >= 3
+      class_attribute :acts_as_geocodable_options
+      self.acts_as_geocodable_options = options
+    else
+      write_inheritable_attribute :acts_as_geocodable_options, options
+      class_inheritable_reader :acts_as_geocodable_options
+    end
 
     define_callbacks :geocoding
 
