@@ -9,9 +9,6 @@ Gem::Specification.new do |s|
   s.authors = ["Daniel Morrison", "Brandon Keepers", "Brian Ryckbost"]
   s.description = %q{Simple geocoding for Rails ActiveRecord models. See the README for more details.}
   s.email = %q{info@collectiveidea.com}
-  s.extra_rdoc_files = [
-    "README"
-  ]
   s.files = Dir.glob("lib/**/*") + %w(CHANGELOG MIT-LICENSE README)
   s.homepage = %q{http://github.com/collectiveidea/acts_as_geocodable}
   s.rdoc_options = ["--charset=UTF-8"]
