@@ -221,23 +221,23 @@ describe ActsAsGeocodable do
     end
 
     it 'should calculate distance from a string' do
-      @san_francisco.distance_to(@saugatuck.geocode.query).should be_close(1927, 2)
+      @san_francisco.distance_to(@saugatuck.geocode.query).should be_within(2).of(1927)
     end
     it 'should calculate distance from a geocode' do
-      @san_francisco.distance_to(@saugatuck.geocode).should be_close(1927, 2)
+      @san_francisco.distance_to(@saugatuck.geocode).should be_within(2).of(1927)
     end
 
     it 'should calculate distance from a geocodable model' do
-      @san_francisco.distance_to(@saugatuck).should be_close(1927, 2)
-      @saugatuck.distance_to(@san_francisco).should be_close(1927, 2)
+      @san_francisco.distance_to(@saugatuck).should be_within(2).of(1927)
+      @saugatuck.distance_to(@san_francisco).should be_within(2).of(1927)
     end
 
     it 'should calculate distance in default miles' do
-      @san_francisco.distance_to(@saugatuck, :units => :miles).should be_close(1927, 2)
+      @san_francisco.distance_to(@saugatuck, :units => :miles).should be_within(2).of(1927)
     end
     
     it 'should calculate distance in default kilometers' do
-      @san_francisco.distance_to(@saugatuck, :units => :kilometers).should be_close(3101, 2)
+      @san_francisco.distance_to(@saugatuck, :units => :kilometers).should be_within(2).of(3101)
     end
     
     it 'should return nil with invalid geocode' do
@@ -261,7 +261,7 @@ describe ActsAsGeocodable do
   it "should find beyond with other units" do
     whitehouse = Vacation.origin('49406', :beyond => 3, :units => :kilometers).first
     whitehouse.should == @white_house
-    whitehouse.distance.to_f.should be_close(877.554975851074, 1)
+    whitehouse.distance.to_f.should be_within(1).of(877.554975851074)
   end
   
   it "should find nearest" do

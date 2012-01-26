@@ -10,15 +10,15 @@ describe Geocode do
     end
 
     it 'should properly calculate distance in default units' do
-      @washington_dc.distance_to(@chicago).should be_close(594.820, 1.0)
+      @washington_dc.distance_to(@chicago).should be_within(1.0).of(594.820)
     end
 
     it 'should properly calculate distance in default miles' do
-      @washington_dc.distance_to(@chicago, :miles).should be_close(594.820, 1.0)
+      @washington_dc.distance_to(@chicago, :miles).should be_within(1.0).of(594.820)
     end
     
     it 'should properly calculate distance in default kilometers' do
-      @washington_dc.distance_to(@chicago, :kilometers).should be_close(957.275, 1.0)
+      @washington_dc.distance_to(@chicago, :kilometers).should be_within(1.0).of(957.275)
     end
     
     it 'should return nil with invalid geocode' do
