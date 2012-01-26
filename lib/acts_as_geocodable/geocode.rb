@@ -16,19 +16,19 @@ class Geocode < ActiveRecord::Base
   end
 
   def self.find_or_create_by_query(query)
-    find_by_query(query) || create_by_query(query)
+    find_by_query(query.to_s.mb_chars.downcase.to_s) || create_by_query(query)
   end
 
   def self.create_by_query(query)
-    create geocoder.locate(query).attributes.merge(:query => query)
+    create geocoder.locate(query).attributes.merge(:query => query.to_s.mb_chars.downcase.to_s)
   end
 
   def self.find_or_create_by_location(location)
-    find_by_query(location.to_s) || create_from_location(location)
+    find_by_query(location.to_s.mb_chars.downcase.to_s) || create_from_location(location)
   end
 
   def self.create_from_location(location)
-    create geocoder.locate(location).attributes.merge(:query => location.to_s)
+    create geocoder.locate(location).attributes.merge(:query => location.to_s.mb_chars.downcase.to_s)
   rescue Graticule::Error => e
     logger.warn e.message
     nil
