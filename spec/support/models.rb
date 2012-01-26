@@ -4,7 +4,7 @@ class Vacation < ActiveRecord::Base
 end
 
 class Staycation < ActiveRecord::Base
-  set_table_name 'vacations'
+  self.table_name = 'vacations'
 
   acts_as_geocodable
   validates_as_geocodable(:allow_nil => false) do |geocode|
