@@ -128,7 +128,7 @@ module ActsAsGeocodable #:nodoc:
       def location_to_geocode(location)
         case location
         when Geocode then location
-        when InstanceMethods then location.geocode
+        when ActsAsGeocodable::Model then location.geocode
         when String, Fixnum then Geocode.find_or_create_by_query(location.to_s)
         end
       end
@@ -176,90 +176,87 @@ module ActsAsGeocodable #:nodoc:
       end
     end
 
-    module InstanceMethods
 
-      # Get the geocode for this model
-      def geocode
-        geocoding.geocode if geocoding
-      end
+    # Get the geocode for this model
+    def geocode
+      geocoding.geocode if geocoding
+    end
 
-      # Create a Graticule::Location
-      def to_location
-        Graticule::Location.new.tap do |location|
-          [:street, :locality, :region, :postal_code, :country].each do |attr|
-            location.send "#{attr}=", geo_attribute(attr)
-          end
+    # Create a Graticule::Location
+    def to_location
+      Graticule::Location.new.tap do |location|
+        [:street, :locality, :region, :postal_code, :country].each do |attr|
+          location.send "#{attr}=", geo_attribute(attr)
         end
       end
+    end
 
-      # Get the distance to the given destination. The destination can be an
-      # acts_as_geocodable model, a Geocode, or a string
-      #
-      #   myhome.distance_to "Chicago, IL"
-      #   myhome.distance_to "49423"
-      #   myhome.distance_to other_model
-      #
-      # == Options
-      # * <tt>:units</tt>: <tt>:miles</tt> or <tt>:kilometers</tt>
-      # * <tt>:formula</tt>: The formula to use to calculate the distance. This can
-      #   be any formula supported by Graticule. The default is <tt>:haversine</tt>.
-      #
-      def distance_to(destination, options = {})
-        units = options[:units] || acts_as_geocodable_options[:units]
-        formula = options[:formula] || :haversine
+    # Get the distance to the given destination. The destination can be an
+    # acts_as_geocodable model, a Geocode, or a string
+    #
+    #   myhome.distance_to "Chicago, IL"
+    #   myhome.distance_to "49423"
+    #   myhome.distance_to other_model
+    #
+    # == Options
+    # * <tt>:units</tt>: <tt>:miles</tt> or <tt>:kilometers</tt>
+    # * <tt>:formula</tt>: The formula to use to calculate the distance. This can
+    #   be any formula supported by Graticule. The default is <tt>:haversine</tt>.
+    #
+    def distance_to(destination, options = {})
+      units = options[:units] || acts_as_geocodable_options[:units]
+      formula = options[:formula] || :haversine
 
-        geocode = self.class.location_to_geocode(destination)
-        self.geocode.distance_to(geocode, units, formula)
-      end
+      geocode = self.class.location_to_geocode(destination)
+      self.geocode.distance_to(geocode, units, formula)
+    end
 
-    protected
+  protected
 
-      # Perform the geocoding
-      def attach_geocode
-        new_geocode = Geocode.find_or_create_by_location self.to_location unless self.to_location.blank?
-        if new_geocode && self.geocode != new_geocode
-          run_callbacks :geocoding do
-            self.geocoding = Geocoding.new :geocode => new_geocode
-            self.update_address self.acts_as_geocodable_options[:normalize_address]
-          end
-        elsif !new_geocode && self.geocoding
-          self.geocoding.destroy
+    # Perform the geocoding
+    def attach_geocode
+      new_geocode = Geocode.find_or_create_by_location self.to_location unless self.to_location.blank?
+      if new_geocode && self.geocode != new_geocode
+        run_callbacks :geocoding do
+          self.geocoding = Geocoding.new :geocode => new_geocode
+          self.update_address self.acts_as_geocodable_options[:normalize_address]
         end
-        new_geocode
-      rescue Graticule::Error => e
-        logger.warn e.message
+      elsif !new_geocode && self.geocoding
+        self.geocoding.destroy
       end
+      new_geocode
+    rescue Graticule::Error => e
+      logger.warn e.message
+    end
 
-
-      def update_address(force = false) #:nodoc:
-        unless self.geocode.blank?
-          if self.acts_as_geocodable_options[:address].is_a? Symbol
-            method = self.acts_as_geocodable_options[:address]
-            if self.respond_to?("#{method}=") && (self.send(method).blank? || force)
-              self.send "#{method}=", self.geocode.to_location.to_s
-            end
-          else
-            self.acts_as_geocodable_options[:address].each do |attribute,method|
-              if self.respond_to?("#{method}=") && (self.send(method).blank? || force)
-                self.send "#{method}=", self.geocode.send(attribute)
-              end
-            end
-          end
-
-          self.class.without_callback(:save, :after, :attach_geocode) do
-            save
-          end
-        end
-      end
-
-      def geo_attribute(attr_key) #:nodoc:
+    def update_address(force = false) #:nodoc:
+      unless self.geocode.blank?
         if self.acts_as_geocodable_options[:address].is_a? Symbol
-          attr_name = self.acts_as_geocodable_options[:address]
-          attr_key == :street ? self.send(attr_name) : nil
+          method = self.acts_as_geocodable_options[:address]
+          if self.respond_to?("#{method}=") && (self.send(method).blank? || force)
+            self.send "#{method}=", self.geocode.to_location.to_s
+          end
         else
-          attr_name = self.acts_as_geocodable_options[:address][attr_key]
-          attr_name && self.respond_to?(attr_name) ? self.send(attr_name) : nil
+          self.acts_as_geocodable_options[:address].each do |attribute,method|
+            if self.respond_to?("#{method}=") && (self.send(method).blank? || force)
+              self.send "#{method}=", self.geocode.send(attribute)
+            end
+          end
         end
+
+        self.class.without_callback(:save, :after, :attach_geocode) do
+          save
+        end
+      end
+    end
+
+    def geo_attribute(attr_key) #:nodoc:
+      if self.acts_as_geocodable_options[:address].is_a? Symbol
+        attr_name = self.acts_as_geocodable_options[:address]
+        attr_key == :street ? self.send(attr_name) : nil
+      else
+        attr_name = self.acts_as_geocodable_options[:address][attr_key]
+        attr_name && self.respond_to?(attr_name) ? self.send(attr_name) : nil
       end
     end
   end
