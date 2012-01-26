@@ -1,7 +1,7 @@
 class Graticule::Geocoder::Canned
-  class_inheritable_accessor :responses
+  class_attribute :responses
   self.responses = {}
-  class_inheritable_accessor :default
+  class_attribute :default
   
   def locate(query)
     location = responses[query.to_s.strip]
