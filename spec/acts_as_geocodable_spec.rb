@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe ActsAsGeocodable do
   before do
-    @white_house = Factory(:whitehouse)
-    @saugatuck = Factory(:saugatuck)
+    @white_house = FactoryGirl.create(:whitehouse)
+    @saugatuck = FactoryGirl.create(:saugatuck)
   end
   
   describe "geocode" do
@@ -292,12 +292,12 @@ describe ActsAsGeocodable do
   end
   
   it "can convert a string to a geocode" do
-    douglas_geocode = Factory(:douglas_geocode)
+    douglas_geocode = FactoryGirl.create(:douglas_geocode)
     Vacation.send(:location_to_geocode, '49406').should == douglas_geocode
   end
 
   it "can covert a numeric zip to a geocode" do
-    douglas_geocode = Factory(:douglas_geocode)
+    douglas_geocode = FactoryGirl.create(:douglas_geocode)
     Vacation.send(:location_to_geocode, 49406).should == douglas_geocode
   end
   

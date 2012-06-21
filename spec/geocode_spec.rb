@@ -5,8 +5,8 @@ describe Geocode do
   
   describe 'distance_to' do
     before do
-      @washington_dc = Factory(:white_house_geocode)
-      @chicago = Factory(:chicago_geocode)
+      @washington_dc = FactoryGirl.create(:white_house_geocode)
+      @chicago = FactoryGirl.create(:chicago_geocode)
     end
 
     it 'should properly calculate distance in default units' do
@@ -29,14 +29,14 @@ describe Geocode do
   
   describe 'find_or_create_by_query' do
     it 'should finds existing geocode' do
-      existing = Factory(:holland_geocode)
+      existing = FactoryGirl.create(:holland_geocode)
       Geocode.find_or_create_by_query('Holland, MI').should == existing
     end
   end
   
   describe "find_or_create_by_location" do
     it "should find existing location" do
-      existing = Factory(:white_house_geocode)
+      existing = FactoryGirl.create(:white_house_geocode)
       location = Graticule::Location.new(:postal_code => "20502",
         :street => "1600 Pennsylvania Ave NW",
         :locality => "Washington",
@@ -55,14 +55,14 @@ describe Geocode do
   
   describe 'coordinates' do
     it 'should return longitude and latitude' do
-      geocode = Factory(:saugatuck_geocode)
+      geocode = FactoryGirl.create(:saugatuck_geocode)
       geocode.coordinates.should == "-86.200722,42.654781"
     end
   end
   
   describe 'to_s' do
     it 'should return the coordinates' do
-      geocode = Factory(:saugatuck_geocode)
+      geocode = FactoryGirl.create(:saugatuck_geocode)
       geocode.to_s.should == geocode.coordinates
     end
   end
