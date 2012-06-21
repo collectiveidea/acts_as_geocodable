@@ -3,3 +3,4 @@ pkg
 rdoc
 spec/db/database.yml
 .rvmrc
+Gemfile.lock
