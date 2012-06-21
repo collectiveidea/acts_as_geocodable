@@ -1,4 +1,6 @@
 class Geocoding < ActiveRecord::Base
+  attr_accessible :geocode
+
   belongs_to :geocode
   belongs_to :geocodable, :polymorphic => true
 
