@@ -84,5 +84,13 @@ describe Geocode do
       Geocode.new(:latitude => 1).should_not be_geocoded
     end
   end
+
+  describe "precision" do
+    it "should cast its precision to a Graticule::Precision" do
+      geocode = Geocode.new(:precision => :street)
+      geocode.precision.should be_a Graticule::Precision
+      geocode.precision.to_s.should eql "street"
+    end
+  end
   
 end

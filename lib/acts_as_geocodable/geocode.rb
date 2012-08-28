@@ -38,11 +38,11 @@ class Geocode < ActiveRecord::Base
   end
 
   def precision
-    Graticule::Precision.new(self[:precision])
+    Graticule::Precision.new(read_attribute(:precision))
   end
 
   def precision=(name)
-    self[:precision] = name.to_s
+    write_attribute(:precision, name.to_s)
   end
 
   def geocoded
