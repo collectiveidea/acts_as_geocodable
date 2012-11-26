@@ -1,0 +1,8 @@
+language: ruby
+rvm:
+  - 1.9.3
+notifications:
+  webhooks:
+    urls:
+      - http://buildlight.collectiveidea.com/
+    on_start: true
