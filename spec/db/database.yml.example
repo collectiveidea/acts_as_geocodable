@@ -7,7 +7,7 @@ sqlite3:
 postgresql:
   :adapter: postgresql
   :username: postgres
-  :password: postgres
+  :password:
   :database: acts_as_geocodable_plugin_test
   :min_messages: ERROR
 mysql:

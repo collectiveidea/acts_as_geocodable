@@ -305,19 +305,20 @@ describe ActsAsGeocodable do
     Vacation.send(:location_to_geocode, @white_house).should == @white_house.geocode
   end
   
-  it "should run a callback after geocoding" do
-    location = CallbackLocation.new :address => "San Francisco"
-    location.geocoding.should be_nil
-    location.should_receive(:done_geocoding).once.and_return(true)
-    location.save!.should be_true
-  end
+  describe "callbacks" do
+    it "should run a callback after geocoding" do
+      location = CallbackLocation.new :address => "San Francisco"
+      location.geocoding.should be_nil
+      location.should_receive(:done_geocoding).once.and_return(true)
+      location.save!.should be_true
+    end
 
-  it "should not run callbacks after geocoding if the object is the same" do
-    location = CallbackLocation.create(:address => "San Francisco")
-    location.geocoding.should_not be_nil
-    location.should_not_receive(:done_geocoding)
-    location.save!.should be_true
+    it "should not run callbacks after geocoding if the object is the same" do
+      location = CallbackLocation.create(:address => "San Francisco")
+      location.geocoding.should_not be_nil
+      location.should_not_receive(:done_geocoding)
+      location.save!.should be_true
+    end
   end
-  
   
 end
