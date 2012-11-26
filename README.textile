@@ -1,5 +1,7 @@
 h1. acts_as_geocodable
 
+!https://secure.travis-ci.org/collectiveidea/acts_as_geocodable.png?branch=master!:https://travis-ci.org/collectiveidea/acts_as_geocodable
+
 acts_as_geocodable helps you build geo-aware applications. It automatically geocodes your models when they are saved, giving you the ability to search by location and calculate distances between records.
 
 *Beginning with version 2, we require Rails 3.  Use one of the 1.0.x tags to work with Rails 2.3.*
