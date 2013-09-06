@@ -97,8 +97,8 @@ module ActsAsGeocodable #:nodoc:
       scope
     }
 
-    scope :near, order("#{acts_as_geocodable_options[:distance_column]} ASC")
-    scope :far, order("#{acts_as_geocodable_options[:distance_column]} DESC")
+    scope :near, -> { order("#{acts_as_geocodable_options[:distance_column]} ASC") }
+    scope :far, -> { order("#{acts_as_geocodable_options[:distance_column]} DESC") }
 
     include ActsAsGeocodable::Model
   end
