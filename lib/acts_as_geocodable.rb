@@ -47,7 +47,7 @@ module ActsAsGeocodable #:nodoc:
 
     define_callbacks :geocoding
 
-    has_one :geocoding, :as => :geocodable, :include => :geocode, :dependent => :destroy
+    has_one :geocoding, -> { includes :geocode }, :as => :geocodable, :dependent => :destroy
 
     after_save :attach_geocode
 
