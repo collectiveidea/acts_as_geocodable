@@ -5,6 +5,7 @@ gemspec path: '..'
 gem 'rails', '~> 2.3.0'
 
 group :test do
+  gem 'activerecord-mysql2-adapter'
   gem 'database_cleaner'
   gem 'factory_girl'
   gem 'mysql2'
