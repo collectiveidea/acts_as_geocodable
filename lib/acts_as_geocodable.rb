@@ -111,7 +111,9 @@ module ActsAsGeocodable #:nodoc:
   end
 
   module Model
-    extend ActiveSupport::Concern
+    def self.included(base)
+      base.extend(ClassMethods)
+    end
 
     module ClassMethods
 
