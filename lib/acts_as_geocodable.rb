@@ -40,13 +40,8 @@ module ActsAsGeocodable #:nodoc:
       :units => :miles
     }.merge(options)
 
-    if ActiveRecord::VERSION::MAJOR >= 3
-      class_attribute :acts_as_geocodable_options
-      self.acts_as_geocodable_options = options
-    else
-      write_attribute :acts_as_geocodable_options, options
-      class_attribute :acts_as_geocodable_options
-    end
+    class_attribute :acts_as_geocodable_options
+    self.acts_as_geocodable_options = options
 
     define_callbacks :geocoding
 

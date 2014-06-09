@@ -4,7 +4,6 @@ rvm:
   - "2.0"
   - "2.1"
 gemfile:
-  - gemfiles/rails23.gemfile
   - gemfiles/rails30.gemfile
   - gemfiles/rails31.gemfile
   - gemfiles/rails32.gemfile
@@ -13,9 +12,6 @@ gemfile:
 env:
   - DB=mysql
   - DB=postgresql
-matrix:
-  allow_failures:
-    - gemfile: gemfiles/rails23.gemfile
 before_script:
   - cp spec/db/database.yml{.example,}
   - mysql -e 'create database acts_as_geocodable_test;'
