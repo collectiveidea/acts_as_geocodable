@@ -310,14 +310,14 @@ describe ActsAsGeocodable do
       location = CallbackLocation.new :address => "San Francisco"
       location.geocoding.should be_nil
       location.should_receive(:done_geocoding).once.and_return(true)
-      location.save!.should be_true
+      location.save!.should be_truthy
     end
 
     it "should not run callbacks after geocoding if the object is the same" do
       location = CallbackLocation.create(:address => "San Francisco")
       location.geocoding.should_not be_nil
       location.should_not_receive(:done_geocoding)
-      location.save!.should be_true
+      location.save!.should be_truthy
     end
   end
   
