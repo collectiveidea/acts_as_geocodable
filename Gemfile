@@ -3,7 +3,6 @@ source 'https://rubygems.org'
 gemspec
 
 group :test do
-  gem 'rails'
   gem 'sqlite3'
   gem 'mysql', '2.8.1'
   gem 'mysql2'
