@@ -204,7 +204,7 @@ describe ActsAsGeocodable do
     end
 
     it "should count within" do
-      spots_count = Vacation.origin("49406", :within => 3).count
+      spots_count = Vacation.origin("49406", :within => 3).count(:all)
       spots_count.should == 1
     end
 
@@ -254,7 +254,7 @@ describe ActsAsGeocodable do
   end
 
   it "should have count for beyond" do
-    count = Vacation.origin('49406', :beyond => 3).count
+    count = Vacation.origin('49406', :beyond => 3).count(:all)
     count.should == 1
   end
 
