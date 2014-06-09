@@ -1,6 +1,6 @@
-require 'graticule'
-require 'active_support/callbacks'
 require 'active_record'
+require 'active_support'
+require 'graticule'
 
 require 'acts_as_geocodable/geocoding'
 require 'acts_as_geocodable/geocode'
