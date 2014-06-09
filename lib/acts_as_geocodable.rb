@@ -50,7 +50,11 @@ module ActsAsGeocodable #:nodoc:
 
     define_callbacks :geocoding
 
-    has_one :geocoding, -> { includes :geocode }, :as => :geocodable, :dependent => :destroy
+    if ActiveRecord::VERSION::MAJOR >= 4
+      has_one :geocoding, -> { includes :geocode }, :as => :geocodable, :dependent => :destroy
+    else
+      has_one :geocoding, :as => :geocodable, :include => :geocode, :dependent => :destroy
+    end
 
     after_save :attach_geocode
 
