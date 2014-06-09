@@ -1,3 +1,5 @@
+require 'action_controller'
+
 module ActsAsGeocodable #:nodoc:
   module RemoteLocation #:nodoc:
 

@@ -1,4 +1,7 @@
 require 'graticule'
+require 'active_support/callbacks'
+require 'active_record'
+
 require 'acts_as_geocodable/geocoding'
 require 'acts_as_geocodable/geocode'
 require 'acts_as_geocodable/remote_location'
