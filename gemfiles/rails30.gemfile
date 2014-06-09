@@ -11,5 +11,4 @@ group :test do
   gem 'mysql2'
   gem 'pg'
   gem 'rspec', '~> 2.0'
-  gem 'sqlite3'
 end

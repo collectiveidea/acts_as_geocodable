@@ -13,7 +13,6 @@ gemfile:
 env:
   - DB=mysql
   - DB=postgresql
-  - DB=sqlite
 before_script:
   - cp spec/db/database.yml{.example,}
   - mysql -e 'create database acts_as_geocodable_test;'

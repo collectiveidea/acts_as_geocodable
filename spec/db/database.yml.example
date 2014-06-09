@@ -1,11 +1,8 @@
-sqlite:
-  adapter: sqlite3
-  database: test.sqlite3
-postgresql:
-  adapter: postgresql
-  username: postgres
-  database: acts_as_geocodable_test
 mysql:
   adapter: mysql2
   username: root
+  database: acts_as_geocodable_test
+postgresql:
+  adapter: postgresql
+  username: postgres
   database: acts_as_geocodable_test

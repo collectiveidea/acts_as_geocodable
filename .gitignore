@@ -18,7 +18,6 @@ lib/bundler/man
 mkmf.log
 pkg
 rdoc
-spec/db/*.sqlite3
 spec/db/database.yml
 spec/reports
 test/tmp
