@@ -13,7 +13,7 @@ class Staycation < ActiveRecord::Base
 end
 
 class City < ActiveRecord::Base
-  acts_as_geocodable address: {postal_code: :zip}
+  acts_as_geocodable address: { postal_code: :zip }
 end
 
 class ValidatedVacation < ActiveRecord::Base

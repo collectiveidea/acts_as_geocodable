@@ -61,8 +61,7 @@ Also remember to change your mapping in your geocodable classes to use the `:loc
 
 ```ruby
 class Event < ActiveRecord::Base
-  acts_as_geocodable address: {street: :address1, locality: :city,
-    region: :state, postal_code: :zip}
+  acts_as_geocodable address: { street: :address1, locality: :city, region: :state, postal_code: :zip }
 end
 ```
 
@@ -93,7 +92,7 @@ The only requirement is that your model must have address fields. By default, ac
 
 ```ruby
 class Event < ActiveRecord::Base
-  acts_as_geocodable address: {street: :address1, locality: :city, region: :state, postal_code: :zip}
+  acts_as_geocodable address: { street: :address1, locality: :city, region: :state, postal_code: :zip }
 end
 ```
 

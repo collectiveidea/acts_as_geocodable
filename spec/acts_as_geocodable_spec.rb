@@ -105,7 +105,7 @@ describe ActsAsGeocodable do
 
   describe "on save with an existing geocode" do
     before do
-      @white_house.attributes = {street: "", locality: "Saugatuck", region: "MI", postal_code: ""}
+      @white_house.attributes = { street: "", locality: "Saugatuck", region: "MI", postal_code: "" }
     end
 
     it "should destroy the old geocoding, create a new one, and leave the count the same" do

@@ -82,7 +82,7 @@ module ActsAsGeocodable #:nodoc:
     #   Default is <tt>:miles</tt> unless specified otherwise in the +acts_as_geocodable+
     #   declaration.
     #
-    scope :origin, lambda {|*args|
+    scope :origin, lambda { |*args|
       origin = location_to_geocode(args[0])
       options = {
         units: acts_as_geocodable_options[:units],
@@ -94,7 +94,7 @@ module ActsAsGeocodable #:nodoc:
 
       scope = scope.where("#{distance_sql} > #{options[:beyond]}") if options[:beyond]
       if options[:within]
-        scope = scope.where("(geocodes.latitude = :lat AND geocodes.longitude = :long) OR (#{distance_sql} <= #{options[:within]})", {lat: origin.latitude, long: origin.longitude})
+        scope = scope.where("(geocodes.latitude = :lat AND geocodes.longitude = :long) OR (#{distance_sql} <= #{options[:within]})", { lat: origin.latitude, long: origin.longitude })
       end
       scope
     }
