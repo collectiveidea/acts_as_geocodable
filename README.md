@@ -14,15 +14,15 @@ We've adopted the ARel style syntax for finding records.
 ## Usage
 
 ```ruby
-event = Event.create :street => "777 NE Martin Luther King, Jr. Blvd.",
-  :locality => "Portland", :region => "Oregon", :postal_code => 97232
+event = Event.create street: "777 NE Martin Luther King, Jr. Blvd.",
+  locality: "Portland", region: "Oregon", postal_code: 97232
 
 event.geocode.latitude                                #=> 45.529100000000
 event.geocode.longitude                               #=> -122.644200000000
 
 event.distance_to "49423"                             #=> 1807.66560483205
 
-Event.origin("97232", :within => 50)
+Event.origin("97232", within: 50)
 
 Event.origin("Portland, OR").nearest
 ```
@@ -57,8 +57,8 @@ Also remember to change your mapping in your geocodable classes to use the `:loc
 
 ```ruby
 class Event < ActiveRecord::Base
-  acts_as_geocodable :address => {:street => :address1, :locality => :city,
-    :region => :state, :postal_code => :zip}
+  acts_as_geocodable address: {street: :address1, locality: :city,
+    region: :state, postal_code: :zip}
 end
 ```
 
@@ -89,7 +89,7 @@ The only requirement is that your model must have address fields. By default, ac
 
 ```ruby
 class Event < ActiveRecord::Base
-  acts_as_geocodable :address => {:street => :address1, :locality => :city, :region => :state, :postal_code => :zip}
+  acts_as_geocodable address: {street: :address1, locality: :city, region: :state, postal_code: :zip}
 end
 ```
 
@@ -99,7 +99,7 @@ acts_as_geocodable can also update your address fields with the data returned fr
 
 ```ruby
 class Event < ActiveRecord::Base
-  acts_as_geocodable :normalize_address => true
+  acts_as_geocodable normalize_address: true
 end
 ```
 

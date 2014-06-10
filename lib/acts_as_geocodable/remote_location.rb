@@ -7,7 +7,7 @@ module ActsAsGeocodable #:nodoc:
     def remote_location
       if request.remote_ip == '127.0.0.1'
         # otherwise people would complain that it doesn't work
-        Graticule::Location.new(:locality => 'localhost')
+        Graticule::Location.new(locality: 'localhost')
       else
         Graticule.service(:host_ip).new.locate(request.remote_ip)
       end

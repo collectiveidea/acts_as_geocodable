@@ -35,17 +35,17 @@ describe Geocode do
   describe "find_or_create_by_location" do
     it "should find existing location" do
       existing = FactoryGirl.create(:white_house_geocode)
-      location = Graticule::Location.new(:postal_code => "20502",
-        :street => "1600 Pennsylvania Ave NW",
-        :locality => "Washington",
-        :region => "DC")
+      location = Graticule::Location.new(postal_code: "20502",
+        street: "1600 Pennsylvania Ave NW",
+        locality: "Washington",
+        region: "DC")
       expect(Geocode.find_or_create_by_location(location)).to eq(existing)
     end
 
     it "should return nil when location can't be geocoded" do
       expect(Geocode.geocoder).to receive(:locate).and_raise(Graticule::Error)
       expect {
-        expect(Geocode.find_or_create_by_location(Graticule::Location.new(:street => 'FAIL!'))).to be_nil
+        expect(Geocode.find_or_create_by_location(Graticule::Location.new(street: 'FAIL!'))).to be_nil
       }.not_to change { Geocode.count }
     end
 
@@ -67,7 +67,7 @@ describe Geocode do
 
   describe 'geocoded?' do
     it 'should be true with both a latitude and a longitude' do
-      expect(Geocode.new(:latitude => 1, :longitude => 1)).to be_geocoded
+      expect(Geocode.new(latitude: 1, longitude: 1)).to be_geocoded
     end
 
     it 'should be false when missing coordinates' do
@@ -75,11 +75,11 @@ describe Geocode do
     end
 
     it 'should be false when missing a latitude' do
-      expect(Geocode.new(:latitude => 1)).not_to be_geocoded
+      expect(Geocode.new(latitude: 1)).not_to be_geocoded
     end
 
     it 'should be false when missing a longitude' do
-      expect(Geocode.new(:latitude => 1)).not_to be_geocoded
+      expect(Geocode.new(latitude: 1)).not_to be_geocoded
     end
   end
 

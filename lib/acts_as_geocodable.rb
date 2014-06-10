@@ -32,12 +32,12 @@ module ActsAsGeocodable #:nodoc:
   #
   def acts_as_geocodable(options = {})
     options = {
-      :address => {
-        :street => :street, :locality => :locality, :region => :region,
-        :postal_code => :postal_code, :country => :country},
-      :normalize_address => false,
-      :distance_column => 'distance',
-      :units => :miles
+      address: {
+        street: :street, locality: :locality, region: :region,
+        postal_code: :postal_code, country: :country},
+      normalize_address: false,
+      distance_column: 'distance',
+      units: :miles
     }.merge(options)
 
     class_attribute :acts_as_geocodable_options
@@ -46,9 +46,9 @@ module ActsAsGeocodable #:nodoc:
     define_callbacks :geocoding
 
     if ActiveRecord::VERSION::MAJOR >= 4
-      has_one :geocoding, -> { includes :geocode }, :as => :geocodable, :dependent => :destroy
+      has_one :geocoding, -> { includes :geocode }, as: :geocodable, dependent: :destroy
     else
-      has_one :geocoding, :as => :geocodable, :include => :geocode, :dependent => :destroy
+      has_one :geocoding, as: :geocodable, include: :geocode, dependent: :destroy
     end
 
     after_save :attach_geocode
@@ -65,7 +65,7 @@ module ActsAsGeocodable #:nodoc:
 
     # Use ActiveRecord ARel style syntax for finding records.
     #
-    #   Model.origin("Chicago, IL", :within => 10)
+    #   Model.origin("Chicago, IL", within: 10)
     #
     # a +distance+ attribute indicating the distance
     # to the origin is added to each of the results:
@@ -85,7 +85,7 @@ module ActsAsGeocodable #:nodoc:
     scope :origin, lambda {|*args|
       origin = location_to_geocode(args[0])
       options = {
-        :units => acts_as_geocodable_options[:units],
+        units: acts_as_geocodable_options[:units],
       }.merge(args[1] || {})
       distance_sql = sql_for_distance(origin, options[:units])
 
@@ -94,7 +94,7 @@ module ActsAsGeocodable #:nodoc:
 
       scope = scope.where("#{distance_sql} >  #{options[:beyond]}") if options[:beyond]
       if options[:within]
-        scope = scope.where("(geocodes.latitude = :lat AND geocodes.longitude = :long) OR (#{distance_sql} <= #{options[:within]})", {:lat => origin.latitude, :long => origin.longitude})
+        scope = scope.where("(geocodes.latitude = :lat AND geocodes.longitude = :long) OR (#{distance_sql} <= #{options[:within]})", {lat: origin.latitude, long: origin.longitude})
       end
       scope
     }
@@ -153,7 +153,7 @@ module ActsAsGeocodable #:nodoc:
       #   end
       #
       def validates_as_geocodable(options = {})
-        options = options.reverse_merge :message => "Address could not be geocoded.", :allow_nil => false
+        options = options.reverse_merge message: "Address could not be geocoded.", allow_nil: false
         validate do |model|
           is_blank = model.to_location.attributes.except(:precision).all?(&:blank?)
           unless options[:allow_nil] && is_blank
@@ -171,11 +171,11 @@ module ActsAsGeocodable #:nodoc:
 
       def sql_for_distance(origin, units = acts_as_geocodable_options[:units])
         Graticule::Distance::Spherical.to_sql(
-          :latitude => origin.latitude,
-          :longitude => origin.longitude,
-          :latitude_column => "geocodes.latitude",
-          :longitude_column => "geocodes.longitude",
-          :units => units
+          latitude: origin.latitude,
+          longitude: origin.longitude,
+          latitude_column: "geocodes.latitude",
+          longitude_column: "geocodes.longitude",
+          units: units
         )
       end
     end
@@ -222,7 +222,7 @@ module ActsAsGeocodable #:nodoc:
       new_geocode = Geocode.find_or_create_by_location self.to_location unless self.to_location.blank?
       if new_geocode && self.geocode != new_geocode
         run_callbacks :geocoding do
-          self.geocoding = Geocoding.new :geocode => new_geocode
+          self.geocoding = Geocoding.new geocode: new_geocode
           self.update_address self.acts_as_geocodable_options[:normalize_address]
         end
       elsif !new_geocode && self.geocoding
