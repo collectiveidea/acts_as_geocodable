@@ -13,7 +13,7 @@
 * Add `validates_as_geocodable` ([Mark Van Holstyn](https://github.com/mvanholstyn))
 * Allow address mapping to be a single field ([Mark Van Holstyn](https://github.com/mvanholstyn))
 
-## 0.1.0
+## 0.1.0 / 2007-03-20
 
 * Add `remote_location` to get a user's location based on his or her `remote_ip`
 * Rename `:city` to `:locality` in address mapping to be consistent with Graticule 0.2
