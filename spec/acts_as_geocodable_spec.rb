@@ -204,7 +204,7 @@ describe ActsAsGeocodable do
     end
 
     it "should count within" do
-      spots_count = Vacation.origin("49406", :within => 3).count
+      spots_count = Vacation.origin("49406", :within => 3).count(:all)
       spots_count.should == 1
     end
 
@@ -254,7 +254,7 @@ describe ActsAsGeocodable do
   end
 
   it "should have count for beyond" do
-    count = Vacation.origin('49406', :beyond => 3).count
+    count = Vacation.origin('49406', :beyond => 3).count(:all)
     count.should == 1
   end
 
@@ -310,14 +310,14 @@ describe ActsAsGeocodable do
       location = CallbackLocation.new :address => "San Francisco"
       location.geocoding.should be_nil
       location.should_receive(:done_geocoding).once.and_return(true)
-      location.save!.should be_true
+      location.save!.should be_truthy
     end
 
     it "should not run callbacks after geocoding if the object is the same" do
       location = CallbackLocation.create(:address => "San Francisco")
       location.geocoding.should_not be_nil
       location.should_not_receive(:done_geocoding)
-      location.save!.should be_true
+      location.save!.should be_truthy
     end
   end
   

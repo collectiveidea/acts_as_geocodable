@@ -1,9 +1,11 @@
-Copyright (c) 2006 Daniel Morrison, Collective Idea 
+Copyright (c) 2006 Daniel Morrison, Collective Idea
 http://collectiveidea.com
 
-Testing code was heavily influenced by Rick Olson.  Thanks, Rick!
+Testing code was heavily influenced by Rick Olson. Thanks, Rick!
 Testing Portions Copyright (c) 2006 Rick Olson
 http://techno-weenie.net
+
+MIT License
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

@@ -1,4 +1,7 @@
+require 'active_record'
+require 'active_support'
 require 'graticule'
+
 require 'acts_as_geocodable/geocoding'
 require 'acts_as_geocodable/geocode'
 require 'acts_as_geocodable/remote_location'
@@ -37,17 +40,16 @@ module ActsAsGeocodable #:nodoc:
       :units => :miles
     }.merge(options)
 
-    if ActiveRecord::VERSION::MAJOR >= 3
-      class_attribute :acts_as_geocodable_options
-      self.acts_as_geocodable_options = options
-    else
-      write_attribute :acts_as_geocodable_options, options
-      class_attribute :acts_as_geocodable_options
-    end
+    class_attribute :acts_as_geocodable_options
+    self.acts_as_geocodable_options = options
 
     define_callbacks :geocoding
 
-    has_one :geocoding, -> { includes :geocode }, :as => :geocodable, :dependent => :destroy
+    if ActiveRecord::VERSION::MAJOR >= 4
+      has_one :geocoding, -> { includes :geocode }, :as => :geocodable, :dependent => :destroy
+    else
+      has_one :geocoding, :as => :geocodable, :include => :geocode, :dependent => :destroy
+    end
 
     after_save :attach_geocode
 
@@ -104,7 +106,9 @@ module ActsAsGeocodable #:nodoc:
   end
 
   module Model
-    extend ActiveSupport::Concern
+    def self.included(base)
+      base.extend(ClassMethods)
+    end
 
     module ClassMethods
 

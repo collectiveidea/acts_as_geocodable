@@ -1,10 +1,24 @@
 language: ruby
+branches:
+  only:
+    - master
 rvm:
   - 1.9.3
+  - "2.0"
+  - "2.1"
+gemfile:
+  - gemfiles/rails30.gemfile
+  - gemfiles/rails31.gemfile
+  - gemfiles/rails32.gemfile
+  - gemfiles/rails40.gemfile
+  - gemfiles/rails41.gemfile
+env:
+  - DB=mysql
+  - DB=postgresql
 before_script:
-  - cp spec/db/database.yml.example spec/db/database.yml
-  - mysql -e 'create database acts_as_geocodable_plugin_test;'
-  - psql -c 'create database acts_as_geocodable_plugin_test;' -U postgres
+  - cp spec/db/database.yml{.example,}
+  - mysql -e 'create database acts_as_geocodable_test;'
+  - createdb acts_as_geocodable_test -U postgres
 notifications:
   webhooks:
     urls:

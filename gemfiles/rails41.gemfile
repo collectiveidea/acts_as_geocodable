@@ -1,6 +1,8 @@
 source 'https://rubygems.org'
 
-gemspec
+gemspec path: '..'
+
+gem 'rails', '~> 4.1.0', '>= 4.1.2.rc'
 
 group :test do
   gem 'database_cleaner'
