@@ -1,5 +1,5 @@
 class Geocode < ActiveRecord::Base
-  has_many :geocodings, :dependent => :destroy
+  has_many :geocodings, dependent: :destroy
 
   validates_uniqueness_of :query
 
@@ -20,7 +20,7 @@ class Geocode < ActiveRecord::Base
   end
 
   def self.create_by_query(query)
-    create geocoder.locate(query).attributes.merge(:query => query)
+    create geocoder.locate(query).attributes.merge(query: query)
   end
 
   def self.find_or_create_by_location(location)
@@ -28,9 +28,9 @@ class Geocode < ActiveRecord::Base
   end
 
   def self.create_from_location(location)
-    create geocoder.locate(location).attributes.merge(:query => location.to_s)
-  rescue Graticule::Error => e
-    logger.warn e.message
+    create geocoder.locate(location).attributes.merge(query: location.to_s)
+  rescue Graticule::Error => error
+    logger.warn error.message
     nil
   end
 
@@ -47,7 +47,7 @@ class Geocode < ActiveRecord::Base
   end
 
   def on(geocodable)
-    geocodings.create :geocodable => geocodable
+    geocodings.create(geocodable: geocodable)
   end
 
   def coordinates
@@ -60,6 +60,6 @@ class Geocode < ActiveRecord::Base
 
   # Create a Graticule::Location
   def to_location
-    Graticule::Location.new(attributes.except('id', 'query'))
+    Graticule::Location.new(attributes.except("id", "query"))
   end
 end

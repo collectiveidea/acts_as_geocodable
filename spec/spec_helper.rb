@@ -1,6 +1,6 @@
-require 'acts_as_geocodable'
+require "acts_as_geocodable"
 
-require 'bundler'
+require "bundler"
 Bundler.require(:test)
 
 plugin_test_dir = File.dirname(__FILE__)
@@ -10,9 +10,9 @@ ActiveRecord::Base.establish_connection((ENV["DB"] || "mysql").to_sym)
 ActiveRecord::Migration.verbose = false
 load(File.join(plugin_test_dir, "db", "schema.rb"))
 
-require 'support/geocoder'
-require 'support/models'
-require 'support/factories'
+require "support/geocoder"
+require "support/models"
+require "support/factories"
 
 RSpec.configure do |config|
   # Use database cleaner to remove factories

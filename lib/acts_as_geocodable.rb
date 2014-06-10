@@ -1,10 +1,10 @@
-require 'active_record'
-require 'active_support'
-require 'graticule'
+require "active_record"
+require "active_support"
+require "graticule"
 
-require 'acts_as_geocodable/geocoding'
-require 'acts_as_geocodable/geocode'
-require 'acts_as_geocodable/remote_location'
+require "acts_as_geocodable/geocoding"
+require "acts_as_geocodable/geocode"
+require "acts_as_geocodable/remote_location"
 
 module ActiveSupport::Callbacks::ClassMethods
   def without_callback(*args, &block)
@@ -14,7 +14,7 @@ module ActiveSupport::Callbacks::ClassMethods
   end
 end
 
-module ActsAsGeocodable #:nodoc:
+module ActsAsGeocodable
   # Make a model geocodable.
   #
   #  class Event < ActiveRecord::Base
@@ -32,12 +32,12 @@ module ActsAsGeocodable #:nodoc:
   #
   def acts_as_geocodable(options = {})
     options = {
-      :address => {
-        :street => :street, :locality => :locality, :region => :region,
-        :postal_code => :postal_code, :country => :country},
-      :normalize_address => false,
-      :distance_column => 'distance',
-      :units => :miles
+      address: {
+        street: :street, locality: :locality, region: :region,
+        postal_code: :postal_code, country: :country},
+      normalize_address: false,
+      distance_column: "distance",
+      units: :miles
     }.merge(options)
 
     class_attribute :acts_as_geocodable_options
@@ -46,9 +46,9 @@ module ActsAsGeocodable #:nodoc:
     define_callbacks :geocoding
 
     if ActiveRecord::VERSION::MAJOR >= 4
-      has_one :geocoding, -> { includes :geocode }, :as => :geocodable, :dependent => :destroy
+      has_one :geocoding, -> { includes :geocode }, as: :geocodable, dependent: :destroy
     else
-      has_one :geocoding, :as => :geocodable, :include => :geocode, :dependent => :destroy
+      has_one :geocoding, as: :geocodable, include: :geocode, dependent: :destroy
     end
 
     after_save :attach_geocode
@@ -65,7 +65,7 @@ module ActsAsGeocodable #:nodoc:
 
     # Use ActiveRecord ARel style syntax for finding records.
     #
-    #   Model.origin("Chicago, IL", :within => 10)
+    #   Model.origin("Chicago, IL", within: 10)
     #
     # a +distance+ attribute indicating the distance
     # to the origin is added to each of the results:
@@ -82,19 +82,19 @@ module ActsAsGeocodable #:nodoc:
     #   Default is <tt>:miles</tt> unless specified otherwise in the +acts_as_geocodable+
     #   declaration.
     #
-    scope :origin, lambda {|*args|
+    scope :origin, lambda { |*args|
       origin = location_to_geocode(args[0])
       options = {
-        :units => acts_as_geocodable_options[:units],
+        units: acts_as_geocodable_options[:units],
       }.merge(args[1] || {})
       distance_sql = sql_for_distance(origin, options[:units])
 
       scope = with_geocode_fields.select("#{table_name}.*, #{distance_sql} AS
            #{acts_as_geocodable_options[:distance_column]}")
 
-      scope = scope.where("#{distance_sql} >  #{options[:beyond]}") if options[:beyond]
+      scope = scope.where("#{distance_sql} > #{options[:beyond]}") if options[:beyond]
       if options[:within]
-        scope = scope.where("(geocodes.latitude = :lat AND geocodes.longitude = :long) OR (#{distance_sql} <= #{options[:within]})", {:lat => origin.latitude, :long => origin.longitude})
+        scope = scope.where("(geocodes.latitude = :lat AND geocodes.longitude = :long) OR (#{distance_sql} <= #{options[:within]})", { lat: origin.latitude, long: origin.longitude })
       end
       scope
     }
@@ -111,7 +111,6 @@ module ActsAsGeocodable #:nodoc:
     end
 
     module ClassMethods
-
       # Find the nearest location to the given origin
       #
       #   Model.origin("Grand Rapids, MI").nearest
@@ -153,33 +152,32 @@ module ActsAsGeocodable #:nodoc:
       #   end
       #
       def validates_as_geocodable(options = {})
-        options = options.reverse_merge :message => "Address could not be geocoded.", :allow_nil => false
+        options = options.reverse_merge message: "Address could not be geocoded.", allow_nil: false
         validate do |model|
           is_blank = model.to_location.attributes.except(:precision).all?(&:blank?)
           unless options[:allow_nil] && is_blank
-            geocode = model.send :attach_geocode
+            geocode = model.send(:attach_geocode)
             if !geocode ||
                 (options[:precision] && geocode.precision < options[:precision]) ||
                 (block_given? && yield(geocode) == false)
-              model.errors.add :base, options[:message]
+              model.errors.add(:base, options[:message])
             end
           end
         end
       end
 
-    private
+      private
 
       def sql_for_distance(origin, units = acts_as_geocodable_options[:units])
         Graticule::Distance::Spherical.to_sql(
-          :latitude => origin.latitude,
-          :longitude => origin.longitude,
-          :latitude_column => "geocodes.latitude",
-          :longitude_column => "geocodes.longitude",
-          :units => units
+          latitude: origin.latitude,
+          longitude: origin.longitude,
+          latitude_column: "geocodes.latitude",
+          longitude_column: "geocodes.longitude",
+          units: units
         )
       end
     end
-
 
     # Get the geocode for this model
     def geocode
@@ -190,7 +188,7 @@ module ActsAsGeocodable #:nodoc:
     def to_location
       Graticule::Location.new.tap do |location|
         [:street, :locality, :region, :postal_code, :country].each do |attr|
-          location.send "#{attr}=", geo_attribute(attr)
+          location.send("#{attr}=", geo_attribute(attr))
         end
       end
     end
@@ -215,35 +213,35 @@ module ActsAsGeocodable #:nodoc:
       self.geocode.distance_to(geocode, units, formula)
     end
 
-  protected
+    protected
 
     # Perform the geocoding
     def attach_geocode
-      new_geocode = Geocode.find_or_create_by_location self.to_location unless self.to_location.blank?
+      new_geocode = Geocode.find_or_create_by_location(self.to_location) unless self.to_location.blank?
       if new_geocode && self.geocode != new_geocode
         run_callbacks :geocoding do
-          self.geocoding = Geocoding.new :geocode => new_geocode
+          self.geocoding = Geocoding.new(geocode: new_geocode)
           self.update_address self.acts_as_geocodable_options[:normalize_address]
         end
       elsif !new_geocode && self.geocoding
         self.geocoding.destroy
       end
       new_geocode
-    rescue Graticule::Error => e
-      logger.warn e.message
+    rescue Graticule::Error => error
+      logger.warn error.message
     end
 
-    def update_address(force = false) #:nodoc:
+    def update_address(force = false)
       unless self.geocode.blank?
         if self.acts_as_geocodable_options[:address].is_a? Symbol
           method = self.acts_as_geocodable_options[:address]
           if self.respond_to?("#{method}=") && (self.send(method).blank? || force)
-            self.send "#{method}=", self.geocode.to_location.to_s
+            self.send("#{method}=", self.geocode.to_location.to_s)
           end
         else
           self.acts_as_geocodable_options[:address].each do |attribute,method|
             if self.respond_to?("#{method}=") && (self.send(method).blank? || force)
-              self.send "#{method}=", self.geocode.send(attribute)
+              self.send("#{method}=", self.geocode.send(attribute))
             end
           end
         end
@@ -254,7 +252,7 @@ module ActsAsGeocodable #:nodoc:
       end
     end
 
-    def geo_attribute(attr_key) #:nodoc:
+    def geo_attribute(attr_key)
       if self.acts_as_geocodable_options[:address].is_a? Symbol
         attr_name = self.acts_as_geocodable_options[:address]
         attr_key == :street ? self.send(attr_name) : nil
@@ -266,4 +264,4 @@ module ActsAsGeocodable #:nodoc:
   end
 end
 
-ActiveRecord::Base.send :extend, ActsAsGeocodable
+ActiveRecord::Base.send(:extend, ActsAsGeocodable)

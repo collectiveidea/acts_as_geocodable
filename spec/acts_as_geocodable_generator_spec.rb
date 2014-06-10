@@ -1,9 +1,7 @@
-require 'spec_helper'
-require 'rails/generators'
-# require 'rails/generators/scripts/generate'
+require "spec_helper"
+require "rails/generators"
 
-describe 'ActsAsGeocodableGenerator' do
-
+describe "ActsAsGeocodableGenerator" do
   before do
     FileUtils.mkdir_p(fake_rails_root)
     @original_files = file_list
@@ -14,11 +12,12 @@ describe 'ActsAsGeocodableGenerator' do
   end
 
   private
-    def fake_rails_root
-      File.join(File.dirname(__FILE__), 'rails_root')
-    end
 
-    def file_list
-      Dir.glob(File.join(fake_rails_root, "*"))
-    end
+  def fake_rails_root
+    File.join(File.dirname(__FILE__), "rails_root")
+  end
+
+  def file_list
+    Dir.glob(File.join(fake_rails_root, "*"))
+  end
 end

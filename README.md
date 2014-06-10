@@ -14,15 +14,19 @@ We've adopted the ARel style syntax for finding records.
 ## Usage
 
 ```ruby
-event = Event.create :street => "777 NE Martin Luther King, Jr. Blvd.",
-  :locality => "Portland", :region => "Oregon", :postal_code => 97232
+event = Event.create(
+  street: "777 NE Martin Luther King, Jr. Blvd.",
+  locality: "Portland",
+  region: "Oregon",
+  postal_code: 97232
+)
 
-event.geocode.latitude                                #=> 45.529100000000
-event.geocode.longitude                               #=> -122.644200000000
+event.geocode.latitude  # => 45.529100000000
+event.geocode.longitude # => -122.644200000000
 
-event.distance_to "49423"                             #=> 1807.66560483205
+event.distance_to("49423") # => 1807.66560483205
 
-Event.origin("97232", :within => 50)
+Event.origin("97232", within: 50)
 
 Event.origin("Portland, OR").nearest
 ```
@@ -38,7 +42,7 @@ gem install acts_as_geocodable
 or add it to your Gemfile
 
 ```ruby
-gem 'acts_as_geocodable'
+gem "acts_as_geocodable"
 ```
 
 [Graticule](http://github.com/collectiveidea/graticule) is used for all the heavy lifting and will be installed too.
@@ -47,7 +51,7 @@ gem 'acts_as_geocodable'
 
 Before October 2008, precision wasn't included in the `Geocode` model. Make sure you add a string precision column to your geocode table if you're upgrading from an older version, and update Graticule.
 
-Also, if you're upgrading from a previous version of this plugin, note that `:city` has been renamed to `:locality` to be consistent with Graticule 0.2.  Create a migration that has:
+Also, if you're upgrading from a previous version of this plugin, note that `:city` has been renamed to `:locality` to be consistent with Graticule 0.2. Create a migration that has:
 
 ```ruby
 rename_column :geocodes, :city, :locality
@@ -57,8 +61,7 @@ Also remember to change your mapping in your geocodable classes to use the `:loc
 
 ```ruby
 class Event < ActiveRecord::Base
-  acts_as_geocodable :address => {:street => :address1, :locality => :city,
-    :region => :state, :postal_code => :zip}
+  acts_as_geocodable address: { street: :address1, locality: :city, region: :state, postal_code: :zip }
 end
 ```
 
@@ -74,7 +77,7 @@ rake db:migrate
 Set the default geocoder in your environment.rb file.
 
 ```ruby
-Geocode.geocoder = Graticule.service(:yahoo).new 'your_api_key'
+Geocode.geocoder = Graticule.service(:yahoo).new("your_api_key")
 ```
 
 Then, in each model you want to make geocodable, add `acts_as_geocodable`.
@@ -89,7 +92,7 @@ The only requirement is that your model must have address fields. By default, ac
 
 ```ruby
 class Event < ActiveRecord::Base
-  acts_as_geocodable :address => {:street => :address1, :locality => :city, :region => :state, :postal_code => :zip}
+  acts_as_geocodable address: { street: :address1, locality: :city, region: :state, postal_code: :zip }
 end
 ```
 
@@ -99,7 +102,7 @@ acts_as_geocodable can also update your address fields with the data returned fr
 
 ```ruby
 class Event < ActiveRecord::Base
-  acts_as_geocodable :normalize_address => true
+  acts_as_geocodable normalize_address: true
 end
 ```
 
