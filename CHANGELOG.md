@@ -1,60 +1,60 @@
 ## 2.0.3 / 2011-11-15
 
-* Fix class attribute management across Rails versions
+* [BUGFIX] Fix class attribute management across Rails versions
 
 ## 2.0.2 / 2011-01-06
 
-* Optimize query clause ordering
+* [PERFORMANCE] Optimize query clause ordering
 
 ## 2.0.1 / 2010-11-15
 
-* Explicitly typecast PostgreSQL types
-* Fix bug where origin/target locations are equal
+* [BUGFIX] Explicitly typecast PostgreSQL types
+* [BUGFIX] Fix bug where origin/target locations are equal
 
 ## 2.0.0 / 2010-10-01
 
-* Rewrite for Rails 3
-* Implement new Rails 3/ARel finder syntax
-* Double Rainbows 🌈🌈
+* [ENHANCEMENT] Rewrite for Rails 3
+* [FEATURE] Implement new Rails 3/ARel finder syntax
+* [FEATURE] Double Rainbows 🌈🌈
 
 ## 1.0.4 / 2010-09-20
 
-* Use `tap` rather than `returning`
+* [ENHANCEMENT] Use `tap` rather than `returning`
 
 ## 1.0.3 / 2010-03-17
 
-* Add the `graticule` runtime gem dependency
+* [ENHANCEMENT] Add the `graticule` runtime gem dependency
 
 ## 1.0.2 / 2010-02-04
 
-* Allow `validates_as_geocodable` to accept a block
+* [FEATURE] Allow `validates_as_geocodable` to accept a block
 
 ## 1.0.1 / 2009-12-16
 
-* Allow `validates_as_geocodable` to accept a `:precision` option
+* [FEATURE] Allow `validates_as_geocodable` to accept a `:precision` option
 
 ## 1.0.0 / 2009-10-21
 
-* Add an `after_geocoding` callback
-* Add appropriate database indexes
+* [FEATURE] Add an `after_geocoding` callback
+* [PERFORMANCE] Add appropriate database indexes
 
 ## 0.2.1 / 2008-08-08
 
-* Make results will_paginate-compatible
+* [FEATURE] Make results will_paginate-compatible
 
 ## 0.2.0 / 2007-10-27
 
-* Add `validates_as_geocodable` ([Mark Van Holstyn](https://github.com/mvanholstyn))
-* Allow address mapping to be a single field ([Mark Van Holstyn](https://github.com/mvanholstyn))
+* [FEATURE] Add `validates_as_geocodable` ([Mark Van Holstyn](https://github.com/mvanholstyn))
+* [FEATURE] Allow address mapping to be a single field ([Mark Van Holstyn](https://github.com/mvanholstyn))
 
 ## 0.1.0 / 2007-03-20
 
-* Add `remote_location` to get a user's location based on his or her `remote_ip`
-* Rename `:city` to `:locality` in address mapping to be consistent with Graticule 0.2
+* [FEATURE] Add `remote_location` to get a user's location based on his or her `remote_ip`
+* [ENHANCEMENT] Rename `:city` to `:locality` in address mapping to be consistent with Graticule 0.2
 
   Create a migration with:
 
   ```ruby
   rename_column :geocodes, :city, :locality
   ```
-* Replace `#full_address` with `#to_location`
+* [ENHANCEMENT] Replace `#full_address` with `#to_location`
