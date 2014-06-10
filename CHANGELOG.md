@@ -1,3 +1,11 @@
+## 2.1.0 / Unreleased
+
+* [ENHANCEMENT] Whitelist attributes for mass assignment
+* [FEATURE] Add Rails 4 compatibility
+* [ENHANCEMENT] Add runtime dependency on Rails
+* [ENHANCEMENT] Adhere to GitHub's Ruby Style Guide
+* [BUGFIX] Fix dependency requirement sequence
+
 ## 2.0.3 / 2011-11-15
 
 * [BUGFIX] Fix class attribute management across Rails versions
