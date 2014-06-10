@@ -18,4 +18,4 @@ module ActsAsGeocodable #:nodoc:
   end
 end
 
-ActionController::Base.send :include, ActsAsGeocodable::RemoteLocation
+ActionController::Base.send(:include, ActsAsGeocodable::RemoteLocation)

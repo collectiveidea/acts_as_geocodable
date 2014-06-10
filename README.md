@@ -14,13 +14,17 @@ We've adopted the ARel style syntax for finding records.
 ## Usage
 
 ```ruby
-event = Event.create street: "777 NE Martin Luther King, Jr. Blvd.",
-  locality: "Portland", region: "Oregon", postal_code: 97232
+event = Event.create(
+  street: "777 NE Martin Luther King, Jr. Blvd.",
+  locality: "Portland",
+  region: "Oregon",
+  postal_code: 97232
+)
 
 event.geocode.latitude  # => 45.529100000000
 event.geocode.longitude # => -122.644200000000
 
-event.distance_to "49423" # => 1807.66560483205
+event.distance_to("49423") # => 1807.66560483205
 
 Event.origin("97232", within: 50)
 
@@ -74,7 +78,7 @@ rake db:migrate
 Set the default geocoder in your environment.rb file.
 
 ```ruby
-Geocode.geocoder = Graticule.service(:yahoo).new "your_api_key"
+Geocode.geocoder = Graticule.service(:yahoo).new("your_api_key")
 ```
 
 Then, in each model you want to make geocodable, add `acts_as_geocodable`.

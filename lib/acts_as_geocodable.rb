@@ -156,11 +156,11 @@ module ActsAsGeocodable #:nodoc:
         validate do |model|
           is_blank = model.to_location.attributes.except(:precision).all?(&:blank?)
           unless options[:allow_nil] && is_blank
-            geocode = model.send :attach_geocode
+            geocode = model.send(:attach_geocode)
             if !geocode ||
                 (options[:precision] && geocode.precision < options[:precision]) ||
                 (block_given? && yield(geocode) == false)
-              model.errors.add :base, options[:message]
+              model.errors.add(:base, options[:message])
             end
           end
         end
@@ -188,7 +188,7 @@ module ActsAsGeocodable #:nodoc:
     def to_location
       Graticule::Location.new.tap do |location|
         [:street, :locality, :region, :postal_code, :country].each do |attr|
-          location.send "#{attr}=", geo_attribute(attr)
+          location.send("#{attr}=", geo_attribute(attr))
         end
       end
     end
@@ -217,10 +217,10 @@ module ActsAsGeocodable #:nodoc:
 
     # Perform the geocoding
     def attach_geocode
-      new_geocode = Geocode.find_or_create_by_location self.to_location unless self.to_location.blank?
+      new_geocode = Geocode.find_or_create_by_location(self.to_location) unless self.to_location.blank?
       if new_geocode && self.geocode != new_geocode
         run_callbacks :geocoding do
-          self.geocoding = Geocoding.new geocode: new_geocode
+          self.geocoding = Geocoding.new(geocode: new_geocode)
           self.update_address self.acts_as_geocodable_options[:normalize_address]
         end
       elsif !new_geocode && self.geocoding
@@ -236,12 +236,12 @@ module ActsAsGeocodable #:nodoc:
         if self.acts_as_geocodable_options[:address].is_a? Symbol
           method = self.acts_as_geocodable_options[:address]
           if self.respond_to?("#{method}=") && (self.send(method).blank? || force)
-            self.send "#{method}=", self.geocode.to_location.to_s
+            self.send("#{method}=", self.geocode.to_location.to_s)
           end
         else
           self.acts_as_geocodable_options[:address].each do |attribute,method|
             if self.respond_to?("#{method}=") && (self.send(method).blank? || force)
-              self.send "#{method}=", self.geocode.send(attribute)
+              self.send("#{method}=", self.geocode.send(attribute))
             end
           end
         end
@@ -264,4 +264,4 @@ module ActsAsGeocodable #:nodoc:
   end
 end
 
-ActiveRecord::Base.send :extend, ActsAsGeocodable
+ActiveRecord::Base.send(:extend, ActsAsGeocodable)

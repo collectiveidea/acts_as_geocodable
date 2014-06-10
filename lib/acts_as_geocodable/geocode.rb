@@ -47,7 +47,7 @@ class Geocode < ActiveRecord::Base
   end
 
   def on(geocodable)
-    geocodings.create geocodable: geocodable
+    geocodings.create(geocodable: geocodable)
   end
 
   def coordinates
