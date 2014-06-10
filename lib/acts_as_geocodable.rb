@@ -14,7 +14,7 @@ module ActiveSupport::Callbacks::ClassMethods
   end
 end
 
-module ActsAsGeocodable #:nodoc:
+module ActsAsGeocodable
   # Make a model geocodable.
   #
   #  class Event < ActiveRecord::Base
@@ -231,7 +231,7 @@ module ActsAsGeocodable #:nodoc:
       logger.warn error.message
     end
 
-    def update_address(force = false) #:nodoc:
+    def update_address(force = false)
       unless self.geocode.blank?
         if self.acts_as_geocodable_options[:address].is_a? Symbol
           method = self.acts_as_geocodable_options[:address]
@@ -252,7 +252,7 @@ module ActsAsGeocodable #:nodoc:
       end
     end
 
-    def geo_attribute(attr_key) #:nodoc:
+    def geo_attribute(attr_key)
       if self.acts_as_geocodable_options[:address].is_a? Symbol
         attr_name = self.acts_as_geocodable_options[:address]
         attr_key == :street ? self.send(attr_name) : nil

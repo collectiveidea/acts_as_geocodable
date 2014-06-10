@@ -1,8 +1,7 @@
 require "action_controller"
 
-module ActsAsGeocodable #:nodoc:
-  module RemoteLocation #:nodoc:
-
+module ActsAsGeocodable
+  module RemoteLocation
     # Get the remote location of the request IP using http://hostip.info
     def remote_location
       if request.remote_ip == "127.0.0.1"
