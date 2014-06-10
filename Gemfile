@@ -7,5 +7,5 @@ group :test do
   gem 'factory_girl'
   gem 'mysql2'
   gem 'pg'
-  gem 'rspec', '~> 2.0'
+  gem 'rspec', '~> 3.0'
 end
