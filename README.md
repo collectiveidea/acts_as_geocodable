@@ -17,10 +17,10 @@ We've adopted the ARel style syntax for finding records.
 event = Event.create street: "777 NE Martin Luther King, Jr. Blvd.",
   locality: "Portland", region: "Oregon", postal_code: 97232
 
-event.geocode.latitude                                #=> 45.529100000000
-event.geocode.longitude                               #=> -122.644200000000
+event.geocode.latitude  # => 45.529100000000
+event.geocode.longitude # => -122.644200000000
 
-event.distance_to "49423"                             #=> 1807.66560483205
+event.distance_to "49423" # => 1807.66560483205
 
 Event.origin("97232", within: 50)
 
@@ -47,7 +47,7 @@ gem "acts_as_geocodable"
 
 Before October 2008, precision wasn't included in the `Geocode` model. Make sure you add a string precision column to your geocode table if you're upgrading from an older version, and update Graticule.
 
-Also, if you're upgrading from a previous version of this plugin, note that `:city` has been renamed to `:locality` to be consistent with Graticule 0.2.  Create a migration that has:
+Also, if you're upgrading from a previous version of this plugin, note that `:city` has been renamed to `:locality` to be consistent with Graticule 0.2. Create a migration that has:
 
 ```ruby
 rename_column :geocodes, :city, :locality

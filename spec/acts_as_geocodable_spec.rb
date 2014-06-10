@@ -14,7 +14,6 @@ describe ActsAsGeocodable do
     it "should be nil without a geocoding" do
       expect(Vacation.new.geocode).to be_nil
     end
-
   end
 
   describe "to_location" do
@@ -46,7 +45,6 @@ describe ActsAsGeocodable do
       vacation = AddressBlobVacation.create! address: "grand rapids, mi"
       expect(vacation.address).to eq("Grand Rapids, MI US")
     end
-
   end
 
   describe "without address normalization" do
@@ -103,7 +101,6 @@ describe ActsAsGeocodable do
       expect { @white_house.save!; @white_house.reload }.not_to change { Geocoding.count }
       expect(@white_house.geocode).to eq(original_geocode)
     end
-
   end
 
   describe "on save with an existing geocode" do
@@ -119,7 +116,6 @@ describe ActsAsGeocodable do
       @white_house.save!
       expect(@white_house.geocode.postal_code.to_s).to eq("49406")
     end
-
   end
 
   describe "validates_as_geocodable" do
@@ -212,7 +208,6 @@ describe ActsAsGeocodable do
       saugatuck = Vacation.origin(49406, within: 2, units: :kilometers).first
       expect(saugatuck).to eq(@saugatuck)
     end
-
   end
 
   describe "distance_to" do
@@ -223,6 +218,7 @@ describe ActsAsGeocodable do
     it "should calculate distance from a string" do
       expect(@san_francisco.distance_to(@saugatuck.geocode.query)).to be_within(2).of(1927)
     end
+
     it "should calculate distance from a geocode" do
       expect(@san_francisco.distance_to(@saugatuck.geocode)).to be_within(2).of(1927)
     end
@@ -244,7 +240,6 @@ describe ActsAsGeocodable do
       expect(@san_francisco.distance_to(Geocode.new)).to be_nil
       expect(@san_francisco.distance_to(nil)).to be_nil
     end
-
   end
 
   it "should have beyond" do
@@ -320,5 +315,4 @@ describe ActsAsGeocodable do
       expect(location.save!).to be_truthy
     end
   end
-
 end

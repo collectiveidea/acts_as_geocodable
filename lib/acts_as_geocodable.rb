@@ -92,7 +92,7 @@ module ActsAsGeocodable #:nodoc:
       scope = with_geocode_fields.select("#{table_name}.*, #{distance_sql} AS
            #{acts_as_geocodable_options[:distance_column]}")
 
-      scope = scope.where("#{distance_sql} >  #{options[:beyond]}") if options[:beyond]
+      scope = scope.where("#{distance_sql} > #{options[:beyond]}") if options[:beyond]
       if options[:within]
         scope = scope.where("(geocodes.latitude = :lat AND geocodes.longitude = :long) OR (#{distance_sql} <= #{options[:within]})", {lat: origin.latitude, long: origin.longitude})
       end
@@ -111,7 +111,6 @@ module ActsAsGeocodable #:nodoc:
     end
 
     module ClassMethods
-
       # Find the nearest location to the given origin
       #
       #   Model.origin("Grand Rapids, MI").nearest
@@ -167,7 +166,7 @@ module ActsAsGeocodable #:nodoc:
         end
       end
 
-    private
+      private
 
       def sql_for_distance(origin, units = acts_as_geocodable_options[:units])
         Graticule::Distance::Spherical.to_sql(
@@ -179,7 +178,6 @@ module ActsAsGeocodable #:nodoc:
         )
       end
     end
-
 
     # Get the geocode for this model
     def geocode
@@ -215,7 +213,7 @@ module ActsAsGeocodable #:nodoc:
       self.geocode.distance_to(geocode, units, formula)
     end
 
-  protected
+    protected
 
     # Perform the geocoding
     def attach_geocode

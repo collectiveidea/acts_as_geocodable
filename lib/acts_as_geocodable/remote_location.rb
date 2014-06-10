@@ -15,7 +15,6 @@ module ActsAsGeocodable #:nodoc:
       logger.warn "An error occurred while looking up the location of '#{request.remote_ip}': #{e.message}"
       nil
     end
-
   end
 end
 

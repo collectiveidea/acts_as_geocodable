@@ -1,15 +1,14 @@
 ActiveRecord::Schema.define(version: 1) do
-
   create_table "geocodes", force: true do |t|
-    t.column "latitude",  :decimal, precision: 15, scale: 12
+    t.column "latitude", :decimal, precision: 15, scale: 12
     t.column "longitude", :decimal, precision: 15, scale: 12
-    t.column "query",     :string
-    t.column "street",    :string
-    t.column "locality",      :string
-    t.column "region",     :string
+    t.column "query", :string
+    t.column "street", :string
+    t.column "locality", :string
+    t.column "region", :string
     t.column "postal_code", :string
-    t.column "country",   :string
-    t.column "precision",   :string
+    t.column "country", :string
+    t.column "precision", :string
   end
 
   add_index "geocodes", ["query"], name: "geocodes_query_index", unique: true
@@ -17,8 +16,8 @@ ActiveRecord::Schema.define(version: 1) do
   add_index "geocodes", ["longitude"], name: "geocodes_longitude_index"
 
   create_table "geocodings", force: true do |t|
-    t.column "geocodable_id",   :integer
-    t.column "geocode_id",      :integer
+    t.column "geocodable_id", :integer
+    t.column "geocode_id", :integer
     t.column "geocodable_type", :string
   end
 
@@ -57,5 +56,4 @@ ActiveRecord::Schema.define(version: 1) do
     t.column "name", :string
     t.column "zip", :string
   end
-
 end

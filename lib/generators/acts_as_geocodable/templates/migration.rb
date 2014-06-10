@@ -34,7 +34,7 @@ class AddGeocodableTables < ActiveRecord::Migration
   end
 
   def self.down
-    drop_table  :geocodes
-    drop_table  :geocodings
+    drop_table :geocodes
+    drop_table :geocodings
   end
 end

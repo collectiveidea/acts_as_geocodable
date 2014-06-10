@@ -48,7 +48,6 @@ describe Geocode do
         expect(Geocode.find_or_create_by_location(Graticule::Location.new(street: "FAIL!"))).to be_nil
       }.not_to change { Geocode.count }
     end
-
   end
 
   describe "coordinates" do
@@ -82,5 +81,4 @@ describe Geocode do
       expect(Geocode.new(latitude: 1)).not_to be_geocoded
     end
   end
-
 end

@@ -24,5 +24,4 @@ class ActsAsGeocodableGenerator < Rails::Generators::Base
       migration_template "migration.rb", "db/migrate/add_geocodable_tables.rb"
     end
   end
-
 end

@@ -2,7 +2,7 @@ class Graticule::Geocoder::Canned
   class_attribute :responses
   self.responses = {}
   class_attribute :default
-  
+
   def locate(query)
     location = responses[query.to_s.strip]
     raise %Q{No Location for query: "#{query.to_s.inspect}" Add it to spec/support/geocoder.rb} unless location
@@ -33,13 +33,13 @@ sf = Graticule::Location.new(
 )
 
 Geocode.geocoder.responses = {
-  "San Francisco"       => sf, 
-  "San Francisco, CA"   => sf, 
+  "San Francisco" => sf,
+  "San Francisco, CA" => sf,
 
-  "49406"               => saugatuck,
-  "Saugatuck, MI"       => saugatuck,
+  "49406" => saugatuck,
+  "Saugatuck, MI" => saugatuck,
   "Saugatuck, MI 49406" => saugatuck,
-  
+
   "1600 Pennsylvania Ave NW\nWashington, DC 20502" => Graticule::Location.new(
     locality: "Washington",
     region: "DC",
