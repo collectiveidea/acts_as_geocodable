@@ -1,4 +1,4 @@
-## 2.1.0 / Unreleased
+## 2.1.0 / 2014-06-10
 
 * [ENHANCEMENT] Whitelist attributes for mass assignment
 * [FEATURE] Add Rails 4 compatibility
