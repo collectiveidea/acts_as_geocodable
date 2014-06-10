@@ -13,8 +13,14 @@ gemfile:
   - gemfiles/rails40.gemfile
   - gemfiles/rails41.gemfile
 env:
-  - DB=mysql
-  - DB=postgresql
+  global:
+    secure: | # CODECLIMATE_REPO_TOKEN
+      TvVATBVNhppiCRYfAAzmIfppeftAl6NchlJlPdNJGkeyoplftnr6GPFJHO1u
+      Yj0nznR+8OsKU6Kv7u8n+S9c3PRIBY9pw13GEWqrB9Pa5U9QK3h1xGA/ioKn
+      eb74qe+vux/blTpZ1/mHrIKGBX03RaW8fdvePeSXik3u5uKZzVg=
+  matrix:
+    - DB=mysql
+    - DB=postgresql
 before_script:
   - cp spec/db/database.yml{.example,}
   - mysql -e 'create database acts_as_geocodable_test;'
