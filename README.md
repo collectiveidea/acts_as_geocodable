@@ -38,7 +38,7 @@ gem install acts_as_geocodable
 or add it to your Gemfile
 
 ```ruby
-gem 'acts_as_geocodable'
+gem "acts_as_geocodable"
 ```
 
 [Graticule](http://github.com/collectiveidea/graticule) is used for all the heavy lifting and will be installed too.
@@ -74,7 +74,7 @@ rake db:migrate
 Set the default geocoder in your environment.rb file.
 
 ```ruby
-Geocode.geocoder = Graticule.service(:yahoo).new 'your_api_key'
+Geocode.geocoder = Graticule.service(:yahoo).new "your_api_key"
 ```
 
 Then, in each model you want to make geocodable, add `acts_as_geocodable`.

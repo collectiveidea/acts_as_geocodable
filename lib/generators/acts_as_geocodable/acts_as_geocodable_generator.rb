@@ -1,11 +1,11 @@
-require 'rails/generators'
-require 'rails/generators/migration'
+require "rails/generators"
+require "rails/generators/migration"
 
 class ActsAsGeocodableGenerator < Rails::Generators::Base
   include Rails::Generators::Migration
 
   def self.source_root
-     @source_root ||= File.join(File.dirname(__FILE__), 'templates')
+     @source_root ||= File.join(File.dirname(__FILE__), "templates")
   end
 
   # Implement the required interface for Rails::Generators::Migration.
@@ -21,7 +21,7 @@ class ActsAsGeocodableGenerator < Rails::Generators::Base
 
   def create_migration_file
     if defined?(ActiveRecord)
-      migration_template 'migration.rb', 'db/migrate/add_geocodable_tables.rb'
+      migration_template "migration.rb", "db/migrate/add_geocodable_tables.rb"
     end
   end
 

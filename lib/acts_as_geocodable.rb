@@ -1,10 +1,10 @@
-require 'active_record'
-require 'active_support'
-require 'graticule'
+require "active_record"
+require "active_support"
+require "graticule"
 
-require 'acts_as_geocodable/geocoding'
-require 'acts_as_geocodable/geocode'
-require 'acts_as_geocodable/remote_location'
+require "acts_as_geocodable/geocoding"
+require "acts_as_geocodable/geocode"
+require "acts_as_geocodable/remote_location"
 
 module ActiveSupport::Callbacks::ClassMethods
   def without_callback(*args, &block)
@@ -36,7 +36,7 @@ module ActsAsGeocodable #:nodoc:
         street: :street, locality: :locality, region: :region,
         postal_code: :postal_code, country: :country},
       normalize_address: false,
-      distance_column: 'distance',
+      distance_column: "distance",
       units: :miles
     }.merge(options)
 

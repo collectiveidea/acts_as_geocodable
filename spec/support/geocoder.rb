@@ -33,12 +33,12 @@ sf = Graticule::Location.new(
 )
 
 Geocode.geocoder.responses = {
-  'San Francisco'       => sf, 
-  'San Francisco, CA'   => sf, 
+  "San Francisco"       => sf, 
+  "San Francisco, CA"   => sf, 
 
-  '49406'               => saugatuck,
-  'Saugatuck, MI'       => saugatuck,
-  'Saugatuck, MI 49406' => saugatuck,
+  "49406"               => saugatuck,
+  "Saugatuck, MI"       => saugatuck,
+  "Saugatuck, MI 49406" => saugatuck,
   
   "1600 Pennsylvania Ave NW\nWashington, DC 20502" => Graticule::Location.new(
     locality: "Washington",
@@ -47,6 +47,6 @@ Geocode.geocoder.responses = {
     precision: :street,
     latitude: 38.898748,
     longitude: -77.037684,
-    postal_code: '20502'
+    postal_code: "20502"
   )
 }

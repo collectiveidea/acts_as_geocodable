@@ -1,13 +1,13 @@
-require 'action_controller'
+require "action_controller"
 
 module ActsAsGeocodable #:nodoc:
   module RemoteLocation #:nodoc:
 
     # Get the remote location of the request IP using http://hostip.info
     def remote_location
-      if request.remote_ip == '127.0.0.1'
+      if request.remote_ip == "127.0.0.1"
         # otherwise people would complain that it doesn't work
-        Graticule::Location.new(locality: 'localhost')
+        Graticule::Location.new(locality: "localhost")
       else
         Graticule.service(:host_ip).new.locate(request.remote_ip)
       end

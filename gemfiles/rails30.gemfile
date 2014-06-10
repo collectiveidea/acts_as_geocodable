@@ -1,14 +1,14 @@
-source 'https://rubygems.org'
+source "https://rubygems.org"
 
-gemspec path: '..'
+gemspec path: ".."
 
-gem 'rails', '~> 3.0.0'
+gem "rails", "~> 3.0.0"
 
 group :test do
-  gem 'activerecord-mysql2-adapter'
-  gem 'database_cleaner'
-  gem 'factory_girl'
-  gem 'mysql2'
-  gem 'pg'
-  gem 'rspec', '~> 3.0'
+  gem "activerecord-mysql2-adapter"
+  gem "database_cleaner"
+  gem "factory_girl"
+  gem "mysql2"
+  gem "pg"
+  gem "rspec", "~> 3.0"
 end

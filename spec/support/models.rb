@@ -1,10 +1,10 @@
 class Vacation < ActiveRecord::Base
   acts_as_geocodable normalize_address: true
-  belongs_to :nearest_city, class_name: 'City', foreign_key: 'city_id'
+  belongs_to :nearest_city, class_name: "City", foreign_key: "city_id"
 end
 
 class Staycation < ActiveRecord::Base
-  self.table_name = 'vacations'
+  self.table_name = "vacations"
 
   acts_as_geocodable
   validates_as_geocodable(allow_nil: false) do |geocode|

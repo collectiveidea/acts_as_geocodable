@@ -60,6 +60,6 @@ class Geocode < ActiveRecord::Base
 
   # Create a Graticule::Location
   def to_location
-    Graticule::Location.new(attributes.except('id', 'query'))
+    Graticule::Location.new(attributes.except("id", "query"))
   end
 end

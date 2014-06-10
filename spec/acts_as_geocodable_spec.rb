@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe ActsAsGeocodable do
   before do
@@ -33,9 +33,9 @@ describe ActsAsGeocodable do
     end
 
     it "should update address fields with result" do
-      vacation = Vacation.create! locality: 'sanclemente', region: 'ca'
-      expect(vacation.locality).to eq('San Clemente')
-      expect(vacation.region).to eq('CA')
+      vacation = Vacation.create! locality: "sanclemente", region: "ca"
+      expect(vacation.locality).to eq("San Clemente")
+      expect(vacation.region).to eq("CA")
     end
 
     it "should update address blob" do
@@ -54,19 +54,19 @@ describe ActsAsGeocodable do
       Vacation.acts_as_geocodable_options[:normalize_address] = false
 
       allow(Geocode.geocoder).to receive(:locate).and_return(
-        Graticule::Location.new(locality: "Portland", region: "OR", postal_code: '97212')
+        Graticule::Location.new(locality: "Portland", region: "OR", postal_code: "97212")
       )
 
-      @vacation = Vacation.create! locality: 'portland', region: 'or'
+      @vacation = Vacation.create! locality: "portland", region: "or"
     end
 
     it "should not update address attributes" do
-      expect(@vacation.locality).to eq('portland')
-      expect(@vacation.region).to eq('or')
+      expect(@vacation.locality).to eq("portland")
+      expect(@vacation.region).to eq("or")
     end
 
     it "should fill in blank attributes" do
-      expect(@vacation.postal_code).to eq('97212')
+      expect(@vacation.postal_code).to eq("97212")
     end
   end
 
@@ -108,7 +108,7 @@ describe ActsAsGeocodable do
 
   describe "on save with an existing geocode" do
     before do
-      @white_house.attributes = {street: '', locality: 'Saugatuck', region: 'MI', postal_code: ''}
+      @white_house.attributes = {street: "", locality: "Saugatuck", region: "MI", postal_code: ""}
     end
 
     it "should destroy the old geocoding, create a new one, and leave the count the same" do
@@ -117,7 +117,7 @@ describe ActsAsGeocodable do
 
     it "should set the new geocode" do
       @white_house.save!
-      expect(@white_house.geocode.postal_code.to_s).to eq('49406')
+      expect(@white_house.geocode.postal_code.to_s).to eq("49406")
     end
 
   end
@@ -143,19 +143,19 @@ describe ActsAsGeocodable do
 
     it "should be valid with the same precision" do
       @model.validates_as_geocodable precision: :street
-      expect(Geocode.geocoder).to receive(:locate).and_return(Graticule::Location.new(precision: 'street'))
+      expect(Geocode.geocoder).to receive(:locate).and_return(Graticule::Location.new(precision: "street"))
       expect(@vacation).to be_valid
     end
 
     it "should be valid with a higher precision" do
       @model.validates_as_geocodable precision: :region
-      expect(Geocode.geocoder).to receive(:locate).and_return(Graticule::Location.new(precision: 'street'))
+      expect(Geocode.geocoder).to receive(:locate).and_return(Graticule::Location.new(precision: "street"))
       expect(@vacation).to be_valid
     end
 
     it "should be invalid with a lower precision" do
       @model.validates_as_geocodable precision: :street
-      expect(Geocode.geocoder).to receive(:locate).and_return(Graticule::Location.new(precision: 'region'))
+      expect(Geocode.geocoder).to receive(:locate).and_return(Graticule::Location.new(precision: "region"))
       expect(@vacation).not_to be_valid
       expect(@vacation.errors[:base]).to include("Address could not be geocoded.")
     end
@@ -166,13 +166,13 @@ describe ActsAsGeocodable do
     end
 
     it "should be invalid if validation block returns false" do
-      expect(Geocode.geocoder).to receive(:locate).and_return(Graticule::Location.new(country: 'CA'))
+      expect(Geocode.geocoder).to receive(:locate).and_return(Graticule::Location.new(country: "CA"))
       staycation = Staycation.new locality: "Saugatuck", region: "MI"
       expect(staycation).not_to be_valid
     end
 
     it "should be valid if validation block returns true" do
-      expect(Geocode.geocoder).to receive(:locate).and_return(Graticule::Location.new(country: 'US'))
+      expect(Geocode.geocoder).to receive(:locate).and_return(Graticule::Location.new(country: "US"))
       staycation = Staycation.new locality: "Saugatuck", region: "MI"
       expect(staycation).to be_valid
     end
@@ -217,30 +217,30 @@ describe ActsAsGeocodable do
 
   describe "distance_to" do
     before do
-      @san_francisco = Vacation.create!(name: 'San Francisco', locality: 'San Francisco', region: 'CA')
+      @san_francisco = Vacation.create!(name: "San Francisco", locality: "San Francisco", region: "CA")
     end
 
-    it 'should calculate distance from a string' do
+    it "should calculate distance from a string" do
       expect(@san_francisco.distance_to(@saugatuck.geocode.query)).to be_within(2).of(1927)
     end
-    it 'should calculate distance from a geocode' do
+    it "should calculate distance from a geocode" do
       expect(@san_francisco.distance_to(@saugatuck.geocode)).to be_within(2).of(1927)
     end
 
-    it 'should calculate distance from a geocodable model' do
+    it "should calculate distance from a geocodable model" do
       expect(@san_francisco.distance_to(@saugatuck)).to be_within(2).of(1927)
       expect(@saugatuck.distance_to(@san_francisco)).to be_within(2).of(1927)
     end
 
-    it 'should calculate distance in default miles' do
+    it "should calculate distance in default miles" do
       expect(@san_francisco.distance_to(@saugatuck, units: :miles)).to be_within(2).of(1927)
     end
 
-    it 'should calculate distance in default kilometers' do
+    it "should calculate distance in default kilometers" do
       expect(@san_francisco.distance_to(@saugatuck, units: :kilometers)).to be_within(2).of(3101)
     end
 
-    it 'should return nil with invalid geocode' do
+    it "should return nil with invalid geocode" do
       expect(@san_francisco.distance_to(Geocode.new)).to be_nil
       expect(@san_francisco.distance_to(nil)).to be_nil
     end
@@ -248,18 +248,18 @@ describe ActsAsGeocodable do
   end
 
   it "should have beyond" do
-    spots = Vacation.origin('49406', beyond: 3).all
+    spots = Vacation.origin("49406", beyond: 3).all
     expect(spots.first).to eq(@white_house)
     expect(spots.size).to eq(1)
   end
 
   it "should have count for beyond" do
-    count = Vacation.origin('49406', beyond: 3).count(:all)
+    count = Vacation.origin("49406", beyond: 3).count(:all)
     expect(count).to eq(1)
   end
 
   it "should find beyond with other units" do
-    whitehouse = Vacation.origin('49406', beyond: 3, units: :kilometers).first
+    whitehouse = Vacation.origin("49406", beyond: 3, units: :kilometers).first
     expect(whitehouse).to eq(@white_house)
     expect(whitehouse.distance.to_f).to be_within(1).of(877.554975851074)
   end
@@ -278,7 +278,7 @@ describe ActsAsGeocodable do
 
   it "should find with order" do
     expected = [@saugatuck, @white_house]
-    actual = Vacation.origin('49406').order('distance').all
+    actual = Vacation.origin("49406").order("distance").all
     expect(actual).to eq(expected)
   end
 
@@ -293,7 +293,7 @@ describe ActsAsGeocodable do
 
   it "can convert a string to a geocode" do
     douglas_geocode = FactoryGirl.create(:douglas_geocode)
-    expect(Vacation.send(:location_to_geocode, '49406')).to eq(douglas_geocode)
+    expect(Vacation.send(:location_to_geocode, "49406")).to eq(douglas_geocode)
   end
 
   it "can covert a numeric zip to a geocode" do
