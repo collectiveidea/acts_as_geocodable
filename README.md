@@ -3,6 +3,7 @@
 [![Gem Version](https://img.shields.io/gem/v/acts_as_geocodable.svg?style=flat)](http://rubygems.org/gems/acts_as_geocodable)
 [![Build Status](https://img.shields.io/travis/collectiveidea/acts_as_geocodable/master.svg?style=flat)](https://travis-ci.org/collectiveidea/acts_as_geocodable)
 [![Code Climate](https://img.shields.io/codeclimate/github/collectiveidea/acts_as_geocodable.svg?style=flat)](https://codeclimate.com/github/collectiveidea/acts_as_geocodable)
+[![Code Coverage](http://img.shields.io/codeclimate/coverage/github/collectiveidea/acts_as_geocodable.svg?style=flat)](https://codeclimate.com/github/collectiveidea/acts_as_geocodable)
 [![Dependency Status](https://img.shields.io/gemnasium/collectiveidea/acts_as_geocodable.svg?style=flat)](https://gemnasium.com/collectiveidea/acts_as_geocodable)
 
 acts_as_geocodable helps you build geo-aware applications. It automatically geocodes your models when they are saved, giving you the ability to search by location and calculate distances between records.
