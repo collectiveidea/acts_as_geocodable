@@ -5,6 +5,7 @@ gemspec path: ".."
 gem "rails", "~> 4.1.0", ">= 4.1.2.rc"
 
 group :test do
+  gem "codeclimate-test-reporter", require: false
   gem "database_cleaner"
   gem "factory_girl"
   gem "mysql2"
