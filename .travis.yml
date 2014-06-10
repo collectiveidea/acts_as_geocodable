@@ -6,6 +6,7 @@ rvm:
   - 1.9.3
   - "2.0"
   - "2.1"
+  - ruby-head
 gemfile:
   - gemfiles/rails30.gemfile
   - gemfiles/rails31.gemfile
@@ -21,6 +22,9 @@ env:
   matrix:
     - DB=mysql
     - DB=postgresql
+matrix:
+  allow_failures:
+    - rvm: ruby-head
 before_script:
   - cp spec/db/database.yml{.example,}
   - mysql -e 'create database acts_as_geocodable_test;'
