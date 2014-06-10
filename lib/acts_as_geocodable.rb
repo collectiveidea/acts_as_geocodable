@@ -227,8 +227,8 @@ module ActsAsGeocodable #:nodoc:
         self.geocoding.destroy
       end
       new_geocode
-    rescue Graticule::Error => e
-      logger.warn e.message
+    rescue Graticule::Error => error
+      logger.warn error.message
     end
 
     def update_address(force = false) #:nodoc:

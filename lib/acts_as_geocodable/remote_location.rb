@@ -11,8 +11,8 @@ module ActsAsGeocodable #:nodoc:
       else
         Graticule.service(:host_ip).new.locate(request.remote_ip)
       end
-    rescue Graticule::Error => e
-      logger.warn "An error occurred while looking up the location of '#{request.remote_ip}': #{e.message}"
+    rescue Graticule::Error => error
+      logger.warn "An error occurred while looking up the location of '#{request.remote_ip}': #{error.message}"
       nil
     end
   end

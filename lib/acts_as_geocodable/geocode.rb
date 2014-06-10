@@ -29,8 +29,8 @@ class Geocode < ActiveRecord::Base
 
   def self.create_from_location(location)
     create geocoder.locate(location).attributes.merge(query: location.to_s)
-  rescue Graticule::Error => e
-    logger.warn e.message
+  rescue Graticule::Error => error
+    logger.warn error.message
     nil
   end
 
