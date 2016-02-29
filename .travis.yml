@@ -26,6 +26,8 @@ env:
 matrix:
   allow_failures:
     - rvm: ruby-head
+before_install:
+  - gem install bundler
 before_script:
   - cp spec/db/database.yml{.example,}
   - mysql -e 'create database acts_as_geocodable_test;'
