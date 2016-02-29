@@ -3,8 +3,9 @@ CodeClimate::TestReporter.start
 
 require "acts_as_geocodable"
 
-require "bundler"
-Bundler.require(:test)
+require "rubygems"
+require "bundler/setup"
+Bundler.require
 
 plugin_test_dir = File.dirname(__FILE__)
 ActiveRecord::Base.logger = Logger.new(plugin_test_dir + "/debug.log")

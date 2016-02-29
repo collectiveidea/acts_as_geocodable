@@ -13,6 +13,7 @@ gemfile:
   - gemfiles/rails32.gemfile
   - gemfiles/rails40.gemfile
   - gemfiles/rails41.gemfile
+  - gemfiles/rails42.gemfile
 env:
   global:
     secure: | # CODECLIMATE_REPO_TOKEN
@@ -25,6 +26,8 @@ env:
 matrix:
   allow_failures:
     - rvm: ruby-head
+before_install:
+  - gem install bundler
 before_script:
   - cp spec/db/database.yml{.example,}
   - mysql -e 'create database acts_as_geocodable_test;'
