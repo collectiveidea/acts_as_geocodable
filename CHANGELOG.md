@@ -1,3 +1,6 @@
+## 2.1.1 / 2016-06-28
+* [ENHANCEMENT] Relax Rails version requirement
+
 ## 2.1.0 / 2014-06-10
 
 * [ENHANCEMENT] Whitelist attributes for mass assignment
